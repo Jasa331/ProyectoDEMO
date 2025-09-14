@@ -1,0 +1,147 @@
+/* 🎨 Paleta base */
+:root {
+  --verde1: #5AA82E;
+  --verde2: #74BE46;
+  --verde3: #8DD45F;
+  --gris1: #f5f5f5;
+  --gris2: #e0e0e0;
+  --negro: #333;
+  --blanco: #fff;
+  --sombra: rgba(0, 0, 0, 0.1);
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: var(--gris1);
+  display: flex;
+  min-height: 100vh;
+}
+
+/* 📌 Sidebar */
+.sidebar {
+  width: 220px;
+  background: var(--verde1);
+  color: var(--blanco);
+  padding: 20px;
+  box-shadow: 2px 0 8px var(--sombra);
+}
+
+.sidebar h2 {
+  margin-top: 0;
+  font-size: 22px;
+  text-align: center;
+}
+
+.sidebar a {
+  display: block;
+  color: var(--blanco);
+  padding: 12px;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+  cursor: pointer;
+}
+
+.sidebar a:hover {
+  background: var(--verde2);
+}
+
+/* 📌 Content */
+.content {
+  flex: 1;
+  padding: 30px;
+  background: var(--gris1);
+}
+
+.seccion {
+  display: none;
+}
+
+.seccion:first-child {
+  display: block;
+}
+
+/* 📌 Tablas */
+table    {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  background: var(--blanco);
+  box-shadow: 0 2px 6px var(--sombra);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+table th, table td {
+  border: 1px solid var(--gris2);
+  padding: 12px;
+  text-align: left;
+}
+
+table th {
+  background: var(--verde2);
+  color: var(--blanco);
+}
+
+/* 📌 Botón genérico */
+.btn-agregar {
+  display: inline-block;
+  background: var(--verde2);
+  color: var(--blanco);
+  padding: 10px 18px;
+  margin: 5px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-agregar:hover {
+  background: var(--verde3);
+  transform: scale(1.05);
+}
+
+/* 📌 Botón de inicio especial */
+.btn-inicio {
+  display: inline-block;
+  background: var(--verde1);
+  color: var(--blanco);
+  padding: 12px 22px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 10px var(--sombra);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-inicio:hover {
+  background: var(--verde2);
+  transform: scale(1.05);
+}
+
+/* Estilos del botón flotante */
+#btnFlotante {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: var(--verde1, #5eff00);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 55px;
+  height: 55px;
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  transition: transform 0.2s ease, background 0.3s;
+  z-index: 999;
+}
+
+#btnFlotante:hover {
+  background: var(--verde2, #74BE46);
+  transform: scale(1.1);
+}
+

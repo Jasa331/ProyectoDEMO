@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agricord • Panel Admin</title>
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">🌱</div>
+      <span>Agricord</span>
+    </div>
+
+    <nav class="menu">
+      <a class="active"><i>📊</i> Dashboard</a>
+      <a><i>👤</i> Usuarios</a>
+      <a><i>🧩</i> Módulos</a>
+      <a><i>⚙️</i> Ajustes</a>
+    </nav>
+
+    <!-- Botones adicionales -->
+    <div class="sidebar-actions">
+      <button id="btnVerUsuarios" class="btn btn-light">👥 Ver Usuarios</button>
+      <button id="btnExportar" class="btn btn-light">📄 Exportar Datos</button>
+      <button id="btnConfiguracion" class="btn btn-light">⚙️ Configuración</button>
+    </div>
+
+    <button id="btnLogout" class="btn btn-outline">Cerrar sesión</button>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <header class="topbar">
+      <h1>Panel de Administración</h1>
+      <div class="top-actions">
+        <input id="inputBuscar" type="search" placeholder="Buscar por nombre, usuario o correo…">
+        <button id="btnNuevo" class="btn btn-primary">+ Nuevo usuario</button>
+      </div>
+    </header>
+
+    <!-- Stats -->
+    <section class="stats">
+      <article class="stat-card">
+        <span class="stat-label">Usuarios totales</span>
+        <span class="stat-value" id="statTotal">0</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Administradores</span>
+        <span class="stat-value" id="statAdmins">0</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-label">Usuarios estándar</span>
+        <span class="stat-value" id="statUsuarios">0</span>
+      </article>
+    </section>
+
+    <!-- Tabla -->
+    <section class="table-wrap">
+      <table class="table" aria-label="Usuarios">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Usuario</th>
+            <th>Correo</th>
+            <th>Perfil</th>
+            <th style="width:160px">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyUsuarios">
+          <!-- filas dinámicas -->
+        </tbody>
+      </table>
+      <p id="vacio" class="empty">No hay usuarios que coincidan con la búsqueda.</p>
+    </section>
+
+    <!-- Botones al final de la vista -->
+    <div class="footer-actions">
+      <button id="btnRefrescar" class="btn btn-secondary">🔄 Refrescar Datos</button>
+      <button id="btnSoporte" class="btn btn-secondary">📞 Soporte</button>
+    </div>
+  </main>
+
+  <!-- Modal Crear/Editar -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
+      <div class="modal-header">
+        <h3 id="modalTitle">Nuevo usuario</h3>
+        <button class="icon-btn" id="btnCerrarModal" aria-label="Cerrar">✖</button>
+      </div>
+
+      <form id="formUsuario" autocomplete="off">
+        <div class="grid">
+          <label>Nombre
+            <input type="text" name="nombre" required>
+          </label>
+          <label>Apellido
+            <input type="text" name="apellido" required>
+          </label>
+          <label>Usuario
+            <input type="text" name="usuario" required>
+          </label>
+          <label>Correo
+            <input type="email" name="correo" required>
+          </label>
+          <label>Dirección
+            <input type="text" name="direccion">
+          </label>
+          <label>Teléfono
+            <input type="tel" name="telefono">
+          </label>
+          <label>Perfil
+            <select name="perfil" required>
+              <option value="usuario">Usuario</option>
+              <option value="admin">Administrador</option>
+            </select>
+          </label>
+          <label>Contraseña
+            <input type="password" name="password" minlength="4" required>
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary" id="btnGuardar">Guardar</button>
+          <button type="button" class="btn" id="btnCancelar">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="../js/admin.js"></script>
+</body>
+</html>

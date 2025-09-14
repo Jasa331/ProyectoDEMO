@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Calendario Agrícola</title>
+  <link rel="stylesheet" href="../css/style_calendario.css">
+  <script type="module" src="../js/Calendario.js" defer></script>
+</head>
+<body>
+  <!-- Botón de volver atrás -->
+  <button id="btnBack" onclick="history.back()">←</button>
+
+  <h1>📅 Calendario Agrícola</h1>
+
+  <form id="formSiembra">
+    <label>Fecha de siembra:
+      <input type="date" id="fechaSiembra" required>
+    </label>
+    <label>Cultivo:
+      <select id="cultivo">
+        <option value="Maíz">Maíz (120 días)</option>
+        <option value="Arroz">Arroz (150 días)</option>
+        <option value="Fríjol">Fríjol (90 días)</option>
+        <option value="Papa">Papa (120 días)</option>
+        <option value="Tomate">Tomate (90 días)</option>
+      </select>
+    </label>
+    <button type="submit" class="btn">Agregar</button>
+  </form>
+
+  <h2>🌱 Cultivos en seguimiento</h2>
+  <table id="tablaCultivos">
+    <thead>
+      <tr>
+        <th>Cultivo</th>
+        <th>Fecha de Siembra</th>
+        <th>Fecha de Cosecha</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div id="acordeonCultivos" class="accordion"></div>
+</body>
+</html>
+

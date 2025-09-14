@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Agricultor</title>
+  <link rel="stylesheet" href="../css/style_desboard_agricultor.css">
+  <link rel="stylesheet" href="../css/style_actualizacion_clima.css">
+  <script src="../js/daboard_agricultor.js" defer></script>
+  <script src="../js/actualizacion_clima.js" defer></script>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Panel Agricultor</h2>
+    <a onclick="mostrarSeccion('dashboard')">Inicio</a>
+    <a onclick="mostrarSeccion('cultivos')">Mis Cultivos</a>
+    <a onclick="mostrarSeccion('reportes')">Reportes</a>
+    <a onclick="mostrarSeccion('inventario')">Inventario</a>
+    <hr style="border: 1px solid var(--verde3); margin: 20px 0;">
+    <a onclick="mostrarSeccion('perfil')">Perfil</a>
+    <a onclick="mostrarSeccion('cerrarSesion')">Cerrar Sesión</a>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <!-- Dashboard -->
+    <div id="dashboard" class="seccion">
+      <h1>Dashboard</h1>
+      <p>Bienvenido al panel principal del agricultor.</p>
+      <br>  
+      <!-- Botones de acción -->
+      <div style="margin-bottom:15px;">
+        <a href="../HTML/index_agregar_empleado.html" class="btn-agregar" id="btnAgregarEmpleado">Agregar Empleado</a>
+        <a href="../HTML/index_Calendario.html" class="btn-agregar" id="btnAgregarCultivo">Agregar Cultivo</a>
+        <a href="../HTML/index_alerta_stock.html" class="btn-agregar" id="btnAgregarInsumo">Agregar Insumo</a>
+        <a href="#" class="btn-agregar" id="openMonitor">Abrir Monitor de Clima</a>
+      </div>
+
+      <!-- Tabla de agricultores -->
+      <table>
+        <tr>    
+          <th>Nombre</th>
+          <th>Cultivos</th>
+          <th>Contacto</th>
+        </tr>
+      </table>
+
+      <!-- Sección lateral de detalles -->
+      <div id="detalleAgricultor">
+        <h3>Detalles</h3>
+        <p>Haz clic en un botón o selecciona un agricultor para ver los detalles aquí.</p>
+      </div>
+    </div>
+
+    <!-- Mis Cultivos -->
+    <div id="cultivos" class="seccion" style="display:none;">
+      <h1>Mis Cultivos</h1>
+      <p>Aquí se listan todos los cultivos registrados.</p>
+      <br>
+      <table>
+        <tr>
+          <th>Nombre</th>
+          <th>Cultivos</th>
+          <th>Contacto</th>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Reportes -->
+    <div id="reportes" class="seccion" style="display:none;">
+      <h1>Reportes</h1>
+      <p>Sección de reportes de cada agricultor.</p>
+    </div>
+
+    <!-- Inventario -->
+    <div id="inventario" class="seccion" style="display:none;">
+      <h1>Inventario</h1>
+      <p>Sección de inventario de insumos y productos.</p>
+    </div>
+
+    <!-- Perfil -->
+    <div id="perfil" class="seccion" style="display:none;">
+      <h1>Perfil</h1>
+      <p>Sección de perfil del usuario.</p>
+    </div>
+  </div>
+
+  <!-- 🌦️ Modal Monitor de Clima -->
+  <div class="modal" id="climaModal" style="display:none;">
+    <div class="modal-content">
+      <span class="close" id="closeModal">&times;</span>
+      <h2>🌦️ Monitor de Clima</h2>
+
+      <div class="field">
+        <label for="cityInput">Ciudad <span style="color:red">*</span></label>
+        <input id="cityInput" type="text" placeholder="Ej: Bogotá" required>
+      </div>
+      <div class="field">
+        <label for="interval">Intervalo (segundos)</label>
+        <input id="interval" type="number" value="5">
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:10px">
+        <button id="startBtn" class="btn">Iniciar</button>
+        <button id="stopBtn" class="btn secondary" disabled>Detener</button>
+      </div>
+
+      <div class="card">
+        <div style="font-size:36px" id="icon">☀️</div>
+        <div>
+          <div class="temp" id="temp">-- °C</div>
+          <div class="meta" id="cityName">Ciudad: —</div>
+          <div class="meta" id="cond">Condición: —</div>
+          <div class="meta" id="hum">Humedad: — %</div>
+          <div class="meta" id="updated">Última actualización: —</div>
+        </div>
+      </div>
+
+      <div class="novedades card">
+        <h3>🔔 Novedades</h3>
+        <ul id="novedadesList"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast">
+    <h4 id="toastTitle">Alerta</h4>
+    <div id="toastBody" class="small"></div>
+  </div>
+</body>
+</html>

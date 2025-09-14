@@ -1,0 +1,111 @@
+/* Estilo general */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  background: #f5f8f4;
+  color: #333;
+}
+
+/* Encabezado */
+header {
+  background: linear-gradient(90deg, #2e7d32, #66bb6a);
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* Secciones */
+main {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+h2 {
+  margin-bottom: 0.5rem;
+  color: #2e7d32;
+}
+
+/* Formulario */
+.form-section {
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 10px;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+input[type="file"] {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+button {
+  background: #43a047;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #2e7d32;
+}
+
+/* Reportes */
+.list-section {
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.reporte-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.reporte-card {
+  background: #f9fdf8;
+  border: 1px solid #dce9d6;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.reporte-card img {
+  max-width: 200px;
+  margin-top: 0.5rem;
+  border-radius: 6px;
+}
+
+.reporte-card small {
+  color: #666;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+/* Footer */
+footer {
+  margin-top: 2rem;
+  padding: 1rem;
+  text-align: center;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-top: 1px solid #c8e6c9;
+}

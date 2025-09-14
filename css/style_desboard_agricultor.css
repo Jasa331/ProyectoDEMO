@@ -1,0 +1,59 @@
+    :root {
+    --verde1: #5AA82E;
+    --verde2: #74BE46;
+    --verde3: #8DD45F;
+    --verde4: #A7E977;
+    --verde5: #C0FF8F;
+    --blanco: #fff;
+    --gris: #f4f4f4;
+    --negro: #333;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
+
+    body { background: var(--gris); color: var(--negro); display: flex; }
+
+    .sidebar { width: 220px; background: var(--verde1); height: 100vh; padding: 20px; color: var(--blanco); }
+    .sidebar a { display: block; padding: 12px; margin: 8px 0; background: var(--verde2); color: var(--blanco); text-decoration: none; border-radius: 8px; transition: 0.3s; cursor: pointer; }
+    .sidebar a:hover { background: var(--verde3); }
+
+    .content { flex: 1; padding: 20px; }
+
+    h1 { color: var(--verde1); margin-bottom: 20px; }
+
+    /* Botones de acción */
+    .btn-agregar { display: inline-block; padding: 8px 12px; background: var(--verde3); color: var(--blanco); text-decoration: none; border-radius: 8px; transition: 0.3s; cursor: pointer; margin-right: 10px; }
+    .btn-agregar:hover { background: var(--verde4); }
+
+    /* Tabla */
+    table { width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; background: var(--blanco); margin-bottom: 20px; }
+    th, td { padding: 12px; text-align: center; border: 1px solid #ddd; }
+    th { background: var(--verde2); color: var(--blanco); }
+    tr:nth-child(even) { background: var(--verde5); }
+    tr:hover { background: var(--verde4); }
+
+    /* Ocultar secciones por defecto */
+    .seccion { display: none; }
+
+    /* Sección lateral de detalles */
+    #detalleAgricultor {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 10px;
+    background: var(--blanco);
+    margin-top: 20px;
+    }
+
+.seccion {
+  display: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.seccion.activa {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+

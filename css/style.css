@@ -1,0 +1,162 @@
+/* ----------------------------------- VARIABLES GLOBALES ----------------------------------- */
+:root {
+  --primary: #5AA82E;        /* Verde brillante */
+  --primary-dark: #74BE46;   /* Verde oscuro */
+  --secondary: #F0BE82;      /* Amarillo suave */
+  --background: #111827;     /* Fondo oscuro */
+  --card: #1A202C;           /* Color de la tarjeta */
+  --text-light: #E5E7EB;      /* Texto claro */
+  --text-muted: #9CA3AF;     /* Texto atenuado */
+  --radius: 12px;            /* Bordes redondeados */
+  --shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra */
+  --transition: all 0.3s ease; /* Transiciones */
+  --sidebar-width: 260px;    /* Ancho del sidebar */
+  --max-width: 480px;        /* Ancho máximo del formulario */
+  --max-content-width: 1200px; /* Ancho máximo del contenido */
+}
+
+/* ----------------------------------- RESET ----------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--background);
+  color: var(--text-light);
+  line-height: 1.6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+  padding: 0;
+}
+
+h1, h2 {
+  color: var(--primary);
+  text-align: center; /* Centrado de los títulos */
+}
+
+/* ----------------------------------- SIDEBAR ----------------------------------- */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--card);
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-shadow: var(--shadow);
+}
+
+/* ----------------------------------- MAIN CONTENT ----------------------------------- */
+.main {
+  margin-left: var(--sidebar-width);
+  padding: 30px;
+  flex-grow: 1;
+  background: var(--background);
+  max-width: var(--max-content-width);
+}
+
+/* ----------------------------------- FORMULARIO ----------------------------------- */
+.form-container {
+  background: var(--card);
+  padding: 40px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: var(--max-width);
+  animation: fadeIn 0.6s ease-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto; /* Asegura que el formulario esté centrado */
+}
+
+/* Campos de entrada y selección */
+.form-container input,
+.form-container select {
+  width: 100%;
+  padding: 14px;
+  margin: 12px 0;
+  border-radius: var(--radius);
+  border: 1px solid #2D3748;
+  background: #2D3748;
+  color: var(--text-light);
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-container input:focus,
+.form-container select:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 5px var(--primary);
+}
+
+/* Botones */
+.form-container button {
+  width: 100%;
+  padding: 14px;
+  background: var(--primary);
+  color: white;
+  font-weight: bold;
+  border-radius: var(--radius);
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.form-container button:hover {
+  background: var(--primary-dark);
+}
+
+/* Enlaces */
+.form-container p {
+  text-align: center;
+  margin-top: 15px;
+  color: var(--text-muted);
+}
+
+.form-container a {
+  color: var(--secondary);
+  text-decoration: none;
+}
+
+.form-container a:hover {
+  text-decoration: underline;
+}
+
+/* ----------------------------------- ANIMACIONES ----------------------------------- */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ----------------------------------- ESTILOS PARA MOBILE ----------------------------------- */
+@media (max-width: 600px) {
+  .form-container {
+    padding: 30px;
+  }
+  
+  /* Centrado total para formularios en dispositivos pequeños */
+  .main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px; /* Espaciado reducido */
+  }
+}

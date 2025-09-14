@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Centro de Ayuda - Agricord</title>
+    <link rel="stylesheet" href="../CSS/style_ayuda.css" />
+    <script defer src="js/ayuda.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Centro de Ayuda - Agricord</h1>
+    <p>Encuentra respuestas, guías y soporte para tu proyecto agrícola</p>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Buscar ayuda...">
+      <button onclick="buscar()">🔍</button>
+    </div>
+  </header>
+
+  <section>
+    <h2>Preguntas Frecuentes</h2>
+    <button class="accordion">¿Cómo registro una nueva cosecha?</button>
+    <div class="panel"><p>Ve a "Gestión agrícola" y haz clic en "Nueva cosecha". Llena los campos requeridos y guarda.</p></div>
+
+    <button class="accordion">¿Cómo genero un reporte de ventas?</button>
+    <div class="panel"><p>Entra a la sección de "Reportes", selecciona ventas y el rango de fechas, luego exporta en PDF o Excel.</p></div>
+
+    <button class="accordion">¿Olvidé mi contraseña, qué hago?</button>
+    <div class="panel"><p>Haz clic en "Olvidé mi contraseña" en el inicio de sesión. Revisa tu correo para el enlace de recuperación.</p></div>
+
+    <h2>Guías rápidas</h2>
+    <div class="guides">
+      <div class="card">📖 Manual del usuario</div>
+      <div class="card">🎥 Video tutoriales</div>
+      <div class="card">📂 Documentación técnica</div>
+    </div>
+
+
+    <h2>Enviar un ticket</h2>
+    <div class="ticket-form card">
+      <form action="mailto:josemmercado0108@gmail.com" method="post" enctype="text/plain">
+        <input type="text" name="nombre" placeholder="Tu nombre" required />
+        <input type="email" name="correo" placeholder="Tu correo" required />
+        <textarea name="mensaje" rows="5" placeholder="Describe tu problema..." required></textarea>
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+  </section>
+
+
+  <footer>
+    <p>📍 Dirección: Carrera 130# 22-55, Bogotá, Colombia</p>
+    <p>📞 Teléfono: +57 3227838864 </p>
+    <p>📧 Correo: <a href="mailto:josemmercado0108@gmail.com">josemmercado0108@gmail.com</a></p>
+    <p>🌐 Sitio web: <a href="#">www.agricord.com</a></p>
+    <p>&copy; 2025 Agricord - Todos los derechos reservados</p>
+  </footer>
+  
+
+</body>
+</html>
