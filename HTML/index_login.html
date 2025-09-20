@@ -9,30 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Carter+One&display=swap" rel="stylesheet">
   <style>
-    /* Contenedor de contraseña con ojito */
-    .password-container {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
 
-    .password-container input {
-      width: 100%;
-      padding-right: 35px; /* espacio para el ojito */
-      box-sizing: border-box;
-    }
-
-    .toggle-pass {
-      position: absolute;
-      right: 10px;
-      cursor: pointer;
-      font-size: 18px;
-      color: #555;
-    }
-
-    .toggle-pass:hover {
-      color: #000;
-    }
   </style>
 </head>
 <body class="login"> 
@@ -57,20 +34,6 @@
     <p>¿No tienes cuenta? <a href="../HTML/index_registro.html">Regístrate aquí</a></p>
     <p>¿Olvidaste tu contraseña? <a href="../HTML/index_recuperar_contraseña.html">Recupérala aquí</a></p>
   </div>
-
-  <script>
-    // Alternar mostrar/ocultar contraseña
-    function togglePassword(id, el) {
-      const input = document.getElementById(id);
-      if (input.type === "password") {
-        input.type = "text";
-        el.textContent = "🙈";
-      } else {
-        input.type = "password";
-        el.textContent = "👁";
-      }
-    }
-  </script>
   <script src="../js/login.js"></script>
 </body>
 </html>

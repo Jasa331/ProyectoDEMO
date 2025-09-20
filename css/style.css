@@ -160,3 +160,28 @@ h1, h2 {
     padding: 10px; /* Espaciado reducido */
   }
 }
+
+    /* Contenedor de contraseña con ojito */
+    .password-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-container input {
+      width: 100%;
+      padding-right: 35px; /* espacio para el ojito */
+      box-sizing: border-box;
+    }
+
+    .toggle-pass {
+      position: absolute;
+      right: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      color: #555;
+    }
+
+    .toggle-pass:hover {
+      color: #000;
+    }
