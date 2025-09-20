@@ -1,0 +1,28 @@
+{
+  "name": "proyectodemo",
+  "version": "1.0.0",
+  "description": "Repositorio donde se cargaran todas las evidencias correspondientes del proyecto :3",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jasa331/ProyectoDEMO.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Jasa331/ProyectoDEMO/issues"
+  },
+  "homepage": "https://github.com/Jasa331/ProyectoDEMO#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mysql2": "^3.15.0",
+    "nodemon": "^3.1.10"
+  }
+}
