@@ -5,83 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Restablecer Contraseña</title>
   <link rel="stylesheet" href="../css/style.css">
-  <style>
-    p {
-      color: #555;
-    }
-    .reset-container {
-      background: #fff;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      width: 340px;
-      text-align: center;
-      margin: auto;
-      margin-top: 60px;
-    }
-    .reset-container h2 {
-      margin-bottom: 20px;
-      color: #333;
-    }
-    .field {
-      margin-bottom: 15px;
-      text-align: left;
-    }
-    label {
-      font-size: 14px;
-      color: #555;
-      display: block;
-      margin-bottom: 5px;
-    }
-    .password-container {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-    .password-container input {
-      width: 100%;
-      padding: 10px;
-      padding-right: 35px; /* espacio para el ojito */
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      outline: none;
-    }
-    .toggle-pass {
-      position: absolute;
-      right: 10px;
-      cursor: pointer;
-      font-size: 18px;
-      color: #555;
-    }
-    .toggle-pass:hover {
-      color: #000;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      background: #5AA82E;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-    button:hover {
-      background: #4c8e26;
-    }
-    .back {
-      margin-top: 15px;
-      font-size: 14px;
-    }
-    .back a {
-      color: #5AA82E;
-      text-decoration: none;
-    }
-    .back a:hover {
-      text-decoration: underline;
-    }
-  </style>
+  <script type="module" src="../js/restablecer_contraseña.js"></script>
 </head>
 <body>
   <div class="reset-container">
@@ -108,53 +32,5 @@
       <a href="../HTML/index_login.html">⬅️ Volver al inicio de sesión</a>
     </div>
   </div>
-
-  <script>
-    // Función para alternar mostrar/ocultar contraseña
-    function togglePassword(id, el) {
-      const input = document.getElementById(id);
-      if (input.type === "password") {
-        input.type = "text";
-        el.textContent = "🙈";
-      } else {
-        input.type = "password";
-        el.textContent = "👁";
-      }
-    }
-
-    // Enviar nueva contraseña
-    document.getElementById("resetForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const params = new URLSearchParams(window.location.search);
-      const email = params.get("email"); // viene en el enlace
-      const password = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
-
-      if (password !== confirmPassword) {
-        alert("⚠️ Las contraseñas no coinciden");
-        return;
-      }
-
-      try {
-        const res = await fetch("http://localhost:3000/api/restablecer", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
-        });
-
-        const data = await res.json();
-        if (res.ok) {
-          alert("✅ Contraseña actualizada correctamente");
-          window.location.href = "login.html";
-        } else {
-          alert("⚠️ " + data.message);
-        }
-      } catch (error) {
-        console.error(error);
-        alert("❌ Error al restablecer la contraseña");
-      }
-    });
-  </script>
 </body>
 </html>
