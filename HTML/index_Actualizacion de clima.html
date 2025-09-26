@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Página con Monitor de Clima</title>
+<link rel="stylesheet" href="../css/style_actualizacion_clima.css">
+<script type="module" src="../js/actualizacion_clima.js"></script>
+</head>
+<body>
+<!-- Botón que abre el modal -->
+<button id="openMonitor">Abrir Monitor de Clima</button>
+
+<!-- Modal -->
+<div class="modal" id="climaModal">
+  <div class="modal-content">
+    <span class="close" id="closeModal">&times;</span>
+    <h1>🌦️ Monitor de Clima</h1>
+
+    <div class="field">
+      <label for="cityInput">Ciudad <span style="color:red">*</span></label>
+      <input id="cityInput" type="text" placeholder="Ej: Bogotá" required>
+    </div>
+    <div class="field">
+      <label for="interval">Intervalo (segundos)</label>
+      <input id="interval" type="number" value="5">
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:10px">
+      <button id="startBtn" class="btn">Iniciar</button>
+      <button id="stopBtn" class="btn secondary" disabled>Detener</button>
+    </div>
+
+    <div class="card">
+      <div style="font-size:36px" id="icon">☀️</div>
+      <div>
+        <div class="temp" id="temp">-- °C</div>
+        <div class="meta" id="cityName">Ciudad: —</div>
+        <div class="meta" id="cond">Condición: —</div>
+        <div class="meta" id="hum">Humedad: — %</div>
+        <div class="meta" id="updated">Última actualización: —</div>
+      </div>
+    </div>
+
+    <div class="novedades card">
+      <h3>🔔 Novedades</h3>
+      <ul id="novedadesList"></ul>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast">
+  <h4 id="toastTitle">Alerta</h4>
+  <div id="toastBody" class="small"></div>
+</div>
+</body>
+</html>
+
