@@ -17,7 +17,8 @@ function writeUsers(arr) {
 (function guard() {
   const activo = JSON.parse(localStorage.getItem(KEY_SESSION) || "null");
   if (!activo || activo.perfil !== "admin") {
-    location.href = "index.html"; // Redirige al inicio si no es admin
+    // Redirige al login si no es admin
+    location.href = "../HTML/index_login.html";
   }
 })();
 
@@ -190,7 +191,8 @@ tbody.addEventListener("click", e => {
 // ===== Cerrar sesión =====
 qs("#btnLogout").addEventListener("click", () => {
   localStorage.removeItem(KEY_SESSION);
-  location.href = "../HTML/index_inicio.html"; 
+  
+  location.href = "../HTML/index_Inicio.html";
 });
 
 // ===== Toast =====
