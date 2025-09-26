@@ -11,7 +11,7 @@ app.use(express.json());
 const dbConfig = {
     host: 'localhost',
     user: 'root',
-    password: '', // Agrega tu contraseña si es necesario
+    password: '',
     database: 'AgricordDB',
 };
 
