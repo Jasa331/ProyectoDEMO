@@ -1,71 +1,54 @@
+// registro.js
 
-// ==================== REGISTRO ====================
 document.addEventListener("DOMContentLoaded", () => {
+    // 1. Obtener el formulario por su ID
     const form = document.getElementById("registerForm");
-    if (!form) return; // <- si no existe el form de registro, no ejecutar
-
-    const KEY = "usuarios";
-
-    // Función para convertir texto a hash SHA-256
-    async function hashPassword(password) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(password);
-        const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+    
+    // Si el formulario no existe, detener la ejecución (útil para prevenir errores)
+    if (!form) {
+        console.error("No se encontró el formulario con ID 'registerForm'.");
+        return;
     }
 
+    // 2. Escuchar el evento de envío del formulario
     form.addEventListener("submit", async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevenir el envío tradicional del formulario
 
-        const nombre = document.getElementById("nombre").value.trim();
-        const apellido = document.getElementById("apellido").value.trim();
-        const direccion = document.getElementById("direccion").value.trim();
-        const telefono = document.getElementById("telefono").value.trim();
-        const usuario = document.getElementById("usuario").value.trim();
-        const correo = document.getElementById("correo").value.trim();
-        const contraseña = document.getElementById("contraseña").value.trim();
-        const perfil = document.getElementById("perfil").value; // <-- PERFIL: admin o usuario
-
-        // Validar campos
-        if (!nombre || !apellido || !direccion || !telefono || !usuario || !correo || !contraseña || !perfil) {
-            alert("Por favor, completa todos los campos");
-            return;
-        }
-
-        // Leer usuarios guardados
-        const usuarios = JSON.parse(localStorage.getItem(KEY) || "[]");
-
-        // Verificar si el usuario o correo ya existen
-        const existe = usuarios.some(u => u.usuario === usuario || u.correo === correo);
-        if (existe) {
-            alert("Este usuario o correo ya está registrado");
-            return;
-        }
-
-        // Hasheamos la contraseña antes de guardar
-        const hashedPassword = await hashPassword(contraseña);
-
-        // Crear objeto usuario con PERFIL
-        const nuevoUsuario = {
-            nombre,
-            apellido,
-            direccion,
-            telefono,
-            usuario,
-            correo,
-            contraseña: hashedPassword, // Guardamos el hash
-            perfil
+        // 3. Recopilar los datos del formulario
+        const data = {
+            Usuario_Nombre: document.getElementById("nombre").value.trim(),
+            Usuario_Apellido: document.getElementById("apellido").value.trim(),
+            Direccion: document.getElementById("direccion").value.trim(),
+            Telefono: document.getElementById("telefono").value.trim(),
+            Rol: document.getElementById("perfil").value, // Asumo que "perfil" es el ID del select para el Rol
+            Correo: document.getElementById("correo").value.trim(),
+            Contrasena: document.getElementById("contraseña").value.trim() // Se envía en texto plano para que el servidor la hashee
         };
 
-        // Guardar en LocalStorage
-        usuarios.push(nuevoUsuario);
-        localStorage.setItem(KEY, JSON.stringify(usuarios));
+        try {
+            // 4. Enviar los datos al endpoint de registro en el servidor
+            const res = await fetch("http://localhost:3000/usuarios", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
 
-        // Mensaje de éxito y redirección al login
-        alert(`Registro exitoso como ${perfil}. Ahora puedes iniciar sesión.`);
+            const result = await res.json();
 
-        // Redirigir al login
-        window.location.href = "../HTML/index_login.html";
+            // 5. Manejar la respuesta del servidor
+            if (res.ok) {
+                // Registro exitoso (código de estado 200-299)
+                alert("✅ Registro exitoso. Ahora puedes iniciar sesión.");
+                // Redirigir al usuario a la página de login
+                window.location.href = "../HTML/index_login.html"; 
+            } else {
+                // Error en el servidor (ej: campos faltantes, correo ya registrado, etc.)
+                alert(`❌ Error: ${result.error || "Error desconocido en el registro"}`);
+            }
+        } catch (err) {
+            // Error de conexión de red (el servidor no está corriendo o hay un problema de CORS)
+            console.error("Error al conectar con el servidor:", err);
+            alert("⚠️ No se pudo conectar con el servidor. Asegúrate de que tu servidor Node.js esté corriendo.");
+        }
     });
 });

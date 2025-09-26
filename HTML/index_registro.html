@@ -11,35 +11,33 @@
 </head>
 <body class="registro">
 
+  <a href="../HTML/index_Inicio.html" class="menu-button">☰</a>
 
-  <h2 class="titulo-externo">Registro</h2>
+  <h2 class="titulo-externo">Registro de Usuario</h2>
 
   <div class="form-container">
     <form id="registerForm">
-      <!-- Datos personales -->
       <input type="text" id="nombre" placeholder="Nombre" required />
       <input type="text" id="apellido" placeholder="Apellido" required />
       <input type="text" id="direccion" placeholder="Dirección" required />
-      <input type="tel" id="telefono" placeholder="Teléfono" required />
-
-      <!-- Datos de cuenta -->
+      <input type="text" id="telefono" placeholder="Teléfono" required />
       <input type="text" id="usuario" placeholder="Usuario" required />
       <input type="email" id="correo" placeholder="Correo" required />
       <input type="password" id="contraseña" placeholder="Contraseña" required />
 
-      <!-- Selección de perfil -->
+      <!-- Selección de perfil con values correctos -->
       <label for="perfil">Selecciona un perfil:</label>
       <select id="perfil" required>
-        <option value="">Selecciona un perfil</option>
-        <option value="usuario">Usuario</option>
-        <option value="admin">Administrador</option>
+        <option value="">-- Selecciona --</option>
+        <option value="Administrador">Administrador</option>
+        <option value="Agricultor">Agricultor</option>
+        <option value="Empleado">Empleado</option>
       </select>
 
-      <!-- Botón -->
       <button type="submit">Registrar</button>
     </form>
 
-    <p>¿Ya tienes cuenta? <a href="../HTML/index_login.html">Inicia sesión</a></p>
+    <p>¿Ya tienes cuenta? <a href="../HTML/index_login.html">Inicia sesión aquí</a></p>
   </div>
 
   <script src="../js/registro.js"></script>

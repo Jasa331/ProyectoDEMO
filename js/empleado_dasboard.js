@@ -1,6 +1,10 @@
-// Función principal para mostrar secciones
+// 📌 Variables globales
+let inicioTiempo = null;
+let intervalo = null;
+
+// ====== Función principal para mostrar secciones ======
 function mostrarSeccion(id) {
-  // Si es cerrar sesión
+  // 👉 Si es cerrar sesión
   if (id === 'cerrarSesion') {
     localStorage.clear();
     sessionStorage.clear();
@@ -14,7 +18,7 @@ function mostrarSeccion(id) {
     return;
   }
 
-  // Cargar sección desde archivo HTML en carpeta "secciones"
+  // 👉 Cargar sección desde archivo HTML en carpeta "secciones"
   fetch(`secciones/${id}.html`)
     .then(res => res.text())
     .then(html => {
@@ -33,12 +37,7 @@ function mostrarSeccion(id) {
 // Hacer la función accesible desde onclick
 window.mostrarSeccion = mostrarSeccion;
 
-// Cuando cargue el DOM
-document.addEventListener("DOMContentLoaded", () => {
-  mostrarSeccion('dashboard'); // Mostrar dashboard por defecto
-});
-
-// Eventos extra según sección
+// ====== Activar eventos extra según la sección ======
 function activarEventos(id) {
   const detalle = document.getElementById('detalleAgricultor');
 
@@ -71,81 +70,33 @@ function activarEventos(id) {
   }
 }
 
-// 📌 Variables globales
-let inicioTiempo = null;
-let intervalo = null;
-
-// Mostrar/Ocultar secciones
-function mostrarSeccion(id) {
-  const secciones = document.querySelectorAll(".seccion");
-  secciones.forEach(sec => sec.style.display = "none");
-
-  const activa = document.getElementById(id);
-  if (activa) activa.style.display = "block";
-}
-
+// ====== Control de sesión ======
 document.addEventListener("DOMContentLoaded", () => {
-  const btnIniciar = document.getElementById("btniniciarjornada");
-  const content = document.querySelector(".content");
+  // 🚨 Si no hay usuario logueado, redirigir al login
+  const usuarioActivo = JSON.parse(localStorage.getItem("usuarioActivo") || "null");
+  if (!usuarioActivo) {
+    alert("Debes iniciar sesión primero");
+    window.location.href = "../HTML/index_login.html";
+    return;
+  }
 
-  if (btnIniciar) {
-    btnIniciar.addEventListener("click", (e) => {
+  // ✅ Botón de cerrar sesión
+  const btnCerrarSesion = document.getElementById("btnCerrarSesion");
+  if (btnCerrarSesion) {
+    btnCerrarSesion.addEventListener("click", (e) => {
       e.preventDefault();
-
-      // Si ya está en jornada, no vuelve a iniciar
-      if (inicioTiempo) {
-        alert("⚠ Ya tienes una jornada en curso.");
-        return;
-      }
-
-      inicioTiempo = new Date();
-
-      // Crear notificación con tiempo
-      const noti = document.createElement("div");
-      noti.id = "notificacionJornada";
-      noti.style.padding = "15px";
-      noti.style.marginTop = "20px";
-      noti.style.background = "#e8f5e9";
-      noti.style.border = "1px solid #4caf50";
-      noti.style.borderRadius = "8px";
-      noti.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)";
-      noti.innerHTML = `
-        <h3>✅ Jornada iniciada</h3>
-        <p>Hora de inicio: <strong>${inicioTiempo.toLocaleTimeString()}</strong></p>
-        <p id="tiempoTranscurrido">Tiempo transcurrido: 0s</p>
-        <button id="btnFinalizarJornada" style="
-          background:#c62828; 
-          color:white; 
-          padding:10px 15px; 
-          border:none; 
-          border-radius:6px; 
-          cursor:pointer;
-          margin-top:10px;
-        ">Finalizar Jornada</button>
-      `;
-      content.appendChild(noti);
-
-      // Iniciar contador
-      intervalo = setInterval(() => {
-        const ahora = new Date();
-        const diff = Math.floor((ahora - inicioTiempo) / 1000); // segundos
-        document.getElementById("tiempoTranscurrido").textContent =
-          `Tiempo transcurrido: ${formatearTiempo(diff)}`;
-      }, 1000);
-
-      // Finalizar jornada
-      document.getElementById("btnFinalizarJornada").addEventListener("click", () => {
-        clearInterval(intervalo);
-        const fin = new Date();
-        const totalSegundos = Math.floor((fin - inicioTiempo) / 1000);
-
-        alert(`🕒 Jornada finalizada.\nDuración total: ${formatearTiempo(totalSegundos)}`);
-
-        // Reset
-        inicioTiempo = null;
-        intervalo = null;
-        noti.remove();
-      });
+      mostrarSeccion("cerrarSesion");
     });
   }
+
+  // Mostrar dashboard por defecto
+  mostrarSeccion('dashboard');
 });
+
+// ====== Utilidad para formatear tiempo ======
+function formatearTiempo(segundos) {
+  const h = Math.floor(segundos / 3600);
+  const m = Math.floor((segundos % 3600) / 60);
+  const s = segundos % 60;
+  return `${h}h ${m}m ${s}s`;
+}

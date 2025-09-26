@@ -1,133 +1,146 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Agricultor</title>
-  <link rel="stylesheet" href="../css/style_desboard_agricultor.css">
-  <link rel="stylesheet" href="../css/style_actualizacion_clima.css">
-  <script src="../js/mostar_aricultor.js"></script>
-  <script src="../js/daboard_agricultor.js" defer></script>
-  <script src="../js/actualizacion_clima.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control | Agricultor</title>
+    
+    <link rel="stylesheet" href="../css/style_desboard_agricultor.css">
+    <link rel="stylesheet" href="../css/style_actualizacion_clima.css">
+    
+    <script src="../js/mostar_aricultor.js"></script>
+    
 </head>
 <body>
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <h2>Panel Agricultor</h2>
-    <a onclick="mostrarSeccion('dashboard')">Inicio</a>
-    <a onclick="mostrarSeccion('cultivos')">Mis Cultivos</a>
-    <a onclick="mostrarSeccion('reportes')">Reportes</a>
-    <a onclick="mostrarSeccion('inventario')">Inventario</a>
-    <hr style="border: 1px solid var(--verde3); margin: 20px 0;">
-    <a onclick="mostrarSeccion('perfil')">Perfil</a>
-    <a onclick="mostrarSeccion('cerrarSesion')">Cerrar Sesión</a>
-  </div>
+    
+    <nav class="sidebar">
+        <h2>Panel Agricultor</h2>
+        <a href="#dashboard" onclick="mostrarSeccion('dashboard')">Inicio</a>
+        <a href="#cultivos" onclick="mostrarSeccion('cultivos')">Mis Cultivos</a>
+        <a href="#reportes" onclick="mostrarSeccion('reportes')">Reportes</a>
+        <a href="#inventario" onclick="mostrarSeccion('inventario')">Inventario</a>
+        
+        <hr class="separator">
+        
+        <a href="#perfil" onclick="mostrarSeccion('perfil')">Perfil</a>
+        <a href="#" id="logoutBtn" onclick="cerrarSesion()">Cerrar Sesión</a>
+    </nav>
 
-  <!-- Content -->
-  <div class="content">
-    <!-- Dashboard -->
-    <div id="dashboard" class="seccion">
-      <h1>Dashboard</h1>
-      <p>Bienvenido al panel principal del agricultor.</p>
-      <br>  
-      <!-- Botones de acción -->
-      <div style="margin-bottom:15px;">
-        <a href="../HTML/index_agregar_empleado.html" class="btn-agregar" id="btnAgregarEmpleado">Agregar Empleado</a>
-        <a href="../HTML/index_Calendario.html" class="btn-agregar" id="btnAgregarCultivo">Agregar Cultivo</a>
-        <a href="../HTML/index_alerta_stock.html" class="btn-agregar" id="btnAgregarInsumo">Agregar Insumo</a>
-        <a href="#" class="btn-agregar" id="openMonitor">Abrir Monitor de Clima</a>
-      </div>
+    <main class="content">
+        
+        <section id="dashboard" class="seccion visible">
+            <header>
+                <h1>Dashboard</h1>
+                <p>Bienvenido al panel principal del agricultor.</p>
+            </header>
+            
+            <div class="action-buttons">
+                <a href="index_agregar_empleado.html" class="btn btn-primary" id="btnAgregarEmpleado">Agregar Empleado</a>
+                <a href="index_Calendario.html" class="btn btn-primary" id="btnAgregarCultivo">Agregar Cultivo</a>
+                <a href="index_alerta_stock.html" class="btn btn-primary" id="btnAgregarInsumo">Agregar Insumo</a>
+                <button type="button" class="btn btn-secondary" id="openMonitor">Abrir Monitor de Clima</button>
+            </div>
 
-      <!-- Tabla de agricultores -->
-      <table>
-        <tr>    
-          <th>Nombre</th>
-          <th>Cultivos</th>
-          <th>Contacto</th>
-        </tr>
-      </table>
+            <div class="card">
+                <h3>Resumen de Agricultores</h3>
+                <table>
+                    <thead>
+                        <tr>    
+                            <th>Nombre</th>
+                            <th>Cultivos</th>
+                            <th>Contacto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
 
-      <!-- Sección lateral de detalles -->
-      <div id="detalleAgricultor">
-        <h3>Detalles</h3>
-        <p>Haz clic en un botón o selecciona un agricultor para ver los detalles aquí.</p>
-      </div>
-    </div>
+            <aside id="detalleAgricultor" class="card details-panel">
+                <h3>Detalles</h3>
+                <p>Haz clic en un botón o selecciona un agricultor para ver los detalles aquí.</p>
+            </aside>
+        </section>
 
-    <!-- Mis Cultivos -->
-    <div id="cultivos" class="seccion" style="display:none;">
-      <h1>Mis Cultivos</h1>
-      <p>Aquí se listan todos los cultivos registrados.</p>
-      <br>
-      <table>
-        <tr>
-          <th>Nombre</th>
-          <th>Cultivos</th>
-          <th>Contacto</th>
-        </tr>
-      </table>
-    </div>
+        <section id="cultivos" class="seccion" style="display:none;">
+            <h1>Mis Cultivos</h1>
+            <p>Aquí se listan todos los cultivos registrados.</p>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Área</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+        </section>
 
-    <!-- Reportes -->
-    <div id="reportes" class="seccion" style="display:none;">
-      <h1>Reportes</h1>
-      <p>Sección de reportes de cada agricultor.</p>
-    </div>
+        <section id="reportes" class="seccion" style="display:none;">
+            <h1>Reportes</h1>
+            <p>Sección de reportes de cada agricultor.</p>
+        </section>
 
-    <!-- Inventario -->
-    <div id="inventario" class="seccion" style="display:none;">
-      <h1>Inventario</h1>
-      <p>Sección de inventario de insumos y productos.</p>
-    </div>
+        <section id="inventario" class="seccion" style="display:none;">
+            <h1>Inventario</h1>
+            <p>Sección de inventario de insumos y productos.</p>
+        </section>
 
-    <!-- Perfil -->
-    <div id="perfil" class="seccion" style="display:none;">
-      <h1>Perfil</h1>
-      <p>Sección de perfil del usuario.</p>
-    </div>
-  </div>
+        <section id="perfil" class="seccion" style="display:none;">
+            <h1>Perfil</h1>
+            <p>Sección de perfil del usuario.</p>
+        </section>
+        
+    </main>
 
-  <!-- 🌦️ Modal Monitor de Clima -->
-  <div class="modal" id="climaModal" style="display:none;">
-    <div class="modal-content">
-      <span class="close" id="closeModal">&times;</span>
-      <h2>🌦️ Monitor de Clima</h2>
+    <div class="modal" id="climaModal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>🌦️ Monitor de Clima</h2>
 
-      <div class="field">
-        <label for="cityInput">Ciudad <span style="color:red">*</span></label>
-        <input id="cityInput" type="text" placeholder="Ej: Bogotá" required>
-      </div>
-      <div class="field">
-        <label for="interval">Intervalo (segundos)</label>
-        <input id="interval" type="number" value="5">
-      </div>
-      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:10px">
-        <button id="startBtn" class="btn">Iniciar</button>
-        <button id="stopBtn" class="btn secondary" disabled>Detener</button>
-      </div>
+            <form id="climaForm">
+                <div class="field">
+                    <label for="cityInput">Ciudad <span class="required">*</span></label>
+                    <input id="cityInput" type="text" placeholder="Ej: Bogotá" required>
+                </div>
+                <div class="field">
+                    <label for="interval">Intervalo (segundos)</label>
+                    <input id="interval" type="number" value="5" min="1">
+                </div>
+                <div class="form-actions">
+                    <button id="startBtn" class="btn" type="submit">Iniciar</button>
+                    <button id="stopBtn" class="btn secondary" type="button" disabled>Detener</button>
+                </div>
+            </form>
 
-      <div class="card">
-        <div style="font-size:36px" id="icon">☀️</div>
-        <div>
-          <div class="temp" id="temp">-- °C</div>
-          <div class="meta" id="cityName">Ciudad: —</div>
-          <div class="meta" id="cond">Condición: —</div>
-          <div class="meta" id="hum">Humedad: — %</div>
-          <div class="meta" id="updated">Última actualización: —</div>
+            <div class="card weather-card">
+                <div class="weather-icon" id="icon">☀️</div>
+                <div class="weather-data">
+                    <div class="temp" id="temp">-- °C</div>
+                    <div class="meta" id="cityName">Ciudad: —</div>
+                    <div class="meta" id="cond">Condición: —</div>
+                    <div class="meta" id="hum">Humedad: — %</div>
+                    <div class="meta" id="updated">Última actualización: —</div>
+                </div>
+            </div>
+
+            <div class="novedades card">
+                <h3>🔔 Novedades</h3>
+                <ul id="novedadesList"></ul>
+            </div>
         </div>
-      </div>
-
-      <div class="novedades card">
-        <h3>🔔 Novedades</h3>
-        <ul id="novedadesList"></ul>
-      </div>
     </div>
-  </div>
 
-  <!-- Toast -->
-  <div id="toast" class="toast">
-    <h4 id="toastTitle">Alerta</h4>
-    <div id="toastBody" class="small"></div>
-  </div>
+    <div id="toast" class="toast">
+        <h4 id="toastTitle">Alerta</h4>
+        <div id="toastBody" class="small"></div>
+    </div>
+
+    <script src="../js/daboard_agricultor.js" defer></script>
+    <script src="../js/actualizacion_clima.js" defer></script>
 </body>
 </html>

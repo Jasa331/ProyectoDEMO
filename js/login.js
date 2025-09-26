@@ -1,67 +1,60 @@
-// ==================== LOGIN ====================
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("loginForm");
-    const KEY = "usuarios";          // Aquí guardamos los usuarios en LocalStorage
-    const SESSION_KEY = "usuarioActivo";
-
-    // Función para convertir texto a hash SHA-256
-    async function hashPassword(password) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(password);
-        const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
-    }
-
-    // ❌ Eliminado el auto-redireccionamiento al cargar
-    // Así siempre se pedirá usuario y contraseña primero
+    if (!form) return;
 
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const usuario = document.getElementById("usuario").value.trim();
-        const contraseña = document.getElementById("contraseña").value.trim();
+        const correo = document.getElementById("correo").value.trim();
+        const contrasena = document.getElementById("contraseña").value.trim();
 
-        if (!usuario || !contraseña) {
+        if (!correo || !contrasena) {
             alert("Por favor, completa todos los campos");
             return;
         }
 
-        // Obtener usuarios registrados
-        const usuarios = JSON.parse(localStorage.getItem(KEY) || "[]");
+        try {
+            const res = await fetch("http://localhost:3000/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ Correo: correo, Contrasena: contrasena })
+            });
 
-        // Hasheamos la contraseña ingresada
-        const hashedPassword = await hashPassword(contraseña);
+            const result = await res.json();
 
-        // Buscar usuario con el hash
-        const userFound = usuarios.find(u => u.usuario === usuario && u.contraseña === hashedPassword);
+            if (res.ok && result.ok) {
+                const user = result.user;
+                console.log("Usuario logueado:", user);
 
-        if (userFound) {
-            // Guardamos sesión activa
-            localStorage.setItem(SESSION_KEY, JSON.stringify(userFound));
+                // Guardar usuario en localStorage
+                localStorage.setItem("usuarioActivo", JSON.stringify(user));
+                alert(`Bienvenido ${user.Usuario_Nombre}`);
 
-            // Redirigimos según el perfil
-            if (userFound.perfil === "admin") {
-                window.location.href = "../HTML/index_dasboard_admin.html";
-            } else if (userFound.perfil === "usuario") {
-                window.location.href = "../HTML/index_dasborad_agricultor.html";
+                // Normalizar rol
+                const rol = (user.Rol || user.rol).toLowerCase();
+                console.log("Rol detectado:", rol);
+
+                // Redirigir según el rol
+                switch (rol) {
+                    case "administrador":
+                        window.location.href = "http://127.0.0.1:5500/HTML/index_dasboard_admin.html";
+                        break;
+                    case "agricultor":
+                        window.location.href = "http://127.0.0.1:5500/HTML/index_dasboard_agricultor.html";
+                        break;
+                    case "empleado":
+                        window.location.href = "http://127.0.0.1:5500/HTML/index_dasboard_empleado.html";
+                        break;
+                    default:
+                        alert("Rol no reconocido. Contacta al administrador.");
+                        break;
+                }
             } else {
-                window.location.href = "../HTML/index_inicio.html";
+                alert(result.error || "Credenciales incorrectas");
             }
-        } else {
-            alert("Usuario o contraseña incorrectos.");
+        } catch (err) {
+            console.error("Error login:", err);
+            alert("No se pudo conectar con el servidor. Asegúrate de que Node.js esté corriendo.");
         }
     });
 });
-
-    // Alternar mostrar/ocultar contraseña
-    function togglePassword(id, el) {
-      const input = document.getElementById(id);
-      if (input.type === "password") {
-        input.type = "text";
-        el.textContent = "🙈";
-      } else {
-        input.type = "password";
-        el.textContent = "👁";
-      }
-    }
