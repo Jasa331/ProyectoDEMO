@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +7,7 @@
     
     <link rel="stylesheet" href="../css/style_desboard_agricultor.css">
     <link rel="stylesheet" href="../css/style_actualizacion_clima.css">
-    
-    <script src="../js/mostar_aricultor.js"></script>
-    
+    <script src="../js/mostar_agricutor.js"></script>
 </head>
 <body>
     
@@ -33,7 +31,7 @@
                 <h1>Dashboard</h1>
                 <p>Bienvenido al panel principal del agricultor.</p>
             </header>
-            
+            <br>
             <div class="action-buttons">
                 <a href="index_agregar_empleado.html" class="btn btn-primary" id="btnAgregarEmpleado">Agregar Empleado</a>
                 <a href="index_Calendario.html" class="btn btn-primary" id="btnAgregarCultivo">Agregar Cultivo</a>
@@ -45,7 +43,7 @@
                 <h3>Resumen de Agricultores</h3>
                 <table>
                     <thead>
-                        <tr>    
+                        <tr>
                             <th>Nombre</th>
                             <th>Cultivos</th>
                             <th>Contacto</th>
@@ -140,7 +138,27 @@
         <div id="toastBody" class="small"></div>
     </div>
 
+    <!-- Botón flotante para cambiar tema -->
+    <button id="btnFlotante" title="Cambiar tema">🌗</button>
+
     <script src="../js/daboard_agricultor.js" defer></script>
     <script src="../js/actualizacion_clima.js" defer></script>
+
+    <!-- Script para cambio de tema -->
+    <script>
+      const btnFlotante = document.getElementById("btnFlotante");
+
+      // Cargar tema guardado o iniciar en claro
+      const savedTheme = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+
+      // Cambiar al hacer clic
+      btnFlotante.addEventListener("click", () => {
+        const currentTheme = document.documentElement.getAttribute("data-theme");
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", newTheme);
+        localStorage.setItem("theme", newTheme);
+      });
+    </script>
 </body>
 </html>

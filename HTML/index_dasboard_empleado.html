@@ -21,18 +21,19 @@
     <a onclick="mostrarSeccion('cerrarSesion')">Cerrar Sesión</a>
   </div>
 
-  <!-- Content -->  
-  <div class="content">
+  <!-- Contenedor principal -->
+  <div class="content" id="contenidoPrincipal">
+
     <!-- Dashboard -->
     <div id="dashboard" class="seccion">
       <h1>Dashboard</h1>
       <p>Bienvenido al panel principal del empleado.</p>
 
       <!-- Botón destacado en el inicio -->
-        <div style="margin-bottom:15px;">
-            <a href="#" class="btn-inicio" id="btniniciarjornada">Iniciar Jornada</a>
-            <a href="index_reportes_empleado.html" class="btn-inicio">Enviar Reporte</a>
-        </div>
+      <div style="margin-bottom:15px;">
+        <a href="#" class="btn-inicio" id="btniniciarjornada">Iniciar Jornada</a>
+        <a href="index_reportes_empleado.html" class="btn-inicio">Enviar Reporte</a>
+      </div>
 
       <!-- Ejemplo tabla -->
       <table id="tabla">
@@ -41,6 +42,8 @@
           <th>Tarea</th>
           <th>Estado</th>
         </tr>
+      </table>
+    </div>
 
     <!-- Mis Tareas -->
     <div id="tareas" class="seccion" style="display:none;">
@@ -52,12 +55,14 @@
     <div id="reportes" class="seccion" style="display:none;">
       <h1>Reportes</h1>
       <p>Sección de reportes generados por el empleado.</p>
+      <div id="detalleAgricultor"></div>
     </div>
 
     <!-- Inventario -->
     <div id="inventario" class="seccion" style="display:none;">
       <h1>Inventario</h1>
       <p>Sección de inventario relacionado a tus tareas.</p>
+      <div id="detalleAgricultor"></div>
     </div>
 
     <!-- Perfil -->
@@ -73,8 +78,8 @@
     </div>
   </div>
   
-<!-- Botón Flotante -->
-<button id="btnFlotante" title="Ir a Soporte">❓</button>
+  <!-- Botón Flotante -->
+  <button id="btnFlotante" title="Ir a Soporte">❓</button>
 
 </body>
 </html>

@@ -1,37 +1,41 @@
-// 📌 Variables globales
 let inicioTiempo = null;
 let intervalo = null;
 
-// ====== Función principal para mostrar secciones ======
 function mostrarSeccion(id) {
   // 👉 Si es cerrar sesión
   if (id === 'cerrarSesion') {
     localStorage.clear();
     sessionStorage.clear();
 
-    document.getElementById("contenidoPrincipal").innerHTML =
-      "<h1>Cerrando sesión...</h1><p>Redirigiendo al inicio</p>";
+    const cerrarDiv = document.getElementById("cerrarSesion");
+    ocultarTodas();
+    if (cerrarDiv) {
+      cerrarDiv.style.display = "block";
+      cerrarDiv.innerHTML =
+        "<h1>Cerrando sesión...</h1><p>Redirigiendo al inicio</p>";
+    }
 
     setTimeout(() => {
-      window.location.href = '../HTML/index_Inicio.html'; 
+      window.location.href = '../HTML/index_Inicio.html';
     }, 1200);
     return;
   }
 
-  // 👉 Cargar sección desde archivo HTML en carpeta "secciones"
-  fetch(`secciones/${id}.html`)
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("contenidoPrincipal").innerHTML = html;
+  // 👉 Mostrar la sección correspondiente y ocultar las demás
+  ocultarTodas();
+  const seccion = document.getElementById(id);
+  if (seccion) {
+    seccion.style.display = "block";
+    activarEventos(id);
+  } else {
+    console.warn(`⚠ La sección ${id} no existe en el HTML`);
+  }
+}
 
-      // ⚡ Reasignar eventos especiales después de cargar la sección
-      activarEventos(id);
-    })
-    .catch(err => {
-      document.getElementById("contenidoPrincipal").innerHTML =
-        `<p style="color:red;">⚠ Error al cargar la sección: ${id}</p>`;
-      console.error(err);
-    });
+// Ocultar todas las secciones
+function ocultarTodas() {
+  const secciones = document.querySelectorAll(".seccion");
+  secciones.forEach(sec => sec.style.display = "none");
 }
 
 // Hacer la función accesible desde onclick
@@ -78,15 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
     alert("Debes iniciar sesión primero");
     window.location.href = "../HTML/index_login.html";
     return;
-  }
-
-  // ✅ Botón de cerrar sesión
-  const btnCerrarSesion = document.getElementById("btnCerrarSesion");
-  if (btnCerrarSesion) {
-    btnCerrarSesion.addEventListener("click", (e) => {
-      e.preventDefault();
-      mostrarSeccion("cerrarSesion");
-    });
   }
 
   // Mostrar dashboard por defecto

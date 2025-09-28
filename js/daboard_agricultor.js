@@ -14,7 +14,7 @@ function mostrarSeccion(id) {
         
         // 🛠️ La página de destino es index_Inicio.html
         localStorage.clear();
-        sessionStorage.clear();
+        sessionStorage.clear(); 
         
         // Usamos la ruta absoluta si el archivo está en la raíz del servidor (carpeta HTML/)
         // Si el archivo está en la misma carpeta que el dashboard, esta ruta funcionará:
@@ -56,4 +56,14 @@ document.addEventListener("DOMContentLoaded", () => {
             climaModal.style.display = "none";
         }
     });
+});
+const btnTheme = document.getElementById("toggleTheme");
+
+btnTheme.addEventListener("click", () => {
+  const currentTheme = document.documentElement.getAttribute("data-theme");
+  if (currentTheme === "dark") {
+    document.documentElement.setAttribute("data-theme", "light");
+  } else {
+    document.documentElement.setAttribute("data-theme", "dark");
+  }
 });

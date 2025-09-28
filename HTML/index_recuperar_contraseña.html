@@ -7,16 +7,15 @@
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="../css/style_login.css" />
   <link rel="stylesheet" href="../css/style_recuperar_contraseña.css">
-  <script src="../js/recuperar_contraseña.js"></script>
 </head>
 <body>
   <div class="recover-container">
     <h2>Recuperar Contraseña</h2>
     <p>Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.</p>
-    <form>
+    <form action="/api/recuperar" method="POST">
       <div class="field">
-        <label for="email">Correo electrónico</label>
-        <input type="email" id="email" placeholder="ejemplo@gmail.com" required>
+        <label for="email" id="recoverForm">Correo electrónico</label>
+        <input type="email" id="email" name="email" placeholder="ejemplo@gmail.com" required>
       </div>
       <button type="submit">Enviar enlace</button>
     </form>
@@ -24,5 +23,22 @@
       <a href="../HTML/index_login.html">⬅️ Volver al inicio de sesión</a>
     </div>
   </div>
+<script>
+document.getElementById('recoverForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // ⬅️ ESTO ES CLAVE para evitar el GET
+
+    const email = document.getElementById('email').value;
+    const endpoint = 'http://127.0.0.1:3000/api/recuperar'; 
+
+    fetch(endpoint, {
+        method: 'POST', // ⬅️ ESTO ES CLAVE para que Flask lo acepte
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email }),
+    })
+    // ... el resto del código .then() y .catch()
+});
+</script>
 </body>
 </html>

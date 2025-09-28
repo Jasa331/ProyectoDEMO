@@ -1,114 +1,153 @@
+/* ----------------------------------- VARIABLES MODO CLARO ----------------------------------- */
 :root {
-  --verde1: #5AA82E;
-  --verde2: #74BE46;
-  --verde3: #8DD45F;
-  --verde4: #A7E977;
-  --verde5: #C0FF8F;
-  --blanco: #fff;
-  --gris: #f4f4f4;
-  --negro: #333;
+  --primary: #5AA82E;        /* Verde brillante */
+  --primary-dark: #74BE46;   /* Verde oscuro */
+  --secondary: #F0BE82;      /* Amarillo suave */
+  --background: #f4f4f4;     /* Fondo claro */
+  --card: #fff;              /* Paneles y tarjetas */
+  --text-light: #333;        /* Texto principal */
+  --text-muted: #666;        /* Texto atenuado */
+  --radius: 12px;
+  --shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  --transition: all 0.3s ease;
+  --sidebar-width: 240px;
 }
 
-/* ===== Reset ===== */
+/* ----------------------------------- VARIABLES MODO OSCURO ----------------------------------- */
+[data-theme="dark"] {
+  --primary: #5AA82E;
+  --primary-dark: #74BE46;
+  --secondary: #F0BE82;
+  --background: #111827;   /* Fondo oscuro */
+  --card: #1A202C;         /* Paneles / tarjetas */
+  --text-light: #E5E7EB;   /* Texto claro */
+  --text-muted: #9CA3AF;   /* Texto atenuado */
+  --shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* ----------------------------------- RESET ----------------------------------- */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
 }
 
-/* ===== Layout ===== */
 body {
-  background: var(--gris);
-  color: var(--negro);
+  font-family: 'Poppins', sans-serif;
+  background: var(--background);
+  color: var(--text-light);
   display: flex;
+  min-height: 100vh;
 }
 
+/* ----------------------------------- SIDEBAR ----------------------------------- */
 .sidebar {
-  width: 220px;
-  height: 100vh;
+  width: var(--sidebar-width);
+  background: var(--card);
   padding: 20px;
-  background: var(--verde1);
-  color: var(--blanco);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow);
 }
 
-.content {
-  flex: 1;
-  padding: 20px;
-}
-
-h1 {
+.sidebar h2 {
+  color: var(--primary);
   margin-bottom: 20px;
-  color: var(--verde1);
 }
 
-/* ===== Sidebar Links ===== */
 .sidebar a {
   display: block;
-  padding: 12px;
-  margin: 8px 0;
-  background: var(--verde2);
-  color: var(--blanco);
+  padding: 12px 16px;
+  margin: 6px 0;
+  background: transparent;
+  color: var(--text-light);
   text-decoration: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.3s;
+  border-radius: var(--radius);
+  transition: var(--transition);
 }
 
 .sidebar a:hover {
-  background: var(--verde3);
+  background: var(--primary-dark);
+  color: #fff;
 }
 
-/* ===== Botones ===== */
+.separator {
+  margin: 15px 0;
+  border: 0;
+  border-top: 1px solid var(--text-muted);
+}
+
+/* ----------------------------------- MAIN CONTENT ----------------------------------- */
+.content {
+  margin-left: var(--sidebar-width);
+  padding: 30px;
+  flex: 1;
+  background: var(--background);
+}
+
+h1, h2 {
+  color: var(--primary);
+  margin-bottom: 20px;
+}
+
+/* ----------------------------------- BOTONES ----------------------------------- */
+.btn,
 .btn-agregar {
   display: inline-block;
-  margin-right: 10px;
-  padding: 8px 12px;
-  background: var(--verde3);
-  color: var(--blanco);
-  border: none;          /* quita el borde */
-  outline: none;         /* quita el delineado */
-  border-radius: 8px;
-  text-decoration: none;  
+  padding: 10px 16px;
+  margin: 5px 0;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  text-decoration: none;
   cursor: pointer;
-  transition: 0.3s;
+  transition: var(--transition);
 }
 
+.btn:hover,
 .btn-agregar:hover {
-  background: var(--verde4);
+  background: var(--primary-dark);
 }
 
-/* ===== Tablas ===== */
+/* ----------------------------------- TABLAS ----------------------------------- */
 table {
   width: 100%;
-  margin-bottom: 20px;
+  margin: 20px 0;
   border-collapse: collapse;
-  border-radius: 8px;
+  background: var(--card);
+  border-radius: var(--radius);
   overflow: hidden;
-  background: var(--blanco);
+  box-shadow: var(--shadow);
 }
 
-th,
-td {
-  padding: 12px;
+th, td {
+  padding: 14px;
   text-align: center;
   border: 1px solid #ddd;
+  color: var(--text-light);
 }
 
 th {
-  background: var(--verde2);
-  color: var(--blanco);
+  background: var(--primary);
+  color: #fff;
 }
 
 tr:nth-child(even) {
-  background: var(--verde5);
+  background: var(--secondary);
+  color: #000;
 }
 
 tr:hover {
-  background: var(--verde4);
+  background: var(--primary-dark);
+  color: #fff;
 }
 
-/* ===== Secciones dinámicas ===== */
+/* ----------------------------------- SECCIONES ----------------------------------- */
 .seccion {
   display: none;
   opacity: 0;
@@ -122,19 +161,46 @@ tr:hover {
   transform: translateY(0);
 }
 
-/* ===== Panel lateral de detalles ===== */
+/* ----------------------------------- PANEL DE DETALLES ----------------------------------- */
 #detalleAgricultor {
   margin-top: 20px;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background: var(--blanco);
+  padding: 20px;
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
 }
+
+/* ----------------------------------- BOTÓN FLOTANTE CAMBIO DE TEMA ----------------------------------- */
+#btnFlotante {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+#btnFlotante:hover {
+  background: var(--primary-dark);
+  transform: scale(1.1);
+}
+
+/* ----------------------------------- FIX PARA FOCUS ----------------------------------- */
 button,
 button:focus,
 button:active,
 .btn-agregar:focus,
 .btn-agregar:active {
   outline: none !important;
-  box-shadow: none !important; /* algunos navegadores usan sombra */
+  box-shadow: none !important;
 }
