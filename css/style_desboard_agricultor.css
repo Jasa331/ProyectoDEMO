@@ -89,10 +89,11 @@ body {
   background: var(--background);
 }
 
-h1, h2 {
+h1, h2, h3 {
   color: var(--primary);
   margin-bottom: 20px;
 }
+
 
 /* ----------------------------------- BOTONES ----------------------------------- */
 .btn,
