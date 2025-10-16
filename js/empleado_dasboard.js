@@ -95,3 +95,17 @@ function formatearTiempo(segundos) {
   const s = segundos % 60;
   return `${h}h ${m}m ${s}s`;
 }
+
+      const btnFlotante = document.getElementById("btnFlotante");
+
+      // Cargar tema guardado o iniciar en claro
+      const savedTheme = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+
+      // Cambiar al hacer clic
+      btnFlotante.addEventListener("click", () => {
+        const currentTheme = document.documentElement.getAttribute("data-theme");
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", newTheme);
+        localStorage.setItem("theme", newTheme);
+      });

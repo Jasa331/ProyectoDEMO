@@ -1,147 +1,239 @@
-/* 🎨 Paleta base */
+/* ----------------------------------- VARIABLES MODO CLARO (como la imagen) ----------------------------------- */
 :root {
-  --verde1: #5AA82E;
-  --verde2: #74BE46;
-  --verde3: #8DD45F;
-  --gris1: #f5f5f5;
-  --gris2: #e0e0e0;
-  --negro: #333;
-  --blanco: #fff;
-  --sombra: rgba(0, 0, 0, 0.1);
+  --primary: #5AA82E;        /* Verde brillante botones */
+  --primary-dark: #4D9227;   /* Verde oscuro hover */
+  --secondary: #E3F2D0;      /* Verde muy claro para filas pares */
+  --background: #f4f4f4;     /* Fondo del contenido */
+  --card: #ffffff;           /* Tarjetas blancas */
+  --sidebar: #8BC34A;        /* Fondo del panel lateral */
+  --text-light: #222;        /* Texto principal oscuro */
+  --text-muted: #555;        /* Texto atenuado */
+  --radius: 12px;
+  --shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  --transition: all 0.3s ease;
+  --sidebar-width: 240px;
+}
+
+/* ----------------------------------- VARIABLES MODO OSCURO (igual que tus imágenes) ----------------------------------- */
+[data-theme="dark"] {
+  --primary: #5AA82E;
+  --primary-dark: #74BE46;
+  --secondary: #F0BE82;
+  --background: #111827;
+  --card: #1A202C;
+  --sidebar: #1E293B;
+  --text-light: #E5E7EB;
+  --text-muted: #9CA3AF;
+  --shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* ----------------------------------- RESET ----------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: var(--gris1);
+  font-family: 'Poppins', sans-serif;
+  background: var(--background);
+  color: var(--text-light);
   display: flex;
   min-height: 100vh;
+  transition: var(--transition);
 }
 
-/* 📌 Sidebar */
+/* ----------------------------------- SIDEBAR ----------------------------------- */
 .sidebar {
-  width: 220px;
-  background: var(--verde1);
-  color: var(--blanco);
+  width: var(--sidebar-width);
+  background: var(--sidebar);
   padding: 20px;
-  box-shadow: 2px 0 8px var(--sombra);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
 }
 
 .sidebar h2 {
-  margin-top: 0;
-  font-size: 22px;
-  text-align: center;
+  color: #fff;
+  margin-bottom: 20px;
 }
 
 .sidebar a {
   display: block;
-  color: var(--blanco);
-  padding: 12px;
+  padding: 12px 16px;
+  margin: 6px 0;
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
   text-decoration: none;
-  border-radius: 8px;
-  transition: background 0.3s ease;
-  cursor: pointer;
+  border-radius: var(--radius);
+  transition: var(--transition);
 }
 
 .sidebar a:hover {
-  background: var(--verde2);
+  background: var(--primary-dark);
 }
 
-/* 📌 Content */
+.separator {
+  margin: 15px 0;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ----------------------------------- MAIN CONTENT ----------------------------------- */
 .content {
-  flex: 1;
+  margin-left: var(--sidebar-width);
   padding: 30px;
-  background: var(--gris1);
+  flex: 1;
+  background: var(--background);
+  transition: var(--transition);
 }
 
+h1, h2, h3 {
+  color: var(--primary);
+  margin-bottom: 20px;
+}
+
+/* ----------------------------------- BOTONES ----------------------------------- */
+
+/* CONTENEDOR DE BOTONES */
+.botones-container {
+  display: flex;
+  gap: 10px;             
+  flex-wrap: wrap;        
+  margin: 15px 0;       
+}
+
+/* ESTILO DE LOS BOTONES */
+.btn,
+.btn-agregar {
+  flex: none;          
+  padding: 10px 18px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  text-decoration: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn:hover,
+.btn-agregar:hover {
+  background: var(--primary-dark);
+  transform: scale(1.03);
+}
+
+/* ----------------------------------- TABLAS ----------------------------------- */
+table {
+  width: 100%;
+  margin: 20px 0;
+  border-collapse: collapse;
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+th, td {
+  padding: 14px;
+  text-align: center;
+  border: 1px solid #ddd;
+  color: var(--text-light);
+}
+
+th {
+  background: var(--primary);
+  color: #fff;
+}
+
+tr:nth-child(even) {
+  background: var(--secondary);
+}
+
+tr:hover {
+  background: var(--primary-dark);
+  color: #fff;
+}
+
+/* ----------------------------------- SECCIONES CON ANIMACIÓN ----------------------------------- */
 .seccion {
   display: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
-.seccion:first-child {
+.seccion.activa {
   display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* 📌 Tablas */
-table    {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-  background: var(--blanco);
-  box-shadow: 0 2px 6px var(--sombra);
-  border-radius: 8px;
-  overflow: hidden;
+/* ----------------------------------- PANEL DE DETALLES ----------------------------------- */
+#detalleAgricultor {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  transition: var(--transition);
 }
 
-table th, table td {
-  border: 1px solid var(--gris2);
-  padding: 12px;
-  text-align: left;
-}
-
-table th {
-  background: var(--verde2);
-  color: var(--blanco);
-}
-
-/* 📌 Botón genérico */
-.btn-agregar {
-  display: inline-block;
-  background: var(--verde2);
-  color: var(--blanco);
-  padding: 10px 18px;
-  margin: 5px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.btn-agregar:hover {
-  background: var(--verde3);
-  transform: scale(1.05);
-}
-
-/* 📌 Botón de inicio especial */
-.btn-inicio {
-  display: inline-block;
-  background: var(--verde1);
-  color: var(--blanco);
-  padding: 12px 22px;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 10px;
+/* ----------------------------------- BOTÓN FLOTANTE ----------------------------------- */
+#btnFlotante1 {
+  position: fixed;
+  bottom: 20px;
+  left: 80px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
   border: none;
+  font-size: 22px;
   cursor: pointer;
-  box-shadow: 0 4px 10px var(--sombra);
-  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
 }
-
-.btn-inicio:hover {
-  background: var(--verde2);
-  transform: scale(1.05);
-}
-
-/* Estilos del botón flotante */
-#btnFlotante {
+#btnFlotante2 {
   position: fixed;
   bottom: 20px;
   left: 20px;
-  background: var(--verde1, #5eff00);
-  color: white;
-  border: none;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  width: 55px;
-  height: 55px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
   font-size: 22px;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-  transition: transform 0.2s ease, background 0.3s;
-  z-index: 999;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
 }
 
 #btnFlotante:hover {
-  background: var(--verde2, #74BE46);
+  background: var(--primary-dark);
   transform: scale(1.1);
 }
 
+/* ----------------------------------- FIX PARA FOCUS ----------------------------------- */
+button,
+button:focus,
+button:active,
+.btn-agregar:focus,
+.btn-agregar:active {
+  outline: none !important;
+  box-shadow: none !important;
+}

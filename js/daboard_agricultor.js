@@ -57,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
 const btnTheme = document.getElementById("toggleTheme");
 
 btnTheme.addEventListener("click", () => {
