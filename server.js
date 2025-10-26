@@ -111,4 +111,77 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// LOGIN con envío de correo
+app.post('/login', async (req, res) => {
+  try {
+    const { Correo, Contrasena } = req.body;
+    if (!Correo || !Contrasena)
+      return res.status(400).json({ ok: false, error: "Faltan credenciales" });
+
+    const [rows] = await pool.query(
+      "SELECT ID_Usuario, Usuario_Nombre, Rol, Contrasena FROM Usuario WHERE Correo=?",
+      [Correo]
+    );
+    if (rows.length === 0)
+      return res.status(401).json({ ok: false, error: "Correo o contraseña incorrectos" });
+
+    const user = rows[0];
+    const match = await bcrypt.compare(Contrasena, user.Contrasena);
+    if (!match)
+      return res.status(401).json({ ok: false, error: "Correo o contraseña incorrectos" });
+
+    delete user.Contrasena;
+
+    // --- Envío de correo ---
+    try {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+
+      const mailOptions = {
+        from: `"Agricord Seguridad" <${process.env.EMAIL_USER}>`,
+        to: Correo,
+        subject: "Inicio de sesión detectado en Agricord",
+        text: `Hola ${user.Usuario_Nombre},
+
+Se ha iniciado sesión en tu cuenta de Agricord.
+
+Detalles:
+- Fecha: ${new Date().toLocaleString("es-CO")}
+- IP detectada: ${req.ip || "No disponible"}
+
+Si no fuiste tú, cambia tu contraseña inmediatamente.`,
+      };
+
+      await transporter.sendMail(mailOptions);
+      console.log(`📧 Correo enviado a ${Correo}`);
+    } catch (error) {
+      console.error("❌ Error al enviar correo:", error.message);
+    }
+
+    res.json({ ok: true, user });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.listen(port, () => console.log(`✅ Servidor corriendo en http://localhost:${port}`));
