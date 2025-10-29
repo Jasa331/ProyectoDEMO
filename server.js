@@ -91,26 +91,6 @@ app.delete('/usuarios/:id', async (req, res) => {
   }
 });
 
-// LOGIN
-app.post('/login', async (req, res) => {
-  try {
-    const { Correo, Contrasena } = req.body;
-    if (!Correo || !Contrasena) return res.status(400).json({ ok: false, error: "Faltan credenciales" });
-
-    const [rows] = await pool.query("SELECT ID_Usuario, Usuario_Nombre, Rol, Contrasena FROM Usuario WHERE Correo=?", [Correo]);
-    if (rows.length === 0) return res.status(401).json({ ok: false, error: "Correo o contraseña incorrectos" });
-
-    const user = rows[0];
-    const match = await bcrypt.compare(Contrasena, user.Contrasena);
-    if (!match) return res.status(401).json({ ok: false, error: "Correo o contraseña incorrectos" });
-
-    delete user.Contrasena;
-    res.json({ ok: true, user });
-  } catch (err) {
-    res.status(500).json({ ok: false, error: err.message });
-  }
-});
-
 // LOGIN con envío de correo
 app.post('/login', async (req, res) => {
   try {

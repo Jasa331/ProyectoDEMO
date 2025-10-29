@@ -1,4 +1,4 @@
-/* ----------------------------------- VARIABLES MODO CLARO (como la imagen) ----------------------------------- */
+/* ----------------------------------- VARIABLES MODO CLARO ----------------------------------- */
 :root {
   --primary: #5AA82E;        /* Verde brillante botones */
   --primary-dark: #4D9227;   /* Verde oscuro hover */
@@ -14,7 +14,7 @@
   --sidebar-width: 240px;
 }
 
-/* ----------------------------------- VARIABLES MODO OSCURO (igual que tus imágenes) ----------------------------------- */
+/* ----------------------------------- VARIABLES MODO OSCURO ----------------------------------- */
 [data-theme="dark"] {
   --primary: #5AA82E;
   --primary-dark: #74BE46;
@@ -84,7 +84,7 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* ----------------------------------- MAIN CONTENT ----------------------------------- */
+/* ----------------------------------- CONTENIDO PRINCIPAL ----------------------------------- */
 .content {
   margin-left: var(--sidebar-width);
   padding: 30px;
@@ -99,19 +99,16 @@ h1, h2, h3 {
 }
 
 /* ----------------------------------- BOTONES ----------------------------------- */
-
-/* CONTENEDOR DE BOTONES */
 .botones-container {
   display: flex;
-  gap: 10px;             
-  flex-wrap: wrap;        
-  margin: 15px 0;       
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 15px 0;
 }
 
-/* ESTILO DE LOS BOTONES */
 .btn,
 .btn-agregar {
-  flex: none;          
+  flex: none;
   padding: 10px 18px;
   background: var(--primary);
   color: #fff;
@@ -176,7 +173,9 @@ tr:hover {
 }
 
 /* ----------------------------------- PANEL DE DETALLES ----------------------------------- */
-#detalleAgricultor {
+#detalleAgricultor,
+#detalleReportes,
+#detalleInventario {
   margin-top: 20px;
   padding: 20px;
   border-radius: var(--radius);
@@ -185,29 +184,24 @@ tr:hover {
   transition: var(--transition);
 }
 
-/* ----------------------------------- BOTÓN FLOTANTE ----------------------------------- */
-#btnFlotante1 {
-  position: fixed;
-  bottom: 20px;
-  left: 80px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  font-size: 22px;
-  cursor: pointer;
+/* ----------------------------------- SALUDO ----------------------------------- */
+.saludo-panel {
+  background: var(--card);
+  border-left: 6px solid var(--primary);
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: var(--text-light);
   box-shadow: var(--shadow);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: var(--transition);
+  border-radius: var(--radius);
+  text-align: center;
 }
+
+/* ----------------------------------- BOTONES FLOTANTES ----------------------------------- */
+#btnFlotante1,
 #btnFlotante2 {
   position: fixed;
   bottom: 20px;
-  left: 20px;
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -223,7 +217,11 @@ tr:hover {
   transition: var(--transition);
 }
 
-#btnFlotante:hover {
+#btnFlotante1 { left: 80px; }
+#btnFlotante2 { left: 20px; }
+
+#btnFlotante1:hover,
+#btnFlotante2:hover {
   background: var(--primary-dark);
   transform: scale(1.1);
 }
