@@ -3,42 +3,55 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Gestión de Insumos Agrícolas</title>
-  <!-- Enlace al CSS -->
+  <title>Insumos</title>
   <link rel="stylesheet" href="../css/style_alerta_stock.css">
 </head>
+
 <body>
   <header>
     <button id="btnBack" onclick="history.back()">←</button>
-    <h1>🌱 Gestión de Insumos Agrícolas</h1>
-    <button id="checkBtn" class="btn">Revisar stock</button>
+    <h1>🌱 Stock de Insumos</h1>
+
+    <div class="header-buttons">
+      <button id="checkBtn" class="btn">Revisar stock</button>
+      <button id="themeToggle" class="btn">🌙/☀️</button>
+    </div>
   </header>
 
-  <main style="padding:16px">
-    <table>
-      <thead>
-        <tr>
-          <th>Insumo</th>
-          <th>Stock</th>
-          <th>Mínimo</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
+  <main class="main-grid">
+    <!-- =================== FORMULARIO A LA IZQUIERDA =================== -->
+    <section class="form-section">
+      <h2>Agregar / Actualizar Insumo</h2>
+      <form id="formAdd">
+        <input type="text" id="nombre" placeholder="Nombre del insumo" required>
+        <input type="text" id="tipo" placeholder="Tipo (fertilizante, semilla, etc.)">
+        <input type="text" id="descripcion" placeholder="Descripción del insumo">
+        <input type="text" id="unidad_medida" placeholder="Unidad de medida (kg, L, etc.)" required>
+        <input type="number" id="cantidad" placeholder="Cantidad disponible" required>
+        <input type="date" id="fecha_caducidad" placeholder="Fecha de caducidad">
+        <button type="submit" class="btn full-btn">Agregar Insumo / Actualizar Insumo</button>
+      </form>
+    </section>
 
-    <form id="formAdd">
-      <input type="text" id="name" placeholder="Nombre del insumo" required>
-      <input type="number" id="stock" placeholder="Stock" required>
-      <input type="number" id="min" placeholder="Mínimo" required>
-      <button type="submit" class="btn">Agregar</button>
-    </form>
+    <!-- =================== TABLA A LA DERECHA =================== -->
+    <section class="table-section">
+      <h2>Lista de Insumos</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Insumos</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <!-- Aquí se renderizan los insumos dinámicamente -->
+        </tbody>
+      </table>
+    </section>
   </main>
 
+  <!-- =================== TOAST (MENSAJES) =================== -->
   <div class="toast" id="toast"></div>
 
-  <!-- Enlace al JS -->
   <script src="../js/alerta_stock.js"></script>
 </body>
 </html>
