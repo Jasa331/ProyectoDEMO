@@ -5,35 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agricord - Reportes de Empleados</title>
   <link rel="stylesheet" href="../CSS/style_empleado.css">
-  <script type="module" src="../js/empleado.js"></script>
+  <script type="module" src="../js/empleado.js" defer></script>
 </head>
+
 <body>
+  <!-- Botón de regreso -->
   <a href="../HTML/index_dasboard_empleado.html" class="btn-regresar">⬅</a>
 
+  <!-- Encabezado -->
   <header>
-    <h1>📋 Reporte</h1>
+    <h1>📋 Reporte de Seguimiento Visual</h1>
+    <p>Gestión de fotos y reportes de campo</p>
   </header>
 
   <main>
-    <!-- Formulario de reporte -->
     <section class="form-section">
-      <h2>Enviar nuevo reporte</h2>
+      <h2>📤 Enviar nuevo reporte</h2>
+
       <form id="reporteForm">
+        <label for="texto">Descripción del reporte:</label>
         <textarea id="texto" placeholder="Escribe aquí tu reporte..." required></textarea>
-        <input type="file" id="foto" accept="image/*">
-        <button type="submit">📤 Enviar Reporte</button>
+
+        <label for="foto">Seleccionar fotos del seguimiento:</label>
+        <input type="file" id="foto" accept="image/*" multiple>
+
+        <!-- Vista previa de fotos -->
+        <div id="preview" class="preview"></div>
+
+        <button type="submit" class="btn-enviar">Enviar Reporte</button>
       </form>
     </section>
 
-    <!-- Historial de reportes -->
+    <!-- Lista de reportes enviados -->
     <section class="list-section">
-      <h2>📑 Historial de Reportes</h2>
+      <h2>📑 Historial de Reportes Guardados</h2>
       <div id="reporteList" class="reporte-list"></div>
     </section>
   </main>
 
-  <footer>
-    <p>🌱 Agricord - Sistema de Gestión</p>
-  </footer>
 </body>
 </html>
