@@ -1,68 +1,112 @@
+const loginSection = document.getElementById("loginSection");
+const sistemaSection = document.getElementById("sistemaSection");
+const loginForm = document.getElementById("loginForm");
+const cerrarSesion = document.getElementById("cerrarSesion");
 
-const form = document.getElementById("reporteForm");
-const list = document.getElementById("reporteList");
-
-// Cargar reportes guardados en LocalStorage
-document.addEventListener("DOMContentLoaded", () => {
-  const reportes = JSON.parse(localStorage.getItem("reportes")) || [];
-  reportes.forEach(r => renderReporte(r));
-});
-
-// Enviar nuevo reporte
-form.addEventListener("submit", e => {
+loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
+  const usuario = document.getElementById("usuario").value.trim();
+  const clave = document.getElementById("clave").value.trim();
 
-  const texto = document.getElementById("texto").value;
-  const fotoInput = document.getElementById("foto");
-  const fecha = new Date().toLocaleString();
-
-  let fotoURL = "";
-  if (fotoInput.files.length > 0) {
-    fotoURL = URL.createObjectURL(fotoInput.files[0]);
+  if (usuario === "empleado" && clave === "1234") {
+    localStorage.setItem("usuarioActivo", usuario);
+    mostrarSistema();
+  } else {
+    alert("Credenciales incorrectas ❌");
   }
-
-  const reporte = { texto, fotoURL, fecha };
-
-  // Guardar en localStorage
-  const reportes = JSON.parse(localStorage.getItem("reportes")) || [];
-  reportes.push(reporte);
-  localStorage.setItem("reportes", JSON.stringify(reportes));
-
-  // Pintar en pantalla
-  renderReporte(reporte);
-
-  // Limpiar formulario
-  form.reset();
 });
 
-// Renderizar reporte en la lista
-function renderReporte({ texto, fotoURL, fecha }) {
-  const card = document.createElement("div");
-  card.classList.add("reporte-card");
-
-  card.innerHTML = `
-    <p>${texto}</p>
-    ${fotoURL ? `<img src="${fotoURL}" alt="Foto del reporte">` : ""}
-    <small>📅 ${fecha}</small>
-  `;
-
-  list.prepend(card); // Lo más reciente primero
+function mostrarSistema() {
+  loginSection.classList.add("hidden");
+  sistemaSection.classList.remove("hidden");
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  const tabla = document.getElementById('farmerTableBody'); // tbody donde se mostrarán empleados
-  const empleados = JSON.parse(localStorage.getItem('empleados')) || [];
+function verificarSesion() {
+  const activo = localStorage.getItem("usuarioActivo");
+  if (activo) mostrarSistema();
+}
 
-  tabla.innerHTML = ''; // limpiar tabla
+cerrarSesion.addEventListener("click", () => {
+  localStorage.removeItem("usuarioActivo");
+  location.reload();
+});
 
-  empleados.forEach(emp => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${emp.name}</td>
-      <td>${emp.phone}</td>
-      <td>${emp.crop}</td>
-      <td>✔️</td>
-    `;
-    tabla.appendChild(row);
+verificarSesion();
+
+const form = document.getElementById("reporteForm");
+const fotoInput = document.getElementById("foto");
+const preview = document.getElementById("preview");
+const reporteList = document.getElementById("reporteList");
+
+let fotos = [];
+
+fotoInput.addEventListener("change", (e) => {
+  const files = Array.from(e.target.files);
+  files.forEach((file) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      fotos.push(event.target.result);
+      renderPreview();
+    };
+    reader.readAsDataURL(file);
   });
 });
+
+function renderPreview() {
+  preview.innerHTML = "";
+  fotos.forEach((src, index) => {
+    const div = document.createElement("div");
+    div.style.position = "relative";
+
+    const img = document.createElement("img");
+    img.src = src;
+
+    const btn = document.createElement("button");
+    btn.textContent = "✖";
+    btn.onclick = () => {
+      fotos.splice(index, 1);
+      renderPreview();
+    };
+
+    div.appendChild(img);
+    div.appendChild(btn);
+    preview.appendChild(div);
+  });
+}
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const texto = document.getElementById("texto").value.trim();
+  if (!texto && fotos.length === 0) return alert("Debe escribir un reporte o subir fotos.");
+
+  const nuevoReporte = {
+    texto,
+    fotos,
+    fecha: new Date().toLocaleString()
+  };
+
+  const reportes = JSON.parse(localStorage.getItem("reportes")) || [];
+  reportes.push(nuevoReporte);
+  localStorage.setItem("reportes", JSON.stringify(reportes));
+
+  mostrarReportes();
+  form.reset();
+  fotos = [];
+  preview.innerHTML = "";
+  alert("Reporte enviado correctamente ✅");
+});
+
+function mostrarReportes() {
+  const reportes = JSON.parse(localStorage.getItem("reportes")) || [];
+  reporteList.innerHTML = reportes.map(r => `
+    <div class="reporte-item">
+      <p><strong>📅 ${r.fecha}</strong></p>
+      <p>${r.texto}</p>
+      <div class="fotos">
+        ${r.fotos.map(f => `<img src="${f}" alt="foto reporte">`).join("")}
+      </div>
+    </div>
+  `).join("");
+}
+
+mostrarReportes();

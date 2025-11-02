@@ -235,3 +235,17 @@ button:active,
   outline: none !important;
   box-shadow: none !important;
 }
+
+.btn-inicio {
+    display: inline-block;
+    background: var(--primary);
+    color: var(--blanco, #fff);
+    padding: 12px 22px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 10px var(--sombra);
+    transition: background 0.3s ease, transform 0.2s ease;
+}

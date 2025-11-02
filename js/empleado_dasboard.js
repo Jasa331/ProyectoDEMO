@@ -60,10 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
   mostrarSeccion("dashboard");
 });
 
+  
 
-// ==============================
-// CAMBIO DE TEMA
-// ==============================
 const btnFlotante2 = document.getElementById("btnFlotante2");
 if (btnFlotante2) {
   const savedTheme = localStorage.getItem("theme") || "light";
