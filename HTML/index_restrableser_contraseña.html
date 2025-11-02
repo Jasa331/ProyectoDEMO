@@ -4,14 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Restablecer Contraseña</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/style_restablecer_contraseña.css">
   <script type="module" src="../js/restablecer_contraseña.js"></script>
 </head>
 <body>
   <div class="reset-container">
     <h2>Restablecer Contraseña</h2>
     <p>Ingresa tu nueva contraseña para continuar.</p>
+
     <form id="resetForm">
+      <div class="field">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" name="email" readonly>
+      </div>
+
       <div class="field">
         <label for="password">Nueva contraseña</label>
         <div class="password-container">
@@ -19,6 +25,7 @@
           <span class="toggle-pass" onclick="togglePassword('password', this)">👁</span>
         </div>
       </div>
+
       <div class="field">
         <label for="confirmPassword">Confirmar contraseña</label>
         <div class="password-container">
@@ -26,8 +33,10 @@
           <span class="toggle-pass" onclick="togglePassword('confirmPassword', this)">👁</span>
         </div>
       </div>
+
       <button type="submit">Guardar nueva contraseña</button>
     </form>
+
     <div class="back">
       <a href="../HTML/index_login.html">⬅️ Volver al inicio de sesión</a>
     </div>
