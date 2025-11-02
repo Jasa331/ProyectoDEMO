@@ -4,13 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Agricord • Panel Admin</title>
-  <link rel="stylesheet" href="../css/admin.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style_admin.css"/>
 </head>
 <body>
-
+  
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="brand">
@@ -42,6 +39,10 @@
       <div class="top-actions">
         <input id="inputBuscar" type="search" placeholder="Buscar por nombre, usuario o correo…">
         <button id="btnNuevo" class="btn btn-primary">+ Nuevo usuario</button>
+        <!-- 🔘 Botón de modo claro/oscuro -->
+        <button id="themeToggle" class="theme-toggle" title="Cambiar tema">
+          🌞
+        </button>
       </div>
     </header>
 
@@ -137,6 +138,27 @@
 
   <!-- Toast -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Script principal -->
   <script src="../js/admin.js"></script>
+
+  <!-- Script del modo oscuro/claro -->
+  <script>
+    // ==================== MODO CLARO / OSCURO ====================
+    const themeToggle = document.getElementById("themeToggle");
+    const currentTheme = localStorage.getItem("theme") || "light";
+
+    document.documentElement.setAttribute("data-theme", currentTheme);
+    themeToggle.textContent = currentTheme === "dark" ? "🌙" : "🌞";
+
+    themeToggle.addEventListener("click", () => {
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      const newTheme = isDark ? "light" : "dark";
+
+      document.documentElement.setAttribute("data-theme", newTheme);
+      localStorage.setItem("theme", newTheme);
+      themeToggle.textContent = newTheme === "dark" ? "🌙" : "🌞";
+    });
+  </script>
 </body>
 </html>

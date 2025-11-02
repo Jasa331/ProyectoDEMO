@@ -8,7 +8,7 @@ const form = document.getElementById("formAdd");
 const themeToggle = document.getElementById("themeToggle");
 const submitBtn = form.querySelector('button[type="submit"]');
 
-const API_URL = "../backend/api_insumos.php"; // 🔹 Ajusta la ruta según tu estructura
+
 
 // ==================== LOCAL STORAGE ====================
 function saveToLocalStorage() {

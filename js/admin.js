@@ -1,65 +1,98 @@
+// ============================ UTILIDADES ============================
 const qs = sel => document.querySelector(sel);
 const tbody = qs("#tbodyUsuarios");
 const vacio = qs("#vacio");
 const modal = qs("#modal");
 const form = qs("#formUsuario");
 const modalTitle = qs("#modalTitle");
+const toastBox = qs("#toast");
+const themeToggle = qs("#themeToggle"); // <-- botón del modo oscuro/claro
+
 let editId = null;
 let filtro = "";
-
-// ===== Toast =====
-const toastBox = qs("#toast");
 let toastTimer = null;
-function toast(msg) {
+
+// ============================ TOAST ============================
+function toast(msg, tipo = "info") {
   toastBox.textContent = msg;
-  toastBox.classList.add("show");
+  toastBox.className = `toast show ${tipo}`;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toastBox.classList.remove("show"), 2200);
+  toastTimer = setTimeout(() => toastBox.classList.remove("show"), 2500);
 }
 
-// ===== Fetch usuarios =====
+// ============================ FETCH API ============================
+const API_URL = "http://localhost:3000/usuarios";
+
 async function fetchUsuarios() {
   try {
-    const res = await fetch("http://localhost:3000/usuarios");
-    if (!res.ok) throw new Error("Error al cargar usuarios");
+    const res = await fetch(API_URL);
+    if (!res.ok) throw new Error("Error al obtener usuarios");
     return await res.json();
   } catch (err) {
-    toast(err.message);
+    toast(err.message, "error");
     return [];
   }
 }
 
-// ===== Render tabla =====
+async function crearUsuario(data) {
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || "Error al crear usuario");
+  return json;
+}
+
+async function actualizarUsuario(id, data) {
+  const res = await fetch(`${API_URL}/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || "Error al actualizar usuario");
+  return json;
+}
+
+async function eliminarUsuario(id) {
+  const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || "Error al eliminar usuario");
+  return json;
+}
+
+// ============================ RENDERIZAR TABLA ============================
 async function renderTable() {
   const usuarios = await fetchUsuarios();
   const term = filtro.trim().toLowerCase();
-  const data = usuarios.filter(u =>
+
+  const filtrados = usuarios.filter(u =>
     [u.Usuario_Nombre, u.Usuario_Apellido, u.Correo, u.Rol]
       .some(v => String(v || "").toLowerCase().includes(term))
   );
 
-  tbody.innerHTML = "";
-  data.forEach(u => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
+  tbody.innerHTML = filtrados.map(u => `
+    <tr>
       <td>${u.Usuario_Nombre} ${u.Usuario_Apellido}</td>
+      <td>${u.Usuario_Usuario || "—"}</td>
       <td>${u.Correo}</td>
       <td>${u.Rol}</td>
       <td>
         <div class="actions">
-          <button class="action edit" data-id="${u.ID_Usuario}">Editar</button>
-          <button class="action del" data-id="${u.ID_Usuario}">Eliminar</button>
+          <button class="action edit" data-id="${u.ID_Usuario}">✏️ Editar</button>
+          <button class="action del" data-id="${u.ID_Usuario}">🗑️ Eliminar</button>
         </div>
       </td>
-    `;
-    tbody.appendChild(tr);
-  });
+    </tr>
+  `).join("");
 
-  vacio.style.display = data.length ? "none" : "block";
+  vacio.style.display = filtrados.length ? "none" : "block";
   renderStats(usuarios);
 }
 
-// ===== Render stats =====
+// ============================ ESTADÍSTICAS ============================
 function renderStats(usuarios) {
   const total = usuarios.length;
   const admins = usuarios.filter(u => u.Rol === "Administrador").length;
@@ -68,13 +101,13 @@ function renderStats(usuarios) {
   qs("#statUsuarios").textContent = total - admins;
 }
 
-// ===== Búsqueda =====
+// ============================ BÚSQUEDA ============================
 qs("#inputBuscar").addEventListener("input", e => {
   filtro = e.target.value;
   renderTable();
 });
 
-// ===== Modal =====
+// ============================ MODAL ============================
 function openModal(edit = false, usuario = {}) {
   editId = edit ? usuario.ID_Usuario : null;
   modal.classList.add("show");
@@ -82,40 +115,34 @@ function openModal(edit = false, usuario = {}) {
 
   form.nombre.value = usuario.Usuario_Nombre || "";
   form.apellido.value = usuario.Usuario_Apellido || "";
+  form.usuario.value = usuario.Usuario_Usuario || "";
   form.correo.value = usuario.Correo || "";
   form.direccion.value = usuario.Direccion || "";
   form.telefono.value = usuario.Telefono || "";
   form.password.value = "";
 
-  if (edit) {
-    // Al editar, mostrar el rol actual (puede ser Administrador)
-    form.perfil.innerHTML = `
-      <option value="Empleado" ${usuario.Rol === "Empleado" ? "selected" : ""}>Empleado</option>
-      <option value="Agricultor" ${usuario.Rol === "Agricultor" ? "selected" : ""}>Agricultor</option>
-      <option value="Administrador" ${usuario.Rol === "Administrador" ? "selected" : ""}>Administrador</option>
-    `;
-  } else {
-    // Nuevo usuario: solo Empleado o Agricultor
-    form.perfil.value = "Empleado";
-    form.perfil.innerHTML = `
-      <option value="Empleado">Empleado</option>
-      <option value="Agricultor">Agricultor</option>
-    `;
-  }
+  form.perfil.innerHTML = `
+    <option value="Empleado" ${usuario.Rol === "Empleado" ? "selected" : ""}>Empleado</option>
+    <option value="Agricultor" ${usuario.Rol === "Agricultor" ? "selected" : ""}>Agricultor</option>
+    <option value="Administrador" ${usuario.Rol === "Administrador" ? "selected" : ""}>Administrador</option>
+  `;
 }
 
 function closeModal() { modal.classList.remove("show"); }
+
 qs("#btnNuevo").addEventListener("click", () => openModal(false));
 qs("#btnCancelar").addEventListener("click", closeModal);
 qs("#btnCerrarModal").addEventListener("click", closeModal);
 modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
 
-// ===== Guardar usuario =====
+// ============================ GUARDAR USUARIO ============================
 form.addEventListener("submit", async e => {
   e.preventDefault();
+
   const payload = {
     Usuario_Nombre: form.nombre.value.trim(),
     Usuario_Apellido: form.apellido.value.trim(),
+    Usuario_Usuario: form.usuario.value.trim(),
     Correo: form.correo.value.trim(),
     Rol: form.perfil.value,
     Direccion: form.direccion.value.trim(),
@@ -124,34 +151,21 @@ form.addEventListener("submit", async e => {
   };
 
   try {
-    let res, data;
     if (editId) {
-      res = await fetch(`http://localhost:3000/usuarios/${editId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al actualizar usuario");
-      toast("Usuario actualizado 💾");
+      await actualizarUsuario(editId, payload);
+      toast("Usuario actualizado 💾", "success");
     } else {
-      res = await fetch("http://localhost:3000/usuarios", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al crear usuario");
-      toast("Usuario creado ✅");
+      await crearUsuario(payload);
+      toast("Usuario creado ✅", "success");
     }
     closeModal();
     renderTable();
   } catch (err) {
-    toast(err.message);
+    toast(err.message, "error");
   }
 });
 
-// ===== Acciones tabla =====
+// ============================ ACCIONES TABLA ============================
 tbody.addEventListener("click", async e => {
   const btn = e.target.closest("button");
   if (!btn) return;
@@ -160,20 +174,46 @@ tbody.addEventListener("click", async e => {
   if (btn.classList.contains("edit")) {
     const usuarios = await fetchUsuarios();
     const usuario = usuarios.find(u => u.ID_Usuario == id);
-    openModal(true, usuario);
+    if (usuario) openModal(true, usuario);
   } else if (btn.classList.contains("del")) {
-    if (!confirm("¿Eliminar usuario?")) return;
+    if (!confirm("¿Seguro que deseas eliminar este usuario?")) return;
     try {
-      const res = await fetch(`http://localhost:3000/usuarios/${id}`, { method: "DELETE" });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Error al eliminar usuario");
-      toast("Usuario eliminado 🗑️");
+      await eliminarUsuario(id);
+      toast("Usuario eliminado 🗑️", "success");
       renderTable();
     } catch (err) {
-      toast(err.message);
+      toast(err.message, "error");
     }
   }
 });
 
-// ===== Inicial =====
+// ============================ BOTONES ADICIONALES ============================
+qs("#btnRefrescar").addEventListener("click", renderTable);
+qs("#btnVerUsuarios").addEventListener("click", renderTable);
+qs("#btnExportar").addEventListener("click", () => toast("Exportando datos… 📄"));
+qs("#btnConfiguracion").addEventListener("click", () => toast("Configuración abierta ⚙️"));
+qs("#btnSoporte").addEventListener("click", () => toast("Contactando soporte 📞"));
+qs("#btnLogout").addEventListener("click", () => toast("Cerrando sesión 👋"));
+
+// ==================== MODO CLARO / OSCURO ====================
+
+const currentTheme = localStorage.getItem("theme") || "light";
+
+document.documentElement.setAttribute("data-theme", currentTheme);
+themeToggle.innerHTML = currentTheme === "dark" ? "🌙" : "🌞";
+
+themeToggle.addEventListener("click", () => {
+  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+  const newTheme = isDark ? "light" : "dark";
+
+  document.documentElement.setAttribute("data-theme", newTheme);
+  localStorage.setItem("theme", newTheme);
+  themeToggle.innerHTML = newTheme === "dark" ? "🌙" : "🌞";
+});
+
+
+// ============================ INICIALIZAR ============================
+initTheme();
 renderTable();
+
+
