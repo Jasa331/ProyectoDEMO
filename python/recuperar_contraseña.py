@@ -6,7 +6,7 @@ import smtplib
 app = Flask(__name__)
 CORS(app)
 
-@app.route("api/recuperar", methods=["POST"])
+@app.route("/api/recuperar", methods=["POST"])
 def recuperar():
     try:
         data = request.get_json()
