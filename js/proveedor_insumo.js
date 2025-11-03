@@ -61,3 +61,36 @@ async function cargarProveedores() {
 }
 
 window.addEventListener("DOMContentLoaded", cargarProveedores);
+
+// ==================== MODO CLARO / OSCURO ====================
+const themeToggle = document.getElementById("themeToggle");
+const body = document.body;
+
+// Verifica si hay un tema guardado en localStorage
+const savedTheme = localStorage.getItem("theme");
+
+// Si hay un tema guardado, lo aplica
+if (savedTheme === "dark") {
+  body.setAttribute("data-theme", "dark");
+  themeToggle.textContent = "☀️"; // Ícono de sol para volver a claro
+} else {
+  body.removeAttribute("data-theme");
+  themeToggle.textContent = "🌙"; // Ícono de luna para pasar a oscuro
+}
+
+// Cambiar tema al hacer clic
+themeToggle.addEventListener("click", () => {
+  const isDark = body.getAttribute("data-theme") === "dark";
+
+  if (isDark) {
+    // Cambiar a modo claro
+    body.removeAttribute("data-theme");
+    localStorage.setItem("theme", "light");
+    themeToggle.textContent = "🌙";
+  } else {
+    // Cambiar a modo oscuro
+    body.setAttribute("data-theme", "dark");
+    localStorage.setItem("theme", "dark");
+    themeToggle.textContent = "☀️";
+  }
+});
