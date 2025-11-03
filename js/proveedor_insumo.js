@@ -27,39 +27,3 @@ document.getElementById("formProveedor").addEventListener("submit", async (e) =>
     console.error(err);
   }
 });
-
-async function cargarProveedores() {
-  try {
-    const res = await fetch("http://localhost:3000/proveedor");
-    if (!res.ok) throw new Error("No se pudo obtener la lista");
-    const data = await res.json();
-
-    const tbody = document.querySelector("#tablaProveedores tbody");
-    tbody.innerHTML = "";
-
-    if (data.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7">No hay proveedores registrados</td></tr>`;
-      return;
-    }
-
-    data.forEach((p) => {
-      const fila = document.createElement("tr");
-      fila.innerHTML = `
-        <td>${p.ID_Proveedor}</td>
-        <td>${p.Nombre_Empresa}</td>
-        <td>${p.Nombre_Contacto}</td>
-        <td>${p.Ciudad}</td>
-        <td>${p.Telefono}</td>
-        <td>${p.Region}</td>
-        <td>${p.Cod_Postal}</td>
-      `;
-      tbody.appendChild(fila);
-    });
-  } catch (err) {
-    console.error("Error cargando proveedores:", err);
-  }
-}
-
-window.addEventListener("DOMContentLoaded", cargarProveedores);
-
-
