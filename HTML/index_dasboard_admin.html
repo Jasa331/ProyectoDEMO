@@ -17,16 +17,11 @@
 
     <nav class="menu">
       <a class="active"><i>📊</i> Dashboard</a>
-      <a><i>👤</i> Usuarioss</a>
-      <a href="gastos.html"><i>💰</i> Gastos</a>
+      <a><i>👤</i> Usuarios</a>
+      <a href="gastos.html">💸 Gastos</a>
       <a href="../HTML/index_proveedor_insumo.html"><i>🌾</i> Proveedores</a>
-       <a href="ajustes.html"><i>⚙️</i> Ajustes</a>
+      <a href="ajustes.html" class="active">⚙️ Ajustes</a> 
     </nav>
-
-
-
-    
-            </div>
 
     <!-- Botones adicionales -->
     <div class="sidebar-actions">
@@ -148,7 +143,8 @@
   <script src="../js/admin.js"></script>
 
   <!-- Script del modo oscuro/claro -->
-  <script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
     const themeToggle = document.getElementById("themeToggle");
     const currentTheme = localStorage.getItem("theme") || "light";
 
@@ -163,6 +159,8 @@
       localStorage.setItem("theme", newTheme);
       themeToggle.textContent = newTheme === "dark" ? "🌙" : "🌞";
     });
-  </script>
+  });
+</script>
+
 </body>
 </html>

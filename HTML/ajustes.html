@@ -13,11 +13,12 @@
     <h2 class="logo">🌱 Agricord</h2>
     <nav>
       <a href="index_dasboard_admin.html">📊 Dashboard</a>
-      <a href="usuarios.html">👥 Usuarios</a>
+      <a href="#">👥 Usuarios</a>
       <a href="gastos.html">💸 Gastos</a>
-      <a href="proveedores.html">🚜 Proveedores</a>
+      <a href="../HTML/index_proveedor_insumo.html"><i>🌾</i> Proveedores</a>
       <a href="ajustes.html" class="active">⚙️ Ajustes</a>
     </nav>
+
     <div class="acciones">
       <button class="btn-secundario">⚡ Configuración</button>
       <button class="btn-secundario">📤 Exportar Datos</button>
@@ -27,8 +28,13 @@
 
   <main class="contenido">
     <header class="header">
-      <h1>⚙️ Configuración del Sistema</h1>
-      <a href="index_dasboard_admin.html" class="btn-volver">⬅ Volver al Panel</a>
+      <div class="header-left">
+        <h1>⚙️ Configuración del Sistema</h1>
+      </div>
+      <div class="header-right">
+        <button id="themeToggle" title="Cambiar tema">🌙</button>
+        <a href="index_dasboard_admin.html" class="btn-volver">⬅ Volver al Panel</a>
+      </div>
     </header>
 
     <section class="configuracion">
