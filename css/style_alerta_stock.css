@@ -1,10 +1,67 @@
-/* Botón volver atrás */
+/* ----------------------------------- VARIABLES MODO CLARO ----------------------------------- */
+:root {
+  --primary: #5AA82E;
+  --primary-dark: #4D9227;
+  --secondary: #E3F2D0;
+  --background: #f4f4f4;
+  --card: #ffffff;
+  --sidebar: #8BC34A;
+  --text-light: #222;
+  --text-muted: #555;
+  --radius: 12px;
+  --shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  --transition: all 0.3s ease;
+}
+
+/* ----------------------------------- VARIABLES MODO OSCURO ----------------------------------- */
+[data-theme="dark"] {
+  --primary: #5AA82E;
+  --primary-dark: #74BE46;
+  --secondary: #243847;
+  --background: #111827;
+  --card: #1A202C;
+  --sidebar: #1E293B;
+  --text-light: #E5E7EB;
+  --text-muted: #9CA3AF;
+  --shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* ----------------------------------- ESTILOS GENERALES ----------------------------------- */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  background: var(--background);
+  color: var(--text-light);
+  transition: var(--transition);
+}
+
+/* ----------------------------------- ENCABEZADO ----------------------------------- */
+header {
+  background: var(--sidebar);
+  color: var(--text-light);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 18px;
+  position: relative;
+  box-shadow: var(--shadow);
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+}
+
+header h1 {
+  font-size: 24px;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Botón atrás */
 #btnBack {
   position: absolute;
-  top: 15px;
-  left: 15px;
-  background: #2d6a4f;
-  color: white;
+  left: 16px;
+  background: var(--primary-dark);
+  color: #fff;
   border: none;
   border-radius: 50%;
   width: 40px;
@@ -14,119 +71,164 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+#btnBack:hover {
+  background: var(--primary);
 }
 
-:root {
-  --bg: #125517;
-  --panel: #54ce5aee;
-  --muted: #fafafa;
-  --ok: #10b981;
-  --warn: #f59e0b;
-  --danger: #ef4444;
-  --txt: #e5e7eb;
-  --border: #48cc1f;
-}
-
-body {
-  margin: 0;
-  font-family: system-ui;
-  background: var(--bg);
-  color: var(--txt);
-}
-
-header {
-  padding: 16px;
-  background: #7cc783;
+/* Botones del lado derecho */
+.header-buttons {
+  position: absolute;
+  right: 16px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-h1 {
-  margin: 0;
-  font-size: 20px;    
+  gap: 10px;
 }
 
 .btn {
-  padding: 8px 14px;
+  padding: 10px 16px;
   border: none;
-  border-radius: 8px;
-  background: #0cd448;
+  border-radius: var(--radius);
+  background: var(--primary);
   color: #fff;
+  font-weight: 600;
   cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow);
+}
+.btn:hover {
+  background: var(--primary-dark);
+}
+
+/* ----------------------------------- ESTRUCTURA PRINCIPAL ----------------------------------- */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 25px;
+  padding: 25px;
+}
+
+/* ----------------------------------- FORMULARIO ----------------------------------- */
+.form-section {
+  background: var(--card);
+  padding: 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.form-section h2 {
+  text-align: center;
+  margin-bottom: 18px;
+  color: var(--primary-dark);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+form input {
+  padding: 10px;
+  border-radius: var(--radius);
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 15px;
+  background: var(--secondary);
+  transition: var(--transition);
+}
+
+form input:focus {
+  border-color: var(--primary);
+  background: #fff;
+}
+
+.full-btn {
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* ----------------------------------- TABLA ----------------------------------- */
+.table-section {
+  background: var(--card);
+  padding: 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+
+.table-section h2 {
+  text-align: center;
+  color: var(--primary-dark);
+  margin-bottom: 15px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 16px;
+  font-size: 15px;
 }
 
 th, td {
+  border: 1px solid #ddd;
   padding: 10px;
-  border: 1px solid var(--border);
-  text-align: left;
+  text-align: center;
 }
 
 th {
-  background: #61d15ddc;
-  color: var(--muted);
-  font-size: 14px;
-  text-transform: uppercase;
-}
-
-.status {
-  padding: 4px 8px;
-  border-radius: 8px;
+  background-color: var(--primary);
+  color: #fff;
   font-weight: bold;
 }
 
-.ok {
-  background: rgba(16,185,129,.2);
-  color: var(--ok);
+tr:nth-child(even) {
+  background: var(--secondary);
 }
 
-.warn {
-  background: rgba(245,158,11,.2);
-  color: var(--warn);
+/* --- EFECTO DE APARICIÓN --- */
+tr.new-insumo {
+  animation: aparecer 0.6s ease;
+  background-color: rgba(90, 168, 46, 0.15);
 }
 
-.danger {
-  background: rgba(239,68,68,.2);
-  color: var(--danger);
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
+/* ----------------------------------- TOAST ----------------------------------- */
 .toast {
   position: fixed;
-  bottom: 16px;
-  right: 16px;
-  background: #0b2210;
-  padding: 12px 16px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
+  bottom: 20px;
+  right: 20px;
+  background: var(--primary-dark);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
   display: none;
+  animation: fadeIn 0.3s ease;
 }
 
-.toast.show {
-  display: block;
-  animation: fade .3s ease-out;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes fade {
-  from { opacity: 0; transform: translateY(10px) }
-  to   { opacity: 1; transform: none }
+/* ----------------------------------- RESPONSIVE ----------------------------------- */
+@media (max-width: 900px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-section, .table-section {
+    width: 100%;
+  }
 }
 
-form {
-  margin-top: 20px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-input {
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-}

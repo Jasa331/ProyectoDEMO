@@ -149,9 +149,38 @@ Si no fuiste tú, cambia tu contraseña inmediatamente.`,
   }
 });
 
+// Cambiar contraseña
+app.post("/api/cambiar-contrasena", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validación
+    if (!email || !password) {
+      return res.status(400).json({ message: "Faltan datos" });
+    }
 
 
+    // Encriptar contraseña
+    const hashed = await bcrypt.hash(password, 10);
 
+    // Consulta con nombres exactos de tu tabla
+    const sql = "UPDATE Usuario SET Contrasena = ? WHERE Correo = ?";
+    const [result] = await pool.query(sql, [hashed, email]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    console.log("✅ Contraseña actualizada para:", email);
+    res.status(200).json({ message: "✅ Contraseña actualizada correctamente" });
+
+  } catch (error) {
+    console.error("❌ Error en /api/cambiar-contrasena:", error);
+    res.status(500).json({ message: "Error interno del servidor", detail: error.message });
+  }
+});
+
+  
 
 
 

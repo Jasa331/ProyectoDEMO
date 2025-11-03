@@ -12,33 +12,50 @@
   <div class="recover-container">
     <h2>Recuperar Contraseña</h2>
     <p>Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.</p>
-    <form action="/api/recuperar" method="POST">
+
+    <!-- ✅ FORMULARIO CORRECTO -->
+    <form id="recoverForm">
       <div class="field">
-        <label for="email" id="recoverForm">Correo electrónico</label>
+        <label for="email">Correo electrónico</label>
         <input type="email" id="email" name="email" placeholder="ejemplo@gmail.com" required>
       </div>
       <button type="submit">Enviar enlace</button>
     </form>
+
     <div class="back">
       <a href="../HTML/index_login.html">⬅️ Volver al inicio de sesión</a>
     </div>
   </div>
-<script>
-document.getElementById('recoverForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // ⬅️ ESTO ES CLAVE para evitar el GET
 
-    const email = document.getElementById('email').value;
-    const endpoint = 'http://127.0.0.1:3000/api/recuperar'; 
+  <!-- ✅ SCRIPT CORREGIDO -->
+  <script>
+    document.getElementById('recoverForm').addEventListener('submit', async function(event) {
+      event.preventDefault(); // Evita recarga
 
-    fetch(endpoint, {
-        method: 'POST', // ⬅️ ESTO ES CLAVE para que Flask lo acepte
-        headers: {
+      const email = document.getElementById('email').value;
+      const endpoint = 'http://127.0.0.1:3000/api/recuperar';
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
             'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: email }),
-    })
-    // ... el resto del código .then() y .catch()
-});
-</script>
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert(result.message || 'Correo enviado correctamente');
+        } else {
+          alert(result.message || 'Error al enviar el correo');
+        }
+      } catch (error) {
+        console.error('Error en la conexión con el servidor:', error);
+        alert('Error al conectar con el servidor. Verifica que Flask esté en ejecución.');
+      }
+    });
+  </script>
 </body>
 </html>
