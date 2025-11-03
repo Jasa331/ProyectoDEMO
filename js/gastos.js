@@ -52,3 +52,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+
+
+// ============================================================
+// MODO CLARO / OSCURO — GESTIÓN DE TEMA
+// ============================================================
+const themeToggle = document.getElementById("themeToggle");
+const body = document.body;
+
+// Al cargar, se aplica el tema guardado
+const savedTheme = localStorage.getItem("theme");
+if (savedTheme === "dark") {
+  body.setAttribute("data-theme", "dark");
+  themeToggle.textContent = "☀️";
+} else {
+  body.removeAttribute("data-theme");
+  themeToggle.textContent = "🌙";
+}
+
+// Al hacer clic, alternar entre temas
+themeToggle.addEventListener("click", () => {
+  const isDark = body.hasAttribute("data-theme");
+
+  if (isDark) {
+    // Cambiar a modo claro
+    body.removeAttribute("data-theme");
+    themeToggle.textContent = "🌙";
+    localStorage.setItem("theme", "light");
+  } else {
+    // Cambiar a modo oscuro
+    body.setAttribute("data-theme", "dark");
+    themeToggle.textContent = "☀️";
+    localStorage.setItem("theme", "dark");
+  }
+});
+
