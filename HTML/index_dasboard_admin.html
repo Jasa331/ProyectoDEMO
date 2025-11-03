@@ -8,7 +8,7 @@
 </head>
 <body>
   
-  <!-- Sidebar -->
+  <!-- ==================== SIDEBAR ==================== -->
   <aside class="sidebar">
     <div class="brand">
       <div class="logo">🌱</div>
@@ -18,9 +18,11 @@
     <nav class="menu">
       <a class="active"><i>📊</i> Dashboard</a>
       <a><i>👤</i> Usuarios</a>
-      <a href="../HTML/index_proveedor_insumo.html"><i>🌱</i> Proveedores</a>
-
+      <a href="gastos.html"><i>💰</i> Gastos</a>
+      <a href="../HTML/index_proveedor_insumo.html"><i>🌾</i> Proveedores</a>
+      <a><i>⚙️</i> Ajustes</a>
     </nav>
+>>>>>>> 5c231c3a685dd25d5d32f62a02c0eed04d21b06b
 
 
     
@@ -36,21 +38,20 @@
     <button id="btnLogout" class="btn btn-outline">Cerrar sesión</button>
   </aside>
 
-  <!-- Main -->
+  <!-- ==================== MAIN CONTENT ==================== -->
   <main class="main">
     <header class="topbar">
       <h1>Panel de Administración</h1>
       <div class="top-actions">
         <input id="inputBuscar" type="search" placeholder="Buscar por nombre, usuario o correo…">
         <button id="btnNuevo" class="btn btn-primary">+ Nuevo usuario</button>
-        <!-- 🔘 Botón de modo claro/oscuro -->
-        <button id="themeToggle" class="theme-toggle" title="Cambiar tema">
-          🌞
-        </button>
+
+        <!-- Botón de modo claro/oscuro -->
+        <button id="themeToggle" class="theme-toggle" title="Cambiar tema">🌞</button>
       </div>
     </header>
 
-    <!-- Stats -->
+    <!-- ==================== ESTADÍSTICAS ==================== -->
     <section class="stats">
       <article class="stat-card">
         <span class="stat-label">Usuarios totales</span>
@@ -66,7 +67,7 @@
       </article>
     </section>
 
-    <!-- Tabla -->
+    <!-- ==================== TABLA DE USUARIOS ==================== -->
     <section class="table-wrap">
       <table class="table" aria-label="Usuarios">
         <thead>
@@ -85,14 +86,14 @@
       <p id="vacio" class="empty">No hay usuarios que coincidan con la búsqueda.</p>
     </section>
 
-    <!-- Botones al final de la vista -->
+    <!-- ==================== BOTONES INFERIORES ==================== -->
     <div class="footer-actions">
       <button id="btnRefrescar" class="btn btn-secondary">🔄 Refrescar Datos</button>
       <button id="btnSoporte" class="btn btn-secondary">📞 Soporte</button>
     </div>
   </main>
 
-  <!-- Modal Crear/Editar -->
+  <!-- ==================== MODAL CREAR / EDITAR ==================== -->
   <div id="modal" class="modal" aria-hidden="true">
     <div class="modal-content" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
       <div class="modal-header">
@@ -140,15 +141,14 @@
     </div>
   </div>
 
-  <!-- Toast -->
+  <!-- ==================== TOAST ==================== -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <!-- Script principal -->
+  <!-- ==================== SCRIPTS ==================== -->
   <script src="../js/admin.js"></script>
 
   <!-- Script del modo oscuro/claro -->
   <script>
-    // ==================== MODO CLARO / OSCURO ====================
     const themeToggle = document.getElementById("themeToggle");
     const currentTheme = localStorage.getItem("theme") || "light";
 
