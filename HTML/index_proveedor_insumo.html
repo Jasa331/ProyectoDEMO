@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro de Proveedores de Insumo</title>
+  <link rel="stylesheet" href="../CSS/style_proveedor_insumo.css" />
+  <script defer src="../JS/proveedor_insumo.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="form-container">
+      <h2>Registro de Proveedor de Insumos</h2>
+
+      <form id="formProveedor">
+        <label>Ciudad</label>
+        <input type="text" id="ciudad" required />
+
+        <label>Teléfono</label>
+        <input type="text" id="telefono" required placeholder="+57 3001234567" />
+
+        <label>Dirección</label>
+        <input type="text" id="direccion" required />
+
+        <label>Nombre de la Empresa</label>
+        <input type="text" id="empresa" required />
+
+        <label>Nombre del Contacto</label>
+        <input type="text" id="contacto" required />
+
+        <label>Región</label>
+        <input type="text" id="region" required />
+
+        <label>Código Postal</label>
+        <input type="text" id="codPostal" required />
+
+        <label>ID Ingreso de Insumo</label>
+        <input type="number" id="id_ingreso" required />
+
+        <button type="submit">Registrar Proveedor</button>
+      </form>
+
+      <p id="mensaje"></p>
+    </div>
+
+    <div class="tabla-container">
+      <h3>📋 Lista de Proveedores Registrados</h3>
+      <table id="tablaProveedores">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Empresa</th>
+            <th>Contacto</th>
+            <th>Ciudad</th>
+            <th>Teléfono</th>
+            <th>Región</th>
+            <th>Código Postal</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
