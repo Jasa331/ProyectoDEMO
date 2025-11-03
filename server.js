@@ -228,8 +228,6 @@ app.get("/proveedor", async (req, res) => {
 });
 
 
-
-
 // Obtener todos los registros del calendario
 app.get("/api/calendario", (req, res) => {
   const query = "SELECT * FROM Calendario_Siembra";
