@@ -143,7 +143,7 @@ app.post('/login', async (req, res) => {
     } catch (error) {
       console.error("❌ Error al enviar correo:", error.message);
     }
-    
+
     res.json({ ok: true, user });
 
   } catch (err) {
@@ -178,6 +178,42 @@ app.post("/api/cambiar-contrasena", async (req, res) => {
   } catch (error) {
     console.error("❌ Error en /api/cambiar-contrasena:", error);
     res.status(500).json({ message: "Error interno del servidor", detail: error.message });
+  }
+});
+
+app.post("/proveedor", async (req, res) => {
+  try {
+    const {
+      Ciudad,
+      Telefono,
+      Direccion,
+      Nombre_Empresa,
+      Nombre_Contacto,
+      Region,
+      Cod_Postal,
+      ID_Ingreso_Insumo,
+    } = req.body;
+
+    await pool.query(
+      `INSERT INTO Proveedor_Insumo 
+      (Ciudad, Telefono, Direccion, Nombre_Empresa, Nombre_Contacto, Region, Cod_Postal, ID_Ingreso_Insumo)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        Ciudad,
+        Telefono,
+        Direccion,
+        Nombre_Empresa,
+        Nombre_Contacto,
+        Region,
+        Cod_Postal,
+        ID_Ingreso_Insumo,
+      ]
+    );
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error("Error al registrar proveedor:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
   }
 });
 
