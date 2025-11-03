@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agricord - Red Social</title>
+    <link rel="stylesheet" href="../css/social.css">
+</head>
+<body>
+    <!-- 🔹 Botón fijo para volver al inicio -->
+    <button class="btn-volver" onclick="window.location.href='../HTML/index_inicio.html'">← Volver al inicio</button>
+
+    <header>
+        <h1>🌱 Agricord - Red Social</h1>
+        <p>Comparte tus experiencias y aprendizajes del campo</p>
+    </header>
+
+    <main>
+        <section class="publicar">
+            <h2>Crear publicación</h2>
+            <input type="text" id="nombre" placeholder="Tu nombre">
+            <textarea id="mensaje" placeholder="¿Qué quieres compartir hoy?"></textarea>
+            
+            <!-- 🔹 Campo para subir imagen -->
+            <input type="file" id="imagen" accept="image/*">
+            
+            <button id="publicarBtn">Publicar</button>
+        </section>
+
+        <section class="publicaciones">
+            <h2>Publicaciones recientes</h2>
+            <div id="feed"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Agricord | Conectando el campo con la tecnología</p>
+    </footer>
+
+    <script src="../js/social.js"></script>
+</body>
+</html>
