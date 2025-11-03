@@ -151,7 +151,91 @@ Si no fuiste tú, cambia tu contraseña inmediatamente.`,
 
 
 
-  
+
+// ==================== ENDPOINTS CRUD ====================
+
+// Obtener todos los registros del calendario
+app.get("/api/calendario", (req, res) => {
+  const query = "SELECT * FROM Calendario_Siembra";
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error("❌ Error al obtener calendario:", err);
+      return res.status(500).json({ error: "Error al obtener los registros" });
+    }
+    res.json(result);
+  });
+});
+
+// Agregar nuevo registro al calendario
+app.post("/api/calendario", (req, res) => {
+  const { ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha } = req.body;
+
+  if (!ID_Producto || !Fecha_Inicio_Siembra || !Fecha_Fin_Siembra || !Fecha_Cosecha) {
+    return res.status(400).json({ error: "Faltan datos requeridos" });
+  }
+
+  const query = `
+    INSERT INTO Calendario_Siembra (ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha)
+    VALUES (?, ?, ?, ?)
+  `;
+
+  db.query(query, [ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha], (err, result) => {
+    if (err) {
+      console.error("❌ Error al insertar registro:", err);
+      return res.status(500).json({ error: "Error al insertar registro" });
+    }
+    res.json({ message: "✅ Registro agregado correctamente", id: result.insertId });
+  });
+});
+
+// Actualizar un registro del calendario
+app.put("/api/calendario/:id", (req, res) => {
+  const { id } = req.params;
+  const { Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha } = req.body;
+
+  if (!Fecha_Inicio_Siembra || !Fecha_Fin_Siembra || !Fecha_Cosecha) {
+    return res.status(400).json({ error: "Faltan datos requeridos" });
+  }
+
+  const query = `
+    UPDATE Calendario_Siembra 
+    SET Fecha_Inicio_Siembra = ?, Fecha_Fin_Siembra = ?, Fecha_Cosecha = ?
+    WHERE ID_Calendario = ?
+  `;
+
+  db.query(query, [Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha, id], (err, result) => {
+    if (err) {
+      console.error("❌ Error al actualizar registro:", err);
+      return res.status(500).json({ error: "Error al actualizar registro" });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Registro no encontrado" });
+    }
+    res.json({ message: "✅ Calendario actualizado correctamente" });
+  });
+});
+
+// Eliminar un registro del calendario
+app.delete("/api/calendario/:id", (req, res) => {
+  const { id } = req.params;
+
+  const query = "DELETE FROM Calendario_Siembra WHERE ID_Calendario = ?";
+
+  db.query(query, [id], (err, result) => {
+    if (err) {
+      console.error("❌ Error al eliminar registro:", err);
+      return res.status(500).json({ error: "Error al eliminar registro" });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Registro no encontrado" });
+    }
+    res.json({ message: "🗑️ Registro eliminado correctamente" });
+  });
+});
+
+
+
+
 
 
 
