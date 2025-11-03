@@ -217,8 +217,16 @@ app.post("/proveedor", async (req, res) => {
   }
 });
 
+app.get("/proveedor", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM Proveedor_Insumo");
+    res.json(rows);
+  } catch (err) {
+    console.error("Error al obtener proveedores:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
 
-// ==================== ENDPOINTS CRUD ====================
 
 // Obtener todos los registros del calendario
 app.get("/api/calendario", (req, res) => {
