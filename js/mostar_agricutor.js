@@ -1,7 +1,3 @@
-// ==============================
-// FUNCIONES PRINCIPALES
-// ==============================
-
 // Mostrar una sección y ocultar las demás
 function mostrarSeccion(id) {
   // Caso especial: cerrar sesión

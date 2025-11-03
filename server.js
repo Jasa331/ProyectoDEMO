@@ -4,6 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const pool = require('./config/db');
+const nodemailer = require('nodemailer');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -91,7 +92,6 @@ app.delete('/usuarios/:id', async (req, res) => {
   }
 });
 
-// LOGIN con envío de correo
 app.post('/login', async (req, res) => {
   try {
     const { Correo, Contrasena } = req.body;
@@ -102,17 +102,18 @@ app.post('/login', async (req, res) => {
       "SELECT ID_Usuario, Usuario_Nombre, Rol, Contrasena FROM Usuario WHERE Correo=?",
       [Correo]
     );
+
     if (rows.length === 0)
       return res.status(401).json({ ok: false, error: "Correo o contraseña incorrectos" });
 
     const user = rows[0];
     const match = await bcrypt.compare(Contrasena, user.Contrasena);
+
     if (!match)
       return res.status(401).json({ ok: false, error: "Correo o contraseña incorrectos" });
 
     delete user.Contrasena;
-
-    // --- Envío de correo ---
+    
     try {
       const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -123,18 +124,18 @@ app.post('/login', async (req, res) => {
       });
 
       const mailOptions = {
-        from: `"Agricord Seguridad" <${process.env.EMAIL_USER}>`,
+        from: `"Seguridad del Sistema" <${process.env.EMAIL_USER}>`,
         to: Correo,
-        subject: "Inicio de sesión detectado en Agricord",
-        text: `Hola ${user.Usuario_Nombre},
-
-Se ha iniciado sesión en tu cuenta de Agricord.
-
-Detalles:
-- Fecha: ${new Date().toLocaleString("es-CO")}
-- IP detectada: ${req.ip || "No disponible"}
-
-Si no fuiste tú, cambia tu contraseña inmediatamente.`,
+        subject: "🔐 Nuevo inicio de sesión detectado",
+        html: `
+          <h2>Inicio de sesión exitoso</h2>
+          <p>Hola <b>${user.Usuario_Nombre}</b>,</p>
+          <p>Se detectó un inicio de sesión en tu cuenta el <b>${new Date().toLocaleString()}</b>.</p>
+          <p>Si fuiste tú, no es necesario hacer nada.</p>
+          <p>Si no reconoces esta actividad, cambia tu contraseña de inmediato.</p>
+          <hr/>
+          <p>Atentamente,<br>Equipo de Seguridad</p>
+        `,
       };
 
       await transporter.sendMail(mailOptions);
@@ -144,10 +145,13 @@ Si no fuiste tú, cambia tu contraseña inmediatamente.`,
     }
 
     res.json({ ok: true, user });
+
   } catch (err) {
+    console.error("❌ Error en /login:", err.message);
     res.status(500).json({ ok: false, error: err.message });
   }
 });
+
 
 // Cambiar contraseña
 app.post("/api/cambiar-contrasena", async (req, res) => {
@@ -158,12 +162,9 @@ app.post("/api/cambiar-contrasena", async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ message: "Faltan datos" });
     }
-
-
-    // Encriptar contraseña
+    
     const hashed = await bcrypt.hash(password, 10);
 
-    // Consulta con nombres exactos de tu tabla
     const sql = "UPDATE Usuario SET Contrasena = ? WHERE Correo = ?";
     const [result] = await pool.query(sql, [hashed, email]);
 
@@ -180,7 +181,135 @@ app.post("/api/cambiar-contrasena", async (req, res) => {
   }
 });
 
-  
+app.post("/proveedor", async (req, res) => {
+  try {
+    const {
+      Ciudad,
+      Telefono,
+      Direccion,
+      Nombre_Empresa,
+      Nombre_Contacto,
+      Region,
+      Cod_Postal,
+      ID_Ingreso_Insumo,
+    } = req.body;
+
+    await pool.query(
+      `INSERT INTO Proveedor_Insumo 
+      (Ciudad, Telefono, Direccion, Nombre_Empresa, Nombre_Contacto, Region, Cod_Postal, ID_Ingreso_Insumo)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        Ciudad,
+        Telefono,
+        Direccion,
+        Nombre_Empresa,
+        Nombre_Contacto,
+        Region,
+        Cod_Postal,
+        ID_Ingreso_Insumo,
+      ]
+    );
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error("Error al registrar proveedor:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.get("/proveedor", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM Proveedor_Insumo");
+    res.json(rows);
+  } catch (err) {
+    console.error("Error al obtener proveedores:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// Obtener todos los registros del calendario
+app.get("/api/calendario", (req, res) => {
+  const query = "SELECT * FROM Calendario_Siembra";
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error("❌ Error al obtener calendario:", err);
+      return res.status(500).json({ error: "Error al obtener los registros" });
+    }
+    res.json(result);
+  });
+});
+
+// Agregar nuevo registro al calendario
+app.post("/api/calendario", (req, res) => {
+  const { ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha } = req.body;
+
+  if (!ID_Producto || !Fecha_Inicio_Siembra || !Fecha_Fin_Siembra || !Fecha_Cosecha) {
+    return res.status(400).json({ error: "Faltan datos requeridos" });
+  }
+
+  const query = `
+    INSERT INTO Calendario_Siembra (ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha)
+    VALUES (?, ?, ?, ?)
+  `;
+
+  db.query(query, [ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha], (err, result) => {
+    if (err) {
+      console.error("❌ Error al insertar registro:", err);
+      return res.status(500).json({ error: "Error al insertar registro" });
+    }
+    res.json({ message: "✅ Registro agregado correctamente", id: result.insertId });
+  });
+});
+
+// Actualizar un registro del calendario
+app.put("/api/calendario/:id", (req, res) => {
+  const { id } = req.params;
+  const { Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha } = req.body;
+
+  if (!Fecha_Inicio_Siembra || !Fecha_Fin_Siembra || !Fecha_Cosecha) {
+    return res.status(400).json({ error: "Faltan datos requeridos" });
+  }
+
+  const query = `
+    UPDATE Calendario_Siembra 
+    SET Fecha_Inicio_Siembra = ?, Fecha_Fin_Siembra = ?, Fecha_Cosecha = ?
+    WHERE ID_Calendario = ?
+  `;
+
+  db.query(query, [Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha, id], (err, result) => {
+    if (err) {
+      console.error("❌ Error al actualizar registro:", err);
+      return res.status(500).json({ error: "Error al actualizar registro" });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Registro no encontrado" });
+    }
+    res.json({ message: "✅ Calendario actualizado correctamente" });
+  });
+});
+
+// Eliminar un registro del calendario
+app.delete("/api/calendario/:id", (req, res) => {
+  const { id } = req.params;
+
+  const query = "DELETE FROM Calendario_Siembra WHERE ID_Calendario = ?";
+
+  db.query(query, [id], (err, result) => {
+    if (err) {
+      console.error("❌ Error al eliminar registro:", err);
+      return res.status(500).json({ error: "Error al eliminar registro" });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Registro no encontrado" });
+    }
+    res.json({ message: "🗑️ Registro eliminado correctamente" });
+  });
+});
+
+
+
+
 
 
 

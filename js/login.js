@@ -1,5 +1,3 @@
-
-
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("loginForm");
     if (!form) return;
@@ -42,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         window.location.href = "http://127.0.0.1:5500/HTML/index_dasboard_admin.html";
                         break;
                     case "agricultor":
-                        window.location.href = "http://127.0.0.1:5500/HTML/index_dasboard_agricultor.html";
+                        window.location.href = "http://127.0.0.1:5500/HTML/index_dasborad_agricultor.html";
                         break;
                     case "empleado":
                         window.location.href = "http://127.0.0.1:5500/HTML/index_dasboard_empleado.html";
