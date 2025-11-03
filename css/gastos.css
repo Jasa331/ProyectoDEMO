@@ -1,0 +1,66 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f8faf8;
+  margin: 0;
+  color: #333;
+}
+
+.header {
+  background: #81c784;
+  color: white;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-volver {
+  background: white;
+  color: #2e7d32;
+  padding: 8px 15px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.main {
+  padding: 30px;
+  display: grid;
+  gap: 30px;
+}
+
+.formulario, .lista {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.btn-registrar {
+  background: #43a047;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-registrar:hover {
+  background: #2e7d32;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+th {
+  background: #c8e6c9;
+}
