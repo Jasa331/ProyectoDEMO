@@ -60,6 +60,20 @@ body {
   background: var(--primary-dark);
 }
 
+
+
+/* ==================== BOTÓN VOLVER ==================== */
+#btnBack {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
 /* ----------------------------------- ESTRUCTURA PRINCIPAL ----------------------------------- */
 .container {
   display: flex;
