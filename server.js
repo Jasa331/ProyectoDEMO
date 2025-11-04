@@ -181,6 +181,7 @@ app.post("/api/cambiar-contrasena", async (req, res) => {
   }
 });
 
+// Ingresar proveedor de insumo
 app.post("/proveedor", async (req, res) => {
   try {
     const {
@@ -217,6 +218,7 @@ app.post("/proveedor", async (req, res) => {
   }
 });
 
+// mirar los proiveedores de insumo
 app.get("/proveedor", async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT * FROM Proveedor_Insumo");
@@ -226,6 +228,40 @@ app.get("/proveedor", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// POST: insertar insumo
+app.post("/insumo", async (req, res) => {
+  try {
+    const {
+      Nombre, Tipo, Descripcion, Unidad_Medida, Cantidad,
+      Fecha_Caducidad, Fecha_Registro, ID_Ingreso_Insumo, ID_Usuario,
+    } = req.body;
+
+    await pool.query(
+      `INSERT INTO Insumo 
+      (Nombre, Tipo, Descripcion, Unidad_Medida, Cantidad, Fecha_Caducidad, Fecha_Registro, ID_Ingreso_Insumo, ID_Usuario)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [Nombre, Tipo, Descripcion, Unidad_Medida, Cantidad, Fecha_Caducidad, Fecha_Registro, ID_Ingreso_Insumo, ID_Usuario]
+    );
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error("Error al insertar insumo:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// GET: listar todos los insumos
+app.get("/insumos", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM Insumo");
+    res.json(rows);
+  } catch (err) {
+    console.error("Error al obtener insumos:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 
 
 // Obtener todos los registros del calendario

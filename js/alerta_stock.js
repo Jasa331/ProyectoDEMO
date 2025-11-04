@@ -1,112 +1,74 @@
-// ==================== VARIABLES GLOBALES ====================
-let insumos = [];
-let editingId = null;
-
-const tbody = document.getElementById("tbody");
-const toast = document.getElementById("toast");
-const form = document.getElementById("formAdd");
-const themeToggle = document.getElementById("themeToggle");
-const submitBtn = form.querySelector('button[type="submit"]');
-
-
-
-// ==================== LOCAL STORAGE ====================
-function saveToLocalStorage() {
-  localStorage.setItem("insumos", JSON.stringify(insumos));
+// ================================
+// 🔔 TOAST MENSAJES
+// ================================
+function showToast(msg) {
+  const toast = document.getElementById("toast");
+  toast.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
-function loadFromLocalStorage() {
-  const data = localStorage.getItem("insumos");
-  if (data) insumos = JSON.parse(data);
-  render();
-}
 
-// ==================== CARGAR DESDE BASE DE DATOS ====================
-async function fetchInsumos() {
+// ================================
+// 🔗 CONFIGURACIÓN DE API
+// ================================
+const API_URL = "http://localhost:3000/insumo"; // Puerto del backend Express
+
+// ================================
+// 📋 MANEJO DEL FORMULARIO
+// ================================
+document.getElementById("formAdd").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const insumo = {
+    Nombre: document.getElementById("nombre").value,
+    Tipo: document.getElementById("tipo").value,
+    Descripcion: document.getElementById("descripcion").value,
+    Unidad_Medida: document.getElementById("unidad_medida").value,
+    Cantidad: document.getElementById("cantidad").value,
+    Fecha_Caducidad: document.getElementById("fecha_caducidad").value || null,
+    Fecha_Registro: new Date().toISOString().slice(0, 19).replace("T", " "),
+    ID_Ingreso_Insumo: null,
+    ID_Usuario: null,
+  };
+
   try {
-    const res = await fetch(`${API_URL}?action=list`);
-    const data = await res.json();
-    if (Array.isArray(data)) {
-      insumos = data;
-      saveToLocalStorage();
-      render();
-    } else {
-      loadFromLocalStorage();
-    }
-  } catch (err) {
-    console.error("Error al cargar insumos:", err);
-    loadFromLocalStorage();
-  }
-}
-
-// ==================== GUARDAR / ACTUALIZAR INSUMO ====================
-async function saveInsumo(data) {
-  try {
-    const action = editingId ? "update" : "save";
-    const bodyData = editingId ? { ...data, ID_Insumo: editingId } : data;
-
-    const res = await fetch(`${API_URL}?action=${action}`, {
+    const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(bodyData),
+      body: JSON.stringify(insumo),
     });
 
-    const result = await res.json();
-
-    if (result.success) {
-      if (editingId) {
-        const index = insumos.findIndex((i) => i.ID_Insumo === editingId);
-        if (index !== -1) insumos[index] = { ...insumos[index], ...data };
-        showToast("🔄 Insumo actualizado correctamente");
-      } else {
-        const newInsumo = { ...data, ID_Insumo: result.id || Date.now() };
-        insumos.push(newInsumo);
-        showToast("✅ Insumo agregado correctamente");
-      }
-
-      editingId = null;
-      submitBtn.textContent = "Agregar / Actualizar";
-      form.reset();
-      saveToLocalStorage();
-      render(true);
+    const result = await response.json();
+    if (result.ok) {
+      showToast("✅ Insumo agregado correctamente");
+      document.getElementById("formAdd").reset();
+      obtenerInsumos();
     } else {
-      showToast("⚠️ Error al guardar en la base de datos");
+      showToast("⚠️ Error al agregar insumo: " + result.error);
     }
   } catch (error) {
-    console.warn("⚠️ Error con el servidor, guardando localmente:", error);
-
-    if (editingId) {
-      const index = insumos.findIndex((i) => i.ID_Insumo === editingId);
-      if (index !== -1) insumos[index] = { ...insumos[index], ...data };
-    } else {
-      insumos.push({ ...data, ID_Insumo: Date.now() });
-    }
-
-    editingId = null;
-    submitBtn.textContent = "Agregar / Actualizar";
-    form.reset();
-    saveToLocalStorage();
-    render();
-    showToast("💾 Guardado local sin conexión");
+    console.error("Error al enviar insumo:", error);
+    showToast("❌ Error de conexión con el servidor");
   }
-}
+});
 
-// ==================== ELIMINAR INSUMO ====================
-async function deleteInsumo(id) {
-  if (!confirm("¿Deseas eliminar este insumo?")) return;
-
+// ================================
+// 📦 OBTENER LISTA DE INSUMOS
+// ================================
+async function obtenerInsumos() {
   try {
-    const res = await fetch(`${API_URL}?action=delete&id=${id}`);
-    const result = await res.json();
+    const res = await fetch("http://localhost:3000/insumos"); // También puerto 5000
+    const data = await res.json();
 
-    if (result.success) {
-      insumos = insumos.filter((i) => i.ID_Insumo !== id);
-      saveToLocalStorage();
-      render();
-      showToast("🗑️ Insumo eliminado correctamente");
-    } else {
-      showToast("❌ Error al eliminar en la base de datos");
-    }
+    const tbody = document.getElementById("tbody");
+    tbody.innerHTML = "";
+
+    data.forEach((item) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${item.Nombre}</td>`;
+      tbody.appendChild(row);
+    });
   } catch (err) {
     console.warn("⚠️ Error de conexión, eliminando localmente:", err);
     insumos = insumos.filter((i) => i.ID_Insumo !== id);
@@ -203,47 +165,6 @@ form.addEventListener("submit", (e) => {
 
   saveInsumo(data);
 });
-
-
-
-// ==================== ELIMINAR INSUMO ====================
-async function deleteInsumo(id) {
-  if (!confirm("¿Deseas eliminar este insumo?")) return;
-
-  // Solicitar motivo de eliminación
-  const motivo = prompt("Por favor indica el motivo de la eliminación del insumo:");
-  if (!motivo || motivo.trim() === "") {
-    showToast("⚠️ Eliminación cancelada: debes indicar un motivo.");
-    return;
-  }
-
-  try {
-    const res = await fetch(`${API_URL}?action=delete&id=${id}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ motivo }),
-    });
-    const result = await res.json();
-
-    if (result.success) {
-      insumos = insumos.filter((i) => i.ID_Insumo !== id);
-      saveToLocalStorage();
-      render();
-      showToast(`🗑️ Insumo eliminado. Motivo: ${motivo}`);
-      console.log("📝 Motivo de eliminación:", motivo);
-    } else {
-      showToast("❌ Error al eliminar en la base de datos");
-    }
-  } catch (err) {
-    console.warn("⚠️ Error de conexión, eliminando localmente:", err);
-    insumos = insumos.filter((i) => i.ID_Insumo !== id);
-    saveToLocalStorage();
-    render();
-    showToast(`💾 Eliminado localmente. Motivo: ${motivo}`);
-    console.log("📝 Motivo de eliminación (local):", motivo);
-  }
-}
-
 
 // ==================== MODO OSCURO/CLARO ====================
 themeToggle.addEventListener("click", () => {
