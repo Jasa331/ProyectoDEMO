@@ -229,6 +229,60 @@ app.get("/proveedor", async (req, res) => {
   }
 });
 
+// PUT: actualizar un insumo existente
+app.put("/insumo/:id", async (req, res) => {
+  const { id } = req.params;
+  const {
+    Nombre,
+    Tipo,
+    Descripcion,
+    Unidad_Medida,
+    Cantidad,
+    Fecha_Caducidad,
+    Fecha_Registro,
+    ID_Ingreso_Insumo,
+    ID_Usuario,
+  } = req.body;
+
+  try {
+    await pool.query(
+      `UPDATE Insumo 
+       SET Nombre = ?, Tipo = ?, Descripcion = ?, Unidad_Medida = ?, Cantidad = ?, 
+           Fecha_Caducidad = ?, Fecha_Registro = ?, ID_Ingreso_Insumo = ?, ID_Usuario = ?
+       WHERE ID_Insumo = ?`,
+      [
+        Nombre,
+        Tipo,
+        Descripcion,
+        Unidad_Medida,
+        Cantidad,
+        Fecha_Caducidad,
+        Fecha_Registro,
+        ID_Ingreso_Insumo,
+        ID_Usuario,
+        id,
+      ]
+    );
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error("Error al actualizar insumo:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+
+// DELETE: eliminar insumo
+app.delete("/insumo/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query("DELETE FROM Insumo WHERE ID_Insumo = ?", [id]);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 // POST: insertar insumo
 app.post("/insumo", async (req, res) => {
   try {
