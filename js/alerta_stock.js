@@ -204,6 +204,47 @@ form.addEventListener("submit", (e) => {
   saveInsumo(data);
 });
 
+
+
+// ==================== ELIMINAR INSUMO ====================
+async function deleteInsumo(id) {
+  if (!confirm("¿Deseas eliminar este insumo?")) return;
+
+  // Solicitar motivo de eliminación
+  const motivo = prompt("Por favor indica el motivo de la eliminación del insumo:");
+  if (!motivo || motivo.trim() === "") {
+    showToast("⚠️ Eliminación cancelada: debes indicar un motivo.");
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_URL}?action=delete&id=${id}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ motivo }),
+    });
+    const result = await res.json();
+
+    if (result.success) {
+      insumos = insumos.filter((i) => i.ID_Insumo !== id);
+      saveToLocalStorage();
+      render();
+      showToast(`🗑️ Insumo eliminado. Motivo: ${motivo}`);
+      console.log("📝 Motivo de eliminación:", motivo);
+    } else {
+      showToast("❌ Error al eliminar en la base de datos");
+    }
+  } catch (err) {
+    console.warn("⚠️ Error de conexión, eliminando localmente:", err);
+    insumos = insumos.filter((i) => i.ID_Insumo !== id);
+    saveToLocalStorage();
+    render();
+    showToast(`💾 Eliminado localmente. Motivo: ${motivo}`);
+    console.log("📝 Motivo de eliminación (local):", motivo);
+  }
+}
+
+
 // ==================== MODO OSCURO/CLARO ====================
 themeToggle.addEventListener("click", () => {
   const theme = document.body.getAttribute("data-theme");
