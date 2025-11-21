@@ -469,5 +469,105 @@ app.delete("/producto/:id", async (req, res) => {
   }
 });
 
+// =============================
+// CRUD CALENDARIO AGRÍCOLA
+// =============================
+
+// Obtener todas las siembras
+app.get("/calendario", async (req, res) => {
+  try {
+    const [rows] = await pool.query(`
+      SELECT cs.ID_Calendario, cs.ID_Producto, p.Nombre AS Producto,
+             cs.Fecha_Inicio_Siembra, cs.Fecha_Fin_Siembra, cs.Fecha_Cosecha
+      FROM Calendario_Siembra cs
+      LEFT JOIN Producto p ON cs.ID_Producto = p.ID_Producto
+    `);
+    res.json(rows);
+  } catch (err) {
+    console.error("Error GET /calendario:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// Obtener siembra por ID
+app.get("/calendario/:id", async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM Calendario_Siembra WHERE ID_Calendario = ?",
+      [req.params.id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "Registro no encontrado" });
+    }
+
+    res.json(rows[0]);
+  } catch (err) {
+    console.error("Error GET /calendario/:id:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// Crear siembra
+app.post("/calendario", async (req, res) => {
+  try {
+    const { ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha } = req.body;
+
+    // Verificar foreign key
+    const [exist] = await pool.query(
+      "SELECT ID_Producto FROM Producto WHERE ID_Producto=?",
+      [ID_Producto]
+    );
+    if (exist.length === 0) {
+      return res.status(400).json({ ok: false, error: "El ID_Producto no existe." });
+    }
+
+    await pool.query(
+      `INSERT INTO Calendario_Siembra (ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha)
+       VALUES (?, ?, ?, ?)`,
+      [ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha]
+    );
+
+    res.json({ ok: true, message: "Registro creado correctamente" });
+  } catch (err) {
+    console.error("Error POST /calendario:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// Actualizar siembra
+app.put("/calendario/:id", async (req, res) => {
+  try {
+    const { ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha } = req.body;
+
+    await pool.query(
+      `UPDATE Calendario_Siembra 
+       SET ID_Producto=?, Fecha_Inicio_Siembra=?, Fecha_Fin_Siembra=?, Fecha_Cosecha=?
+       WHERE ID_Calendario=?`,
+      [ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha, req.params.id]
+    );
+
+    res.json({ ok: true, message: "Registro actualizado correctamente" });
+
+  } catch (err) {
+    console.error("Error PUT /calendario/:id:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// Eliminar siembra
+app.delete("/calendario/:id", async (req, res) => {
+  try {
+    await pool.query("DELETE FROM Calendario_Siembra WHERE ID_Calendario=?", [
+      req.params.id,
+    ]);
+    res.json({ ok: true, message: "Registro eliminado correctamente" });
+  } catch (err) {
+    console.error("Error DELETE /calendario/:id:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+
 
 app.listen(port, () => console.log(`✅ Servidor corriendo en http://localhost:${port}`));
