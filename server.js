@@ -568,6 +568,139 @@ app.delete("/calendario/:id", async (req, res) => {
   }
 });
 
+// =============================
+// RUTAS PARA CARACTERÍSTICAS
+// =============================
+
+// Obtener todas las características
+app.get("/caracteristicas", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM Caracteristicas");
+    res.json(rows);
+  } catch (err) {
+    console.error("Error GET /caracteristicas:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Obtener una característica por ID
+app.get("/caracteristicas/:id", async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM Caracteristicas WHERE ID_Caracteristica = ?",
+      [req.params.id]
+    );
+
+    if (rows.length === 0)
+      return res.status(404).json({ error: "No encontrada" });
+
+    res.json(rows[0]);
+  } catch (err) {
+    console.error("Error GET /caracteristicas/:id:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Crear característica
+app.post("/caracteristicas", async (req, res) => {
+  try {
+    const {
+      Unidad_Medida,
+      Nombre,
+      Cantidad_Maxima,
+      Cantidad_Minima,
+      Tiempo_Produccion,
+      Temperatura,
+      Humedad,
+      Lluvias,
+      Velocidad_Viento,
+      ID_Producto
+    } = req.body;
+
+    await pool.query(
+      `INSERT INTO Caracteristicas 
+      (Unidad_Medida, Nombre, Cantidad_Maxima, Cantidad_Minima, Tiempo_Produccion,
+      Temperatura, Humedad, Lluvias, Velocidad_Viento, ID_Producto)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        Unidad_Medida,
+        Nombre,
+        Cantidad_Maxima,
+        Cantidad_Minima,
+        Tiempo_Produccion,
+        Temperatura,
+        Humedad,
+        Lluvias,
+        Velocidad_Viento,
+        ID_Producto
+      ]
+    );
+
+    res.json({ ok: true, message: "Característica agregada" });
+  } catch (err) {
+    console.error("Error POST /caracteristicas:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Actualizar característica
+app.put("/caracteristicas/:id", async (req, res) => {
+  try {
+    const {
+      Unidad_Medida,
+      Nombre,
+      Cantidad_Maxima,
+      Cantidad_Minima,
+      Tiempo_Produccion,
+      Temperatura,
+      Humedad,
+      Lluvias,
+      Velocidad_Viento,
+      ID_Producto
+    } = req.body;
+
+    await pool.query(
+      `UPDATE Caracteristicas SET 
+        Unidad_Medida=?, Nombre=?, Cantidad_Maxima=?, Cantidad_Minima=?, 
+        Tiempo_Produccion=?, Temperatura=?, Humedad=?, Lluvias=?, 
+        Velocidad_Viento=?, ID_Producto=?
+       WHERE ID_Caracteristica=?`,
+      [
+        Unidad_Medida,
+        Nombre,
+        Cantidad_Maxima,
+        Cantidad_Minima,
+        Tiempo_Produccion,
+        Temperatura,
+        Humedad,
+        Lluvias,
+        Velocidad_Viento,
+        ID_Producto,
+        req.params.id
+      ]
+    );
+
+    res.json({ ok: true, message: "Actualizada correctamente" });
+  } catch (err) {
+    console.error("Error PUT /caracteristicas:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Eliminar característica
+app.delete("/caracteristicas/:id", async (req, res) => {
+  try {
+    await pool.query(
+      "DELETE FROM Caracteristicas WHERE ID_Caracteristica=?",
+      [req.params.id]
+    );
+
+    res.json({ ok: true, message: "Eliminada correctamente" });
+  } catch (err) {
+    console.error("Error DELETE /caracteristicas:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 
 app.listen(port, () => console.log(`✅ Servidor corriendo en http://localhost:${port}`));

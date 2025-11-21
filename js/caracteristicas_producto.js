@@ -1,174 +1,146 @@
-// ===============================================
-// VARIABLES
-// ===============================================
+const API = "http://localhost:3000/caracteristicas";
+
 const form = document.getElementById("formCarac");
-const tabla = document.getElementById("tablaCarac").querySelector("tbody");
-const mensaje = document.getElementById("mensaje");
-
-const btnBack = document.getElementById("btnBack");
-const btnTheme = document.getElementById("themeToggle");
-
-const toggleFormBtn = document.getElementById("toggleFormBtn");
-const formOverlay = document.getElementById("formOverlay");
-const closeFormBtn = document.getElementById("closeFormBtn");
-
-let data = [];
+const tbody = document.querySelector("#tablaCarac tbody");
+const msg = document.getElementById("mensaje");
 let editId = null;
 
-// ===============================================
-// MODO CLARO / OSCURO
-// ===============================================
-function aplicarTemaGuardado() {
-  const savedTheme = localStorage.getItem("theme");
+/* ============================
+   CARGAR LISTA
+============================ */
+async function cargarCarac() {
+  try {
+    const res = await fetch(API);
+    const data = await res.json();
 
-  if (savedTheme === "dark") {
-    document.body.classList.add("dark");
-    btnTheme.textContent = "🌞";
-  } else {
-    document.body.classList.remove("dark");
-    btnTheme.textContent = "🌗";
+    tbody.innerHTML = "";
+
+    data.forEach(c => {
+      const fila = document.createElement("tr");
+      fila.innerHTML = `
+        <td>${c.ID_Caracteristica}</td>
+        <td>${c.Unidad_Medida}</td>
+        <td>${c.Nombre}</td>
+        <td>${c.Cantidad_Maxima}</td>
+        <td>${c.Cantidad_Minima}</td>
+        <td>${c.Tiempo_Produccion}</td>
+        <td>${c.Temperatura}</td>
+        <td>${c.Humedad}</td>
+        <td>${c.Lluvias}</td>
+        <td>${c.Velocidad_Viento}</td>
+        <td>${c.ID_Producto}</td>
+        <td>
+          <button onclick="editar(${c.ID_Caracteristica})">✏</button>
+          <button onclick="eliminar(${c.ID_Caracteristica})">🗑</button>
+        </td>
+      `;
+      tbody.appendChild(fila);
+    });
+  } catch (err) {
+    console.error("Error cargando:", err);
   }
 }
 
-// Cargar tema al iniciar
-aplicarTemaGuardado();
-
-// Evento del botón de tema
-btnTheme.addEventListener("click", () => {
-  const isDark = document.body.classList.toggle("dark");
-  btnTheme.textContent = isDark ? "🌞" : "🌗";
-  localStorage.setItem("theme", isDark ? "dark" : "light");
-});
-
-
-// ===============================================
-// BOTÓN REGRESAR
-// ===============================================
-btnBack.addEventListener("click", () => {
-  window.history.back();
-});
-
-// ===============================================
-// MOSTRAR MENSAJE
-// ===============================================
-function showMessage(text, type = "success") {
-  mensaje.textContent = text;
-  mensaje.style.color = type === "error" ? "red" : "green";
-  setTimeout(() => (mensaje.textContent = ""), 3000);
-}
-
-// ===============================================
-// FORMULARIO FLOTANTE
-// ===============================================
-toggleFormBtn.addEventListener("click", () => {
-  formOverlay.classList.add("active");
-});
-
-closeFormBtn.addEventListener("click", () => {
-  formOverlay.classList.remove("active");
-  form.reset();
-  editId = null;
-});
-
-// ===============================================
-// GUARDAR / EDITAR
-// ===============================================
-form.addEventListener("submit", (e) => {
+/* ============================
+   GUARDAR (CREAR / EDITAR)
+============================ */
+form.addEventListener("submit", async e => {
   e.preventDefault();
 
-  const nuevaCarac = {
-    id: editId || Date.now(),
-    unidad: Unidad_Medida.value,
-    nombre: Nombre.value,
-    max: Cantidad_Maxima.value,
-    min: Cantidad_Minima.value,
-    tiempo: Tiempo_Produccion.value,
-    temp: Temperatura.value,
-    humedad: Humedad.value,
-    lluvia: Lluvias.value,
-    viento: Velocidad_Viento.value,
-    producto: ID_Producto.value
+  const data = {
+    Unidad_Medida: Unidad_Medida.value,
+    Nombre: Nombre.value,
+    Cantidad_Maxima: Cantidad_Maxima.value,
+    Cantidad_Minima: Cantidad_Minima.value,
+    Tiempo_Produccion: Tiempo_Produccion.value,
+    Temperatura: Temperatura.value,
+    Humedad: Humedad.value,
+    Lluvias: Lluvias.value,
+    Velocidad_Viento: Velocidad_Viento.value,
+    ID_Producto: ID_Producto.value
   };
 
-  if (editId) {
-    data = data.map(c => c.id === editId ? nuevaCarac : c);
-    showMessage("✔ Característica actualizada");
-  } else {
-    data.push(nuevaCarac);
-    showMessage("✔ Característica guardada");
-  }
+  const url = editId ? `${API}/${editId}` : API;
+  const method = editId ? "PUT" : "POST";
+
+  const res = await fetch(url, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  const respuesta = await res.json();
+  msg.textContent = respuesta.message;
 
   form.reset();
   editId = null;
-  renderTabla();
-  formOverlay.classList.remove("active"); // cerrar formulario
+  cargarCarac();
+  cerrarFormulario();
 });
 
-// ===============================================
-// RENDER TABLA
-// ===============================================
-function renderTabla() {
-  tabla.innerHTML = "";
-
-  if (data.length === 0) {
-    tabla.innerHTML = `<tr><td colspan="12">No hay características registradas.</td></tr>`;
-    return;
-  }
-
-  data.forEach(c => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${c.id}</td>
-      <td>${c.unidad}</td>
-      <td>${c.nombre}</td>
-      <td>${c.max}</td>
-      <td>${c.min}</td>
-      <td>${c.tiempo}</td>
-      <td>${c.temp}</td>
-      <td>${c.humedad}</td>
-      <td>${c.lluvia}</td>
-      <td>${c.viento}</td>
-      <td>${c.producto}</td>
-      <td>
-        <button class="btn-edit" onclick="editar(${c.id})">✏️</button>
-        <button class="btn-delete" onclick="eliminar(${c.id})">🗑️</button>
-      </td>
-    `;
-    tabla.appendChild(tr);
-  });
-}
-
-// ===============================================
-// EDITAR
-// ===============================================
-window.editar = function (id) {
-  const c = data.find(x => x.id === id);
+/* ============================
+   EDITAR
+============================ */
+window.editar = async id => {
   editId = id;
 
-  Unidad_Medida.value = c.unidad;
-  Nombre.value = c.nombre;
-  Cantidad_Maxima.value = c.max;
-  Cantidad_Minima.value = c.min;
-  Tiempo_Produccion.value = c.tiempo;
-  Temperatura.value = c.temp;
-  Humedad.value = c.humedad;
-  Lluvias.value = c.lluvia;
-  Velocidad_Viento.value = c.viento;
-  ID_Producto.value = c.producto;
+  const res = await fetch(`${API}/${id}`);
+  const c = await res.json();
 
-  formOverlay.classList.add("active");
-  showMessage("✏️ Editando registro…");
+  ID_Caracteristica.value = c.ID_Caracteristica;
+  Unidad_Medida.value = c.Unidad_Medida;
+  Nombre.value = c.Nombre;
+  Cantidad_Maxima.value = c.Cantidad_Maxima;
+  Cantidad_Minima.value = c.Cantidad_Minima;
+  Tiempo_Produccion.value = c.Tiempo_Produccion;
+  Temperatura.value = c.Temperatura;
+  Humedad.value = c.Humedad;
+  Lluvias.value = c.Lluvias;
+  Velocidad_Viento.value = c.Velocidad_Viento;
+  ID_Producto.value = c.ID_Producto;
+
+  abrirFormulario();
 };
 
-// ===============================================
-// ELIMINAR
-// ===============================================
-window.eliminar = function (id) {
-  if (!confirm("¿Seguro que deseas eliminar esta característica?")) return;
+/* ============================
+   ELIMINAR
+============================ */
+window.eliminar = async id => {
+  if (!confirm("¿Eliminar característica?")) return;
 
-  data = data.filter(c => c.id !== id);
-  renderTabla();
-  showMessage("🗑️ Registro eliminado");
+  await fetch(`${API}/${id}`, { method: "DELETE" });
+  cargarCarac();
 };
 
+/* ============================
+   FORMULARIO FLOTANTE
+============================ */
+const overlay = document.getElementById("formOverlay");
+const openBtn = document.getElementById("toggleFormBtn");
+const closeBtn = document.getElementById("closeFormBtn");
 
+function abrirFormulario() {
+  overlay.style.display = "flex";
+}
+function cerrarFormulario() {
+  overlay.style.display = "none";
+}
+
+openBtn.addEventListener("click", abrirFormulario);
+closeBtn.addEventListener("click", cerrarFormulario);
+
+/* ============================
+   MODO OSCURO
+============================ */
+document.getElementById("themeToggle").onclick = () =>
+  document.body.classList.toggle("dark");
+
+/* ============================
+   VOLVER
+============================ */
+document.getElementById("btnBack").onclick = () => history.back();
+
+/* ============================
+   INICIO
+============================ */
+window.onload = cargarCarac;
