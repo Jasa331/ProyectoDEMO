@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Características del Producto</title>
+  <link rel="stylesheet" href="../css/Caracteristicas_producto.css">
+  <script src="../js/caracteristicas_producto.js" defer></script>
+</head>
+<body>
+
+  <!-- Botones flotantes -->
+  <button id="themeToggle" class="theme-btn">🌗</button>
+  <button id="btnBack">↩</button>
+
+  <div class="container">
+
+    <!-- Botón para mostrar formulario flotante -->
+    <button id="toggleFormBtn" class="toggle-form-btn">➕ Nueva Característica</button>
+
+    <!-- FORMULARIO FLOTANTE -->
+    <div class="form-overlay" id="formOverlay">
+      <div class="form-container">
+        <button class="close-btn" id="closeFormBtn">✖</button>
+        <h2>🧪 Características del Producto</h2>
+        <p id="mensaje"></p>
+        <form id="formCarac">
+          <input type="hidden" id="ID_Caracteristica">
+
+          <div class="row">
+            <div class="field">
+              <label>Unidad de Medida:</label>
+              <input type="text" id="Unidad_Medida" required>
+            </div>
+            <div class="field">
+              <label>Nombre:</label>
+              <input type="text" id="Nombre" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>Cantidad Máxima:</label>
+              <input type="number" id="Cantidad_Maxima" required>
+            </div>
+            <div class="field">
+              <label>Cantidad Mínima:</label>
+              <input type="number" id="Cantidad_Minima" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>Tiempo de Producción:</label>
+              <input type="text" id="Tiempo_Produccion" required>
+            </div>
+            <div class="field">
+              <label>Temperatura:</label>
+              <input type="number" id="Temperatura" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>Humedad:</label>
+              <input type="number" id="Humedad" required>
+            </div>
+            <div class="field">
+              <label>Lluvias:</label>
+              <input type="text" id="Lluvias" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label>Velocidad del Viento:</label>
+              <input type="text" id="Velocidad_Viento" required>
+            </div>
+            <div class="field">
+              <label>ID Producto:</label>
+              <input type="number" id="ID_Producto" required>
+            </div>
+          </div>
+
+          <button type="submit">Guardar</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- TABLA DE CARACTERÍSTICAS -->
+    <div class="tabla-container">
+      <h3>📋 Lista de Características</h3>
+      <table id="tablaCarac">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Unidad</th>
+            <th>Nombre</th>
+            <th>Cant Max</th>
+            <th>Cant Min</th>
+            <th>Tiempo</th>
+            <th>Temp</th>
+            <th>Humedad</th>
+            <th>Lluvias</th>
+            <th>Viento</th>
+            <th>ID Producto</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+  </div>
+</body>
+</html>
+
+
+

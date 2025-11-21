@@ -1,0 +1,293 @@
+/* ============================================================
+   PALETA DE COLORES - MODO CLARO Y OSCURO
+============================================================ */
+
+/* --- Modo Claro --- */
+:root {
+  --verde-principal: #2e7d32;
+  --verde-oscuro: #1b5e20;
+  --verde-suave: #a5d6a7;
+
+  --fondo: #f4f4f4;
+  --card: #ffffff;
+  --borde: #dddddd;
+
+  --texto: #212121;
+  --texto-claro: #ffffff;
+
+  --shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  --radius: 12px;
+  --transition: all 0.3s ease;
+}
+
+/* --- Modo Oscuro --- */
+body.dark {
+  --verde-principal: #74BE46;
+  --verde-oscuro: #91D15D;
+  --verde-suave: #243847;
+
+  --fondo: #111827;
+  --card: #1A202C;
+  --borde: #505050;
+
+  --texto: #E5E7EB;
+  --texto-claro: #ffffff;
+
+  --shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Aplicación General --- */
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  transition: var(--transition);
+  min-height: 100vh;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+.card, .form-container, .tabla-container, .form-wrapper {
+  background: var(--card);
+  color: var(--texto);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+  border: 1px solid var(--borde);
+}
+
+/* Inputs y Selects */
+input, select, textarea {
+  background: var(--verde-suave);
+  color: var(--texto);
+  border: 1px solid var(--verde-oscuro);
+  border-radius: var(--radius);
+  transition: var(--transition);
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--verde-principal);
+}
+
+/* Botones */
+button, .btn, .toggle-form-btn {
+  background: var(--verde-principal);
+  color: var(--texto-claro);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+button:hover, .btn:hover, .toggle-form-btn:hover {
+  background: var(--verde-oscuro);
+}
+
+/* Tabla */
+table th {
+  background: var(--verde-principal);
+  color: var(--texto-claro);
+}
+
+table tr:hover {
+  background: var(--verde-suave);
+}
+
+/* ============================================================
+   RESET
+============================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* ============================================================
+   BOTONES FLOTANTES
+============================================================ */
+#themeToggle, #btnBack {
+  position: fixed;
+  top: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--verde-principal);
+  color: var(--texto-claro);
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  font-size: 18px;
+}
+
+#themeToggle {
+  right: 20px;
+}
+
+#btnBack {
+  left: 20px;
+}
+
+/* ============================================================
+   CONTENEDOR
+============================================================ */
+.container {
+  max-width: 1200px;
+  margin: 90px auto 0;
+}
+
+/* ============================================================
+   BOTÓN NUEVA CARACTERÍSTICA
+============================================================ */
+.toggle-form-btn {
+  background: var(--verde-principal);
+  color: var(--texto-claro);
+  border: none;
+  padding: 12px 18px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  margin-bottom: 25px;
+  transition: 0.2s;
+}
+
+.toggle-form-btn:hover {
+  background: var(--verde-oscuro);
+  transform: scale(1.03);
+}
+
+/* ============================================================
+   FORMULARIO FLOTANTE
+============================================================ */
+.form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(4px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+.form-overlay.active {
+  display: flex;
+}
+
+/* caja del formulario */
+.form-container {
+  background: var(--card);
+  color: var(--texto);
+  width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 25px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  animation: popIn 0.25s ease-out;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.form-container h2 {
+  text-align: center;
+  color: var(--verde-oscuro);
+  margin-bottom: 15px;
+}
+
+/* contenedor horizontal */
+.row {
+  display: flex;
+  gap: 15px;
+}
+
+.row .field {
+  flex: 1;
+}
+
+/* inputs */
+label {
+  font-weight: bold;
+  margin-top: 10px;
+  display: block;
+}
+
+input {
+  width: 100%;
+  padding: 7px;
+  margin-top: 4px;
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+}
+
+/* BOTÓN GUARDAR */
+form button {
+  margin-top: 18px;
+  width: 100%;
+  background: var(--verde-principal);
+  color: var(--texto-claro);
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+form button:hover {
+  background: var(--verde-oscuro);
+}
+
+/* ============================================================
+   TABLA
+============================================================ */
+.tabla-container {
+  margin-top: 30px;
+  background: var(--card);
+  padding: 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+thead {
+  background: var(--verde-principal);
+  color: var(--texto-claro);
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid var(--borde);
+}
+
+tbody tr:hover {
+  background: var(--verde-suave);
+}
+
+/* ============================================================
+   BOTÓN CERRAR
+============================================================ */
+.close-btn {
+  background: crimson;
+  color: var(--texto-claro);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  float: right;
+  margin-bottom: 10px;
+}
+
+.close-btn:hover {
+  background: rgb(170, 0, 35);
+}
