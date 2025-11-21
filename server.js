@@ -337,12 +337,6 @@ app.get("/calendario", async (req, res) => {
 });
 
 
-
-
-
-
-
-
 // Insertar un nuevo registro
 app.post("/calendario", async (req, res) => {
   try {
@@ -389,6 +383,91 @@ app.delete("/calendario/:id", async (req, res) => {
   }
 });
 
+// =============================
+// RUTAS DE PRODUCTO
+// =============================
+
+// Obtener todos los productos
+app.get("/producto", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM Producto");
+    res.json(rows);
+  } catch (err) {
+    console.error("Error en GET /producto:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Obtener un producto por ID
+app.get("/producto/:id", async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM Producto WHERE ID_Producto = ?",
+      [req.params.id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "Producto no encontrado" });
+    }
+
+    res.json(rows[0]);
+  } catch (err) {
+    console.error("Error en GET /producto/:id:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Crear producto
+app.post("/producto", async (req, res) => {
+  try {
+    const { Nombre, Stock, Precio, ID_Usuario } = req.body;
+
+    await pool.query(
+      `INSERT INTO Producto (Nombre, Stock, Precio, ID_Usuario)
+       VALUES (?, ?, ?, ?)`,
+      [Nombre, Stock, Precio, ID_Usuario]
+    );
+
+    res.json({ ok: true, message: "Producto creado correctamente" });
+  } catch (err) {
+    console.error("Error en POST /producto:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Actualizar producto
+app.put("/producto/:id", async (req, res) => {
+  try {
+    const { Nombre, Stock, Precio } = req.body;
+
+    await pool.query(
+      `UPDATE Producto 
+       SET Nombre=?, Stock=?, Precio=? 
+       WHERE ID_Producto=?`,
+      [Nombre, Stock, Precio, req.params.id]
+    );
+
+    res.json({ ok: true, message: "Producto actualizado correctamente" });
+  } catch (err) {
+    console.error("Error en PUT /producto/:id:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Eliminar producto
+app.delete("/producto/:id", async (req, res) => {
+  try {
+    await pool.query(
+      "DELETE FROM Producto WHERE ID_Producto = ?",
+      [req.params.id]
+    );
+
+    res.json({ ok: true, message: "Producto eliminado" });
+  } catch (err) {
+    console.error("Error en DELETE /producto/:id:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 
 app.listen(port, () => console.log(`✅ Servidor corriendo en http://localhost:${port}`));
