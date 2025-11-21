@@ -1,0 +1,207 @@
+/* =========================================================
+   VARIABLES
+========================================================= */
+:root {
+  --primary: #5AA82E;
+  --primary-dark: #4D9227;
+  --secondary: #dce6d3;
+  --background: #e8e8e8;
+  --card: #ffffff;
+  --text-main: #222;
+  --text-muted: #666;
+  --radius: 12px;
+  --shadow: 0 4px 10px rgba(0,0,0,0.15);
+  --transition: .3s ease;
+}
+
+[data-theme="dark"] {
+  --primary: #74BE46;
+  --primary-dark: #91D15D;
+  --secondary: #243847;
+  --background: #111827;
+  --card: #1A202C;
+  --text-main: #E5E7EB;
+  --text-muted: #9CA3AF;
+  --shadow: 0 4px 14px rgba(0,0,0,0.45);
+}
+
+/* =========================================================
+   BODY
+========================================================= */
+body {
+  margin: 0;
+  padding: 40px;
+  font-family: 'Poppins', sans-serif;
+  background: var(--background);
+  color: var(--text-main);
+  transition: var(--transition);
+  display: flex;
+  justify-content: center;
+}
+
+/* =========================================================
+   BOTONES FLOTANTES — CADA UNO EN UN EXTREMO
+========================================================= */
+#themeToggle, 
+#btnBack {
+  position: fixed;
+  top: 20px;          /* ambos alineados a la misma altura */
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* ---- BOTÓN DE TEMA (lado derecho) ---- */
+#themeToggle {
+  right: 20px;
+  background: var(--primary);
+  color: #fff;
+}
+#themeToggle:hover {
+  background: var(--primary-dark);
+}
+
+/* ---- BOTÓN DE VOLVER (lado izquierdo) ---- */
+#btnBack {
+  left: 20px;
+  background: #333;
+  color: #fff;
+}
+#btnBack:hover {
+  background: #111;
+}
+
+
+/* =========================================================
+   CONTENEDORES
+========================================================= */
+.container {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* =========================================================
+   FORMULARIO
+========================================================= */
+.form-container {
+  flex: 0 0 330px;
+  background: var(--card);
+  padding: 25px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.form-container h2 {
+  text-align: center;
+  color: var(--primary-dark);
+  margin-bottom: 15px;
+}
+
+#mensaje {
+  text-align: center;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: var(--primary-dark);
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: var(--radius);
+  border: 1px solid #ccc;
+  background: var(--secondary);
+  color: var(--text-main);
+  transition: var(--transition);
+}
+
+input:focus {
+  border-color: var(--primary);
+  outline: none;
+  background: #fff;
+}
+
+button[type="submit"] {
+  width: 100%;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: var(--radius);
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: var(--transition);
+  box-shadow: var(--shadow);
+}
+
+button[type="submit"]:hover {
+  background: var(--primary-dark);
+  transform: scale(1.02);
+}
+
+/* =========================================================
+   TABLA
+========================================================= */
+.tabla-container {
+  flex: 1;
+  background: var(--card);
+  padding: 25px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.tabla-container h3 {
+  text-align: center;
+  color: var(--primary-dark);
+  margin-bottom: 15px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+th {
+  background: var(--primary);
+  color: #fff;
+}
+
+tr:nth-child(even) {
+  background: var(--secondary);
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+@media(max-width: 900px) {
+  .container {
+    flex-direction: column;
+  }
+}
+
+

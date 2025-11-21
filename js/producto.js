@@ -86,6 +86,35 @@ window.eliminar = async function (id) {
   cargarProductos();
 };
 
+/* =========================================================
+   CAMBIO DE TEMA (CLARO / OSCURO)
+========================================================= */
+const themeToggle = document.getElementById("themeToggle");
+
+// Cargar tema guardado
+const savedTheme = localStorage.getItem("theme") || "light";
+document.documentElement.setAttribute("data-theme", savedTheme);
+themeToggle.textContent = savedTheme === "dark" ? "☀️" : "🌙";
+
+// Cambiar tema
+themeToggle.addEventListener("click", () => {
+  const current = document.documentElement.getAttribute("data-theme");
+  const newTheme = current === "dark" ? "light" : "dark";
+
+  document.documentElement.setAttribute("data-theme", newTheme);
+  localStorage.setItem("theme", newTheme);
+
+  themeToggle.textContent = newTheme === "dark" ? "☀️" : "🌙";
+});
+
+/* =========================================================
+   BOTÓN VOLVER
+========================================================= */
+document.getElementById("btnBack").addEventListener("click", () => {
+  window.history.back();
+});
+
+
 // =============================
 // 🚀 Inicio
 // =============================
