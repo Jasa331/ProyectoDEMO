@@ -1,121 +1,144 @@
-const API = "http://localhost:3000/producto";
-const tbody = document.querySelector("#tablaProductos tbody");
-const form = document.getElementById("formProducto");
-const msg = document.getElementById("mensaje");
-
-let editId = null;
-
 // =============================
-// 🔄 Cargar productos
+// CREAR / ACTUALIZAR PRODUCTO
 // =============================
-async function cargarProductos() {
-  const res = await fetch(API);
-  const data = await res.json();
-
-  tbody.innerHTML = "";
-
-  data.forEach(p => {
-    const fila = document.createElement("tr");
-    fila.innerHTML = `
-      <td>${p.ID_Producto}</td>
-      <td>${p.Nombre}</td>
-      <td>${p.Stock}</td>
-      <td>${p.Precio}</td>
-      <td>
-        <button onclick="editar(${p.ID_Producto})">✏️</button>
-        <button onclick="eliminar(${p.ID_Producto})">🗑️</button>
-      </td>
-    `;
-    tbody.appendChild(fila);
-  });
-}
-
-// =============================
-// ➕ Crear / Actualizar
-// =============================
-form.addEventListener("submit", async (e) => {
+document.getElementById("formProducto").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const producto = {
-    Nombre: document.getElementById("Nombre").value,
+    Nombre: document.getElementById("Nombre").value.trim(),
     Stock: document.getElementById("Stock").value,
     Precio: document.getElementById("Precio").value,
-    ID_Usuario: localStorage.getItem("ID_Usuario") || 1, // Ajusta según tu login
+    ID_Usuario: localStorage.getItem("ID_Usuario") || 1,
   };
 
-  const url = editId ? `${API}/${editId}` : API;
-  const method = editId ? "PUT" : "POST";
+  const id = document.getElementById("ID_Producto").value;
+  const url = id ? `http://localhost:3000/producto/${id}` : `http://localhost:3000/producto`;
+  const method = id ? "PUT" : "POST";
 
-  const res = await fetch(url, {
-    method,
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(producto)
-  });
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(producto),
+    });
 
-  const data = await res.json();
-  msg.textContent = data.message;
+    const data = await res.json();
+    document.getElementById("mensaje").textContent =
+      data.ok ? "Producto guardado correctamente" : "Error al guardar el producto";
 
-  form.reset();
-  editId = null;
-  cargarProductos();
+    document.getElementById("formProducto").reset();
+    document.getElementById("ID_Producto").value = "";
+    cargarProductos();
+  } catch (err) {
+    console.error("Error al guardar producto:", err);
+    document.getElementById("mensaje").textContent = "Error de conexión con el servidor";
+  }
 });
 
 // =============================
-// ✏️ Editar
+// CARGAR PRODUCTOS
 // =============================
-window.editar = async function (id) {
-  editId = id;
+async function cargarProductos() {
+  try {
+    const res = await fetch("http://localhost:3000/producto");
+    if (!res.ok) throw new Error("Error al obtener datos");
+    const data = await res.json();
 
-  const res = await fetch(`${API}/${id}`);
-  const p = await res.json();
+    const tbody = document.querySelector("#tablaProductos tbody");
+    tbody.innerHTML = "";
 
-  document.getElementById("ID_Producto").value = p.ID_Producto;
-  document.getElementById("Nombre").value = p.Nombre;
-  document.getElementById("Stock").value = p.Stock;
-  document.getElementById("Precio").value = p.Precio;
-};
+    if (data.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5">No hay productos registrados</td></tr>`;
+      return;
+    }
+
+    data.forEach((p) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${p.ID_Producto}</td>
+        <td>${p.Nombre}</td>
+        <td>${p.Stock}</td>
+        <td>${p.Precio}</td>
+        <td>
+          <button onclick="editarProducto(${p.ID_Producto})">✏️</button>
+          <button onclick="eliminarProducto(${p.ID_Producto})">🗑️</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  } catch (err) {
+    console.error("Error cargando productos:", err);
+  }
+}
 
 // =============================
-// 🗑️ Eliminar
+// EDITAR PRODUCTO
 // =============================
-window.eliminar = async function (id) {
+async function editarProducto(id) {
+  try {
+    const res = await fetch(`http://localhost:3000/producto/${id}`);
+    const p = await res.json();
+
+    document.getElementById("ID_Producto").value = p.ID_Producto;
+    document.getElementById("Nombre").value = p.Nombre;
+    document.getElementById("Stock").value = p.Stock;
+    document.getElementById("Precio").value = p.Precio;
+  } catch (err) {
+    console.error("Error al editar:", err);
+  }
+}
+
+// =============================
+// ELIMINAR PRODUCTO
+// =============================
+async function eliminarProducto(id) {
   if (!confirm("¿Eliminar producto?")) return;
 
-  const res = await fetch(`${API}/${id}`, { method: "DELETE" });
+  try {
+    await fetch(`http://localhost:3000/producto/${id}`, {
+      method: "DELETE",
+    });
 
-  cargarProductos();
-};
-
-/* =========================================================
-   CAMBIO DE TEMA (CLARO / OSCURO)
-========================================================= */
-const themeToggle = document.getElementById("themeToggle");
-
-// Cargar tema guardado
-const savedTheme = localStorage.getItem("theme") || "light";
-document.documentElement.setAttribute("data-theme", savedTheme);
-themeToggle.textContent = savedTheme === "dark" ? "☀️" : "🌙";
-
-// Cambiar tema
-themeToggle.addEventListener("click", () => {
-  const current = document.documentElement.getAttribute("data-theme");
-  const newTheme = current === "dark" ? "light" : "dark";
-
-  document.documentElement.setAttribute("data-theme", newTheme);
-  localStorage.setItem("theme", newTheme);
-
-  themeToggle.textContent = newTheme === "dark" ? "☀️" : "🌙";
-});
-
-/* =========================================================
-   BOTÓN VOLVER
-========================================================= */
-document.getElementById("btnBack").addEventListener("click", () => {
-  window.history.back();
-});
-
+    cargarProductos();
+  } catch (err) {
+    console.error("Error al eliminar:", err);
+  }
+}
 
 // =============================
-// 🚀 Inicio
+// INICIO
 // =============================
 window.addEventListener("DOMContentLoaded", cargarProductos);
+
+
+// ====================================================
+// MODO OSCURO / CLARO
+// ====================================================
+const themeToggle = document.getElementById("themeToggle");
+const body = document.body;
+
+const savedTheme = localStorage.getItem("theme");
+
+if (savedTheme === "dark") {
+  body.setAttribute("data-theme", "dark");
+  themeToggle.textContent = "☀️";
+} else {
+  body.removeAttribute("data-theme");
+  themeToggle.textContent = "🌙";
+}
+
+themeToggle.addEventListener("click", () => {
+  const isDark = body.getAttribute("data-theme") === "dark";
+
+  if (isDark) {
+    body.removeAttribute("data-theme");
+    localStorage.setItem("theme", "light");
+    themeToggle.textContent = "🌙";
+  } else {
+    body.setAttribute("data-theme", "dark");
+    localStorage.setItem("theme", "dark");
+    themeToggle.textContent = "☀️";
+  }
+});
+
+
