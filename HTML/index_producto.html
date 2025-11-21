@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Productos</title>
+  <link rel="stylesheet" href="../css/style_producto.css">
+  <script src="../js/Producto.js" defer></script>
+</head>
+<body>
+
+  <h1>📦 Gestión de Productos</h1>
+
+  <p id="mensaje"></p>
+
+  <!-- FORMULARIO -->
+  <form id="formProducto">
+    <input type="hidden" id="ID_Producto">
+
+    <label>Nombre del producto:</label>
+    <input type="text" id="Nombre" required>
+
+    <label>Stock:</label>
+    <input type="number" id="Stock" required>
+
+    <label>Precio:</label>
+    <input type="number" step="0.01" id="Precio" required>
+
+    <button type="submit">Guardar</button>
+  </form>
+
+  <h2>📋 Lista de productos</h2>
+
+  <table id="tablaProductos" border="1">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Stock</th>
+        <th>Precio</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+</body>
+</html>

@@ -11,7 +11,7 @@ const port = process.env.PORT || 3000;
 const saltRounds = 10;
 
 // Middlewares
-app.use(cors({ origin: "http://127.0.0.1:5500" }));
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "HTML")));
 app.use("/css", express.static(path.join(__dirname, "css")));
@@ -316,87 +316,138 @@ app.get("/insumos", async (req, res) => {
   }
 });
 
+// =============================
+// RUTAS DEL CALENDARIO AGRÍCOLA
+// =============================
 
-
-// Obtener todos los registros del calendario
-app.get("/api/calendario", (req, res) => {
-  const query = "SELECT * FROM Calendario_Siembra";
-  db.query(query, (err, result) => {
-    if (err) {
-      console.error("❌ Error al obtener calendario:", err);
-      return res.status(500).json({ error: "Error al obtener los registros" });
-    }
-    res.json(result);
-  });
-});
-
-// Agregar nuevo registro al calendario
-app.post("/api/calendario", (req, res) => {
-  const { ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha } = req.body;
-
-  if (!ID_Producto || !Fecha_Inicio_Siembra || !Fecha_Fin_Siembra || !Fecha_Cosecha) {
-    return res.status(400).json({ error: "Faltan datos requeridos" });
+// Obtener todos los registros
+app.get("/calendario", async (req, res) => {
+  try {
+    const [rows] = await pool.query(`
+      SELECT cs.ID_Calendario, cs.ID_Producto, p.Nombre AS Producto,
+             cs.Fecha_Inicio_Siembra, cs.Fecha_Fin_Siembra, cs.Fecha_Cosecha
+      FROM Calendario_Siembra cs
+      LEFT JOIN Producto p ON cs.ID_Producto = p.ID_Producto
+    `);
+    res.json(rows);
+  } catch (err) {
+    console.error("Error al obtener calendario:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
   }
-
-  const query = `
-    INSERT INTO Calendario_Siembra (ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha)
-    VALUES (?, ?, ?, ?)
-  `;
-
-  db.query(query, [ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha], (err, result) => {
-    if (err) {
-      console.error("❌ Error al insertar registro:", err);
-      return res.status(500).json({ error: "Error al insertar registro" });
-    }
-    res.json({ message: "✅ Registro agregado correctamente", id: result.insertId });
-  });
 });
 
-// Actualizar un registro del calendario
-app.put("/api/calendario/:id", (req, res) => {
-  const { id } = req.params;
-  const { Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha } = req.body;
 
-  if (!Fecha_Inicio_Siembra || !Fecha_Fin_Siembra || !Fecha_Cosecha) {
-    return res.status(400).json({ error: "Faltan datos requeridos" });
+
+
+
+
+
+
+// Insertar un nuevo registro
+app.post("/calendario", async (req, res) => {
+  try {
+    const { ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha } = req.body;
+    await pool.query(
+      `INSERT INTO Calendario_Siembra (ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha)
+       VALUES (?, ?, ?, ?)`,
+      [ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha]
+    );
+    res.json({ ok: true, message: "Registro agregado correctamente" });
+  } catch (err) {
+    console.error("Error al insertar:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
   }
-
-  const query = `
-    UPDATE Calendario_Siembra 
-    SET Fecha_Inicio_Siembra = ?, Fecha_Fin_Siembra = ?, Fecha_Cosecha = ?
-    WHERE ID_Calendario = ?
-  `;
-
-  db.query(query, [Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha, id], (err, result) => {
-    if (err) {
-      console.error("❌ Error al actualizar registro:", err);
-      return res.status(500).json({ error: "Error al actualizar registro" });
-    }
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: "Registro no encontrado" });
-    }
-    res.json({ message: "✅ Calendario actualizado correctamente" });
-  });
 });
 
-// Eliminar un registro del calendario
-app.delete("/api/calendario/:id", (req, res) => {
-  const { id } = req.params;
-
-  const query = "DELETE FROM Calendario_Siembra WHERE ID_Calendario = ?";
-
-  db.query(query, [id], (err, result) => {
-    if (err) {
-      console.error("❌ Error al eliminar registro:", err);
-      return res.status(500).json({ error: "Error al eliminar registro" });
-    }
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: "Registro no encontrado" });
-    }
-    res.json({ message: "🗑️ Registro eliminado correctamente" });
-  });
+// Actualizar un registro
+app.put("/calendario/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha } = req.body;
+    await pool.query(
+      `UPDATE Calendario_Siembra
+       SET ID_Producto=?, Fecha_Inicio_Siembra=?, Fecha_Fin_Siembra=?, Fecha_Cosecha=?
+       WHERE ID_Calendario=?`,
+      [ID_Producto, Fecha_Inicio_Siembra, Fecha_Fin_Siembra, Fecha_Cosecha, id]
+    );
+    res.json({ ok: true, message: "Registro actualizado correctamente" });
+  } catch (err) {
+    console.error("Error al actualizar:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
 });
 
+// Eliminar un registro
+app.delete("/calendario/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query("DELETE FROM Calendario_Siembra WHERE ID_Calendario=?", [id]);
+    res.json({ ok: true, message: "Registro eliminado correctamente" });
+  } catch (err) {
+    console.error("Error al eliminar:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+// Obtener todos los productos
+router.get("/", async (req, res) => {
+  const [rows] = await pool.query("SELECT * FROM Producto");
+  res.json(rows);
+});
+
+// Obtener un producto por ID
+router.get("/:id", async (req, res) => {
+  const [rows] = await pool.query(
+    "SELECT * FROM Producto WHERE ID_Producto = ?",
+    [req.params.id]
+  );
+  res.json(rows[0]);
+});
+
+// Crear un producto
+router.post("/", async (req, res) => {
+  const { Nombre, Stock, Precio, ID_Usuario } = req.body;
+
+  await pool.query(
+    `INSERT INTO Producto (Nombre, Stock, Precio, ID_Usuario)
+     VALUES (?, ?, ?, ?)`,
+    [Nombre, Stock, Precio, ID_Usuario]
+  );
+
+  res.json({ message: "Producto creado correctamente" });
+});
+
+// Actualizar un producto
+router.put("/:id", async (req, res) => {
+  const { Nombre, Stock, Precio } = req.body;
+
+  await pool.query(
+    `UPDATE Producto SET Nombre=?, Stock=?, Precio=?
+     WHERE ID_Producto=?`,
+    [Nombre, Stock, Precio, req.params.id]
+  );
+
+  res.json({ message: "Producto actualizado correctamente" });
+});
+
+// Eliminar un producto
+router.delete("/:id", async (req, res) => {
+  await pool.query("DELETE FROM Producto WHERE ID_Producto=?", [
+    req.params.id,
+  ]);
+
+  res.json({ message: "Producto eliminado correctamente" });
+});
 
 
 
