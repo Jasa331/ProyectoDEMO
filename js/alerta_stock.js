@@ -18,60 +18,58 @@ let insumos = [];
 let editingId = null;
 
 // ================================
-// 📋 MANEJO DEL FORMULARIO
+// 📋 FORMULARIO
 // ================================
 const form = document.getElementById("formAdd");
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  const token = localStorage.getItem("token");
+  const headers = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = "Bearer " + token;
+
+  // construir payload SIN ID_Usuario
   const insumo = {
     Nombre: document.getElementById("nombre").value.trim(),
     Tipo: document.getElementById("tipo").value.trim() || "General",
     Descripcion: document.getElementById("descripcion").value.trim() || "",
     Unidad_Medida: document.getElementById("unidad_medida").value.trim() || "kg",
-    Cantidad: parseInt(document.getElementById("cantidad").value) || 0,
+    Cantidad: parseInt(document.getElementById("cantidad").value, 10) || 0,
     Fecha_Caducidad: document.getElementById("fecha_caducidad").value || null,
-    Fecha_Registro: new Date().toISOString().slice(0, 19).replace("T", " "),
-    ID_Ingreso_Insumo: null,
-    ID_Usuario: null,
+    Fecha_Registro: new Date().toISOString().slice(0,19).replace('T',' '),
+    ID_Ingreso_Insumo: null
   };
 
+  console.log("Token usado:", token);
+
+  console.log("Payload enviado al backend:", insumo);
+
   try {
-    if (editingId) {
-      // EDITAR INSUMO EXISTENTE
-      const response = await fetch(`${API_URL}/${editingId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(insumo),
-      });
-      const result = await response.json();
-      if (result.ok) {
-        showToast("✏️ Insumo actualizado");
-        editingId = null;
-        form.reset();
-        obtenerInsumos();
-      } else {
-        showToast("⚠️ Error al actualizar insumo");
-      }
-    } else {
-      // AGREGAR NUEVO INSUMO
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(insumo),
-      });
-      const result = await response.json();
-      if (result.ok) {
-        showToast("✅ Insumo agregado correctamente");
-        form.reset();
-        obtenerInsumos();
-      } else {
-        showToast("⚠️ Error al agregar insumo");
-      }
+    const url = editingId ? `${API_URL}/${editingId}` : API_URL;
+    const method = editingId ? "PUT" : "POST";
+
+    const res = await fetch(url, {
+      method,
+      headers,
+      body: JSON.stringify(insumo)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error("❌ Error al guardar insumo:", data);
+      showToast(data.error || "Error al guardar insumo");
+      return;
     }
-  } catch (error) {
-    console.error("Error al enviar insumo:", error);
+
+    showToast(editingId ? "Insumo actualizado" : "Insumo agregado");
+    form.reset();
+    editingId = null;
+    obtenerInsumos();
+
+  } catch (err) {
+    console.error("Fetch error:", err);
     showToast("❌ Error de conexión con el servidor");
   }
 });
@@ -87,7 +85,7 @@ async function obtenerInsumos() {
     render();
   } catch (err) {
     console.error("Error al obtener insumos:", err);
-    showToast("⚠️ No se pudo obtener el listado");
+    showToast("⚠ No se pudo obtener el listado");
   }
 }
 
@@ -99,12 +97,14 @@ function editInsumo(id) {
   if (!insumo) return;
 
   editingId = id;
+
   document.getElementById("nombre").value = insumo.Nombre;
   document.getElementById("tipo").value = insumo.Tipo;
   document.getElementById("descripcion").value = insumo.Descripcion;
   document.getElementById("unidad_medida").value = insumo.Unidad_Medida;
   document.getElementById("cantidad").value = insumo.Cantidad;
-  document.getElementById("fecha_caducidad").value = insumo.Fecha_Caducidad || "";
+  document.getElementById("fecha_caducidad").value =
+    insumo.Fecha_Caducidad || "";
 
   showToast("✏️ Modo edición activado");
 }
@@ -118,11 +118,12 @@ async function deleteInsumo(id) {
   try {
     const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
     const result = await response.json();
+
     if (result.ok) {
       showToast("🗑️ Insumo eliminado");
       obtenerInsumos();
     } else {
-      showToast("⚠️ Error al eliminar insumo");
+      showToast("⚠ Error al eliminar insumo");
     }
   } catch (err) {
     console.error("Error al eliminar insumo:", err);
@@ -138,12 +139,14 @@ function render() {
   tbody.innerHTML = "";
 
   if (!insumos.length) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">🚫 No hay insumos</td></tr>`;
+    tbody.innerHTML = `
+      <tr><td colspan="7" style="text-align:center;">🚫 No hay insumos</td></tr>`;
     return;
   }
 
   insumos.forEach((i) => {
     const tr = document.createElement("tr");
+
     tr.innerHTML = `
       <td>${i.Nombre}</td>
       <td>${i.Tipo || "—"}</td>
@@ -154,14 +157,14 @@ function render() {
       <td>
         <button class="btn" onclick="editInsumo(${i.ID_Insumo})">✏️</button>
         <button class="btn" style="background:#ef4444" onclick="deleteInsumo(${i.ID_Insumo})">🗑️</button>
-      </td>
-    `;
+      </td>`;
+    
     tbody.appendChild(tr);
   });
 }
 
 // ================================
-// 🌙/☀️ MODO OSCURO / CLARO
+// 🌙 MODO OSCURO / CLARO
 // ================================
 const themeToggle = document.getElementById("themeToggle");
 themeToggle.addEventListener("click", () => {

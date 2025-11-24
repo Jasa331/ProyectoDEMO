@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const nombre = datos?.usuario || "Empleado";
   const saludo = document.createElement("div");
   saludo.className = "saludo-panel";
-  saludo.textContent = `HOLA ${nombre.toUpperCase()}, bienvenido al panel de EMPLEADO.`;
+  saludo.textContent = `HOLA, bienvenido al panel de Agricultor.`;
 
   const content = document.querySelector(".content");
   if (content) content.prepend(saludo);

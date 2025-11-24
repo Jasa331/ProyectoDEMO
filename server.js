@@ -5,6 +5,8 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const pool = require('./config/db');
 const nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_change_me';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -92,62 +94,58 @@ app.delete('/usuarios/:id', async (req, res) => {
   }
 });
 
+// Middleware para verificar token
+function authenticateToken(req, res, next) {
+  try {
+    const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+    if (!authHeader) {
+      console.warn('authenticateToken: falta Authorization header');
+      return res.status(401).json({ ok: false, error: 'Token requerido' });
+    }
+
+    const parts = authHeader.split(' ');
+    if (parts.length !== 2 || parts[0] !== 'Bearer') {
+      console.warn('authenticateToken: header mal formado:', authHeader);
+      return res.status(401).json({ ok: false, error: 'Formato Authorization inválido' });
+    }
+
+    const token = parts[1];
+    // log temporal para depuración
+    console.log('authenticateToken: token recibido (primeros 20 chars):', token?.slice(0,20));
+
+    jwt.verify(token, JWT_SECRET, (err, payload) => {
+      if (err) {
+        console.warn('authenticateToken: verificación falló:', err.message);
+        return res.status(403).json({ ok: false, error: 'Token inválido' });
+      }
+      req.user = payload;
+      next();
+    });
+  } catch (ex) {
+    console.error('authenticateToken excepción:', ex);
+    res.status(500).json({ ok: false, error: 'Error en autenticación' });
+  }
+}
+
+// Modificar /login: firmar token y devolverlo
 app.post('/login', async (req, res) => {
   try {
     const { Correo, Contrasena } = req.body;
-    if (!Correo || !Contrasena)
-      return res.status(400).json({ ok: false, error: "Faltan credenciales" });
+    if (!Correo || !Contrasena) return res.status(400).json({ ok: false, error: 'Faltan credenciales' });
 
-    const [rows] = await pool.query(
-      "SELECT ID_Usuario, Usuario_Nombre, Rol, Contrasena FROM Usuario WHERE Correo=?",
-      [Correo]
-    );
-
-    if (rows.length === 0)
-      return res.status(401).json({ ok: false, error: "Correo o contraseña incorrectos" });
+    const [rows] = await pool.query("SELECT ID_Usuario, Usuario_Nombre, Rol, Contrasena FROM usuario WHERE Correo = ?", [Correo]);
+    if (!rows || rows.length === 0) return res.status(401).json({ ok: false, error: 'Correo o contraseña incorrectos' });
 
     const user = rows[0];
     const match = await bcrypt.compare(Contrasena, user.Contrasena);
+    if (!match) return res.status(401).json({ ok: false, error: 'Correo o contraseña incorrectos' });
 
-    if (!match)
-      return res.status(401).json({ ok: false, error: "Correo o contraseña incorrectos" });
+    const payload = { ID_Usuario: user.ID_Usuario, Usuario_Nombre: user.Usuario_Nombre, Rol: user.Rol };
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '8h' });
 
-    delete user.Contrasena;
-    
-    try {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-
-      const mailOptions = {
-        from: `"Seguridad del Sistema" <${process.env.EMAIL_USER}>`,
-        to: Correo,
-        subject: "🔐 Nuevo inicio de sesión detectado",
-        html: `
-          <h2>Inicio de sesión exitoso</h2>
-          <p>Hola <b>${user.Usuario_Nombre}</b>,</p>
-          <p>Se detectó un inicio de sesión en tu cuenta el <b>${new Date().toLocaleString()}</b>.</p>
-          <p>Si fuiste tú, no es necesario hacer nada.</p>
-          <p>Si no reconoces esta actividad, cambia tu contraseña de inmediato.</p>
-          <hr/>
-          <p>Atentamente,<br>Equipo de Seguridad</p>
-        `,
-      };
-
-      await transporter.sendMail(mailOptions);
-      console.log(`📧 Correo enviado a ${Correo}`);
-    } catch (error) {
-      console.error("❌ Error al enviar correo:", error.message);
-    }
-
-    res.json({ ok: true, user });
-
+    res.json({ ok: true, user: payload, token });
   } catch (err) {
-    console.error("❌ Error en /login:", err.message);
+    console.error("Error /login:", err);
     res.status(500).json({ ok: false, error: err.message });
   }
 });
@@ -283,27 +281,62 @@ app.delete("/insumo/:id", async (req, res) => {
   }
 });
 
-// POST: insertar insumo
-app.post("/insumo", async (req, res) => {
+app.post("/insumo", authenticateToken, async (req, res) => {
   try {
     const {
-      Nombre, Tipo, Descripcion, Unidad_Medida, Cantidad,
-      Fecha_Caducidad, Fecha_Registro, ID_Ingreso_Insumo, ID_Usuario,
+      Nombre, Tipo, Descripcion, Unidad_Medida,
+      Cantidad, Fecha_Caducidad, Fecha_Registro, ID_Ingreso_Insumo
     } = req.body;
+
+    const ID_Usuario = req.user?.ID_Usuario;
+    if (!Nombre || typeof Cantidad === 'undefined' || !ID_Usuario) {
+      return res.status(400).json({ ok: false, error: "Faltan campos requeridos (Nombre, Cantidad, ID_Usuario)" });
+    }
 
     await pool.query(
       `INSERT INTO Insumo 
-      (Nombre, Tipo, Descripcion, Unidad_Medida, Cantidad, Fecha_Caducidad, Fecha_Registro, ID_Ingreso_Insumo, ID_Usuario)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (Nombre, Tipo, Descripcion, Unidad_Medida, Cantidad, Fecha_Caducidad, Fecha_Registro, ID_Ingreso_Insumo, ID_Usuario)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [Nombre, Tipo, Descripcion, Unidad_Medida, Cantidad, Fecha_Caducidad, Fecha_Registro, ID_Ingreso_Insumo, ID_Usuario]
     );
 
     res.json({ ok: true });
   } catch (err) {
-    console.error("Error al insertar insumo:", err.message);
+    console.error("Error al insertar insumo:", err);
+    // detectar FK para mensaje más claro
+    if (err.code === 'ER_NO_REFERENCED_ROW_2' || err.code === 'ER_NO_REFERENCED_ROW') {
+      return res.status(400).json({ ok: false, error: "ID_Usuario no existe en la tabla usuario" });
+    }
     res.status(500).json({ ok: false, error: err.message });
   }
 });
+
+// PUT: actualizar insumo (también tomar ID_Usuario desde token)
+app.put("/insumo/:id", authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      Nombre, Tipo, Descripcion, Unidad_Medida,
+      Cantidad, Fecha_Caducidad, Fecha_Registro, ID_Ingreso_Insumo
+    } = req.body;
+
+    const ID_Usuario = req.user?.ID_Usuario;
+    await pool.query(
+      `UPDATE Insumo SET Nombre=?, Tipo=?, Descripcion=?, Unidad_Medida=?, Cantidad=?,
+       Fecha_Caducidad=?, Fecha_Registro=?, ID_Ingreso_Insumo=?, ID_Usuario=? WHERE ID_Insumo=?`,
+      [Nombre, Tipo, Descripcion, Unidad_Medida, Cantidad, Fecha_Caducidad, Fecha_Registro, ID_Ingreso_Insumo, ID_Usuario, id]
+    );
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error("Error al actualizar insumo:", err);
+    if (err.code === 'ER_NO_REFERENCED_ROW_2' || err.code === 'ER_NO_REFERENCED_ROW') {
+      return res.status(400).json({ ok: false, error: "ID_Usuario no existe en la tabla usuario" });
+    }
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 
 // GET: listar todos los insumos
 app.get("/insumos", async (req, res) => {
