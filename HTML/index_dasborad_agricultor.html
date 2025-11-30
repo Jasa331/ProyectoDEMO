@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control | Agricultor</title>
-    
     <link rel="stylesheet" href="../css/style_desboard_agricultor.css">
     <link rel="stylesheet" href="../css/style_actualizacion_clima.css">
-    <script src="../js/mostar_agricutor.js"></script>
+    <script src="../js/daboard_agricultor.js" defer></script>
 </head>
 <body>
     
@@ -89,9 +88,18 @@
         </section>
 
         <section id="perfil" class="seccion" style="display:none;">
-            <h1>Perfil</h1>
-            <p>Sección de perfil del usuario.</p>
+        <h1>Perfil del Usuario</h1>
+
+        <div class="perfil-card">
+            <p><strong>Nombre:</strong> <span id="p_nombre"></span></p>
+            <p><strong>Apellido:</strong> <span id="p_apellido"></span></p>
+            <p><strong>Correo:</strong> <span id="p_correo"></span></p>
+            <p><strong>Teléfono:</strong> <span id="p_telefono"></span></p>
+            <p><strong>Dirección:</strong> <span id="p_direccion"></span></p>
+            <p><strong>Rol:</strong> <span id="p_rol"></span></p>
+        </div>
         </section>
+
         
     </main>
 
@@ -141,7 +149,6 @@
     <!-- Botón flotante para cambiar tema -->
     <button id="btnFlotante" title="Cambiar tema">🌗</button>
 
-    <script src="../js/daboard_agricultor.js" defer></script>
     <script src="../js/actualizacion_clima.js" defer></script>
 
     <!-- Script para cambio de tema -->

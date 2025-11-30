@@ -24,7 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("ID_Usuario", String(user.ID_Usuario));
-
+        localStorage.setItem("usuarioActivo", JSON.stringify(user));
+        
         // Normalizar y guardar rol
         const role = (user.Rol || user.rol || user.role || "").toString().toLowerCase();
         localStorage.setItem("role", role);
@@ -45,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
             break;
           default:
             // rol desconocido: llevar a un dashboard genérico o home
-            window.location.href = "/HTML/index_dasborad_agricultor.html";
+            window.location.href = "/HTML/index_inicio.html";
             break;
         }
       } else {

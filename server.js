@@ -150,6 +150,39 @@ app.post('/login', async (req, res) => {
   }
 });
 
+app.get("/perfil/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Usar 'pool' (el connection pool) y la tabla correcta 'Usuario'
+    const [rows] = await pool.query(
+      `SELECT 
+          ID_Usuario,
+          Usuario_Nombre,
+          Usuario_Apellido,
+          Telefono,
+          Direccion,
+          Correo,
+          Rol,
+          Estado,
+          Fecha_Registro,
+          Ultimo_Acceso
+       FROM Usuario 
+       WHERE ID_Usuario = ?`,
+      [id]
+    );
+
+    if (!rows || rows.length === 0) {
+      return res.status(404).json({ ok: false, error: "Usuario no encontrado" });
+    }
+
+    res.json({ ok: true, usuario: rows[0] });
+
+  } catch (error) {
+    console.error("ERROR PERFIL:", error);
+    res.status(500).json({ ok: false, error: "Error interno del servidor" });
+  }
+});
 
 // Cambiar contraseña
 app.post("/api/cambiar-contrasena", async (req, res) => {

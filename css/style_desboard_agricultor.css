@@ -229,3 +229,89 @@ button:active,
   outline: none !important;
   box-shadow: none !important;
 }
+
+/* ================================
+   SECCIÓN PERFIL - AGRICORD
+   Diseño Profesional
+================================ */
+
+/* Contenedor principal del perfil */
+#perfil {
+  padding: 30px;
+  animation: fadeIn var(--transition);
+}
+
+/* Título */
+#perfil h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Tarjeta del perfil */
+.perfil-card {
+  background: var(--card);
+  padding: 25px 30px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  max-width: 600px;
+  width: 100%;
+  transition: var(--transition);
+  border-left: 6px solid var(--primary);
+}
+
+/* Info (Nombre, Apellido, etc.) */
+.perfil-card p {
+  font-size: 18px;
+  margin: 14px 0;
+  color: var(--text-light);
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--background);
+  padding-bottom: 6px;
+}
+
+/* Etiquetas fuertes */
+.perfil-card strong {
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+/* Valores del usuario */
+.perfil-card span {
+  color: var(--text-muted);
+  font-weight: 500;
+  text-align: right;
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hover elegante */
+.perfil-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .perfil-card {
+    padding: 18px 20px;
+  }
+
+  .perfil-card p {
+    font-size: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .perfil-card span {
+    margin-top: 5px;
+  }
+}
