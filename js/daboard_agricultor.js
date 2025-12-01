@@ -222,3 +222,71 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+// Función para obtener y renderizar reportes del agricultor logueado
+async function renderReportes() {
+  const cont = document.getElementById('reportes');
+  if (!cont) return;
+  let container = cont.querySelector('.reportes-list');
+  if (!container) {
+    container = document.createElement('div');
+    container.className = 'reportes-list';
+    cont.appendChild(container);
+  }
+  container.innerHTML = '<p>Cargando reportes...</p>';
+
+  // obtener ID agricultor desde localStorage
+  let idAgr = null;
+  try {
+    const raw = localStorage.getItem('user') || localStorage.getItem('usuarioActivo');
+    const u = raw ? JSON.parse(raw) : null;
+    idAgr = u?.ID_Usuario || u?.id || null;
+  } catch (e) { idAgr = null; }
+
+  const q = idAgr ? `?destinatario=${encodeURIComponent(idAgr)}` : '';
+  try {
+    const res = await fetch(`http://localhost:3000/reportes${q}`);
+    const json = await res.json();
+    const arr = (json.ok && Array.isArray(json.reportes)) ? json.reportes : [];
+    if (!arr.length) {
+      container.innerHTML = '<p>No hay reportes recientes.</p>';
+      return;
+    }
+    container.innerHTML = arr.map(r => {
+      const fecha = new Date(r.createdAt).toLocaleString();
+      const imgs = (r.imagenes||[]).slice(0,3).map(i => `<img src="${i.Url || i.url}" style="max-width:120px;margin:6px;border-radius:6px">`).join('');
+      return `
+        <article class="reporte-card card" style="margin-bottom:12px;padding:12px">
+          <header style="display:flex;justify-content:space-between;align-items:center">
+            <strong style="color:var(--primary)">Empleado #${r.empleadoId ?? '—'}</strong>
+            <small style="color:var(--text-muted)">${fecha}</small>
+          </header>
+          <p style="margin:8px 0;color:var(--text-light)">${(r.texto||'').replaceAll('\n','<br>')}</p>
+          <div class="reporte-thumbs">${imgs}</div>
+        </article>
+      `;
+    }).join('');
+  } catch (err) {
+    console.error('Error cargando reportes:', err);
+    container.innerHTML = '<p>Error al cargar reportes.</p>';
+  }
+}
+
+// Llamar cuando se muestra la sección reportes
+const _origMostrarSeccion = window.mostrarSeccion;
+window.mostrarSeccion = function(id) {
+  if (id === 'reportes') {
+    renderReportes();
+  }
+  return _origMostrarSeccion ? _origMostrarSeccion(id) : undefined;
+};
+
+// Escuchar notificaciones de otras pestañas
+window.addEventListener('storage', (e) => {
+  if (e.key === 'reportes_updated') renderReportes();
+});
+
+// render inicial si hash = reportes
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.location.hash.replace('#','') === 'reportes') renderReportes();
+});

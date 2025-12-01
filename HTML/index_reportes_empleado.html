@@ -1,47 +1,57 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Agricord - Reportes de Empleados</title>
+
   <link rel="stylesheet" href="../CSS/style_empleado.css">
-  <script type="module" src="../js/empleado.js" defer></script>
+
+  <!-- Variables de color para integrarse con tu dashboard -->
 </head>
 
 <body>
-  <!-- Botón de regreso -->
   <a href="../HTML/index_dasboard_empleado.html" class="btn-regresar">⬅</a>
-
-  <!-- Encabezado -->
   <header>
     <h1>📋 Reporte de Seguimiento Visual</h1>
-    <p>Gestión de fotos y reportes de campo</p>
+    <p>Gestiona evidencias, imágenes y reportes de campo</p>
   </header>
 
   <main>
     <section class="form-section">
       <h2>📤 Enviar nuevo reporte</h2>
 
-      <form id="reporteForm">
-        <label for="texto">Descripción del reporte:</label>
-        <textarea id="texto" placeholder="Escribe aquí tu reporte..." required></textarea>
+      <form id="reporteForm" enctype="multipart/form-data">
+        <label for="id_agricultor">Enviar a agricultor:</label>
+        <select id="id_agricultor" name="ID_Agricultor" required>
+          <option value="">Selecciona un agricultor...</option>
+        </select>
 
-        <label for="foto">Seleccionar fotos del seguimiento:</label>
-        <input type="file" id="foto" accept="image/*" multiple>
+        <div id="infoAgricultor" style="display:none;margin:12px 0;padding:12px;border-radius:8px;background:var(--card);">
+          <p><strong>ID:</strong> <span id="agri_id">—</span></p>
+          <p><strong>Nombre:</strong> <span id="agri_nombre">—</span></p>
+          <p><strong>Correo:</strong> <span id="agri_correo">—</span></p>
+          <p><strong>Teléfono:</strong> <span id="agri_telefono">—</span></p>
+          <p><strong>Dirección:</strong> <span id="agri_direccion">—</span></p>
+        </div>
 
-        <!-- Vista previa de fotos -->
-        <div id="preview" class="preview"></div>
+        <label for="texto">Descripción:</label>
+        <textarea id="texto" name="Texto" rows="4" placeholder="Describe el reporte..." required></textarea>
 
-        <button type="submit" class="btn-enviar">Enviar Reporte</button>
+        <label for="foto">Fotos (opcional):</label>
+        <input type="file" id="foto" name="fotos" accept="image/*" multiple />
+        <div id="preview" style="margin-top:8px;"></div>
+
+        <button type="submit" class="btn">Enviar Reporte</button>
       </form>
     </section>
 
-    <!-- Lista de reportes enviados -->
     <section class="list-section">
-      <h2>📑 Historial de Reportes Guardados</h2>
-      <div id="reporteList" class="reporte-list"></div>
+      <h2>📚 Historial de reportes</h2>
+      <div id="reportes"></div>
     </section>
   </main>
 
+  <script src="../js/empleado_reportes.js" defer></script>
 </body>
 </html>

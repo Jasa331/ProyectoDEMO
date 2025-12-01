@@ -7,6 +7,7 @@ const pool = require('./config/db');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_change_me';
+const multer = require('multer');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -18,6 +19,22 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "HTML")));
 app.use("/css", express.static(path.join(__dirname, "css")));
 app.use("/js", express.static(path.join(__dirname, "js")));
+app.use("/uploads", express.static("uploads"));
+
+// Configurar almacenamiento de imágenes
+const uploadsDir = path.join(__dirname, 'uploads');
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadsDir),
+  filename: (req, file, cb) => {
+    const unique = Date.now() + '-' + Math.round(Math.random()*1e6);
+    const safe = file.originalname.replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_\.\-]/g,'');
+    cb(null, `${unique}-${safe}`);
+  }
+});
+const upload = multer({ storage });
+
+// Exponer carpeta uploads
+app.use('/uploads', express.static(uploadsDir));
 
 // Test de conexión DB
 (async () => {
@@ -767,6 +784,142 @@ app.delete("/caracteristicas/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// Ruta para crear reportes (acepta token o campo ID_Empleado)
+app.post('/reportes', upload.array('fotos', 8), async (req, res) => {
+  try {
+    const { Texto, ID_Agricultor, ID_Empleado: empleadoFromBody } = req.body;
+
+    // Obtener ID_Empleado desde token si existe
+    const ID_Empleado = (req.user && req.user.ID_Usuario)
+      ? req.user.ID_Usuario
+      : (empleadoFromBody ? Number(empleadoFromBody) : null);
+
+    if (!ID_Agricultor) {
+      return res.status(400).json({ ok: false, error: 'Falta ID_Agricultor' });
+    }
+
+    // Validar que el destinatario es agricultor
+    const [rowsAg] = await pool.query(
+      'SELECT ID_Usuario, Rol FROM Usuario WHERE ID_Usuario = ?',
+      [ID_Agricultor]
+    );
+
+    if (rowsAg.length === 0) {
+      return res.status(400).json({ ok: false, error: 'El agricultor no existe' });
+    }
+
+    if (String(rowsAg[0].Rol).toLowerCase() !== 'agricultor') {
+      return res.status(400).json({ ok: false, error: 'El usuario NO es agricultor' });
+    }
+
+    // Insertar el reporte
+    const [result] = await pool.query(
+      `INSERT INTO Reporte (ID_Usuario, ID_Destinatario, Texto)
+       VALUES (?, ?, ?)`,
+      [ID_Empleado, ID_Agricultor, Texto || null]
+    );
+
+    const reportId = result.insertId;
+
+    // Guardar imágenes asociadas (si las hay)
+    const files = req.files || [];
+    for (const f of files) {
+      const url = `/uploads/${f.filename}`;
+      await pool.query(
+        'INSERT INTO ReporteImagen (ReporteID, Filename, Url) VALUES (?, ?, ?)',
+        [reportId, f.filename, url]
+      );
+    }
+
+    return res.json({ ok: true, id: reportId });
+  } catch (err) {
+    console.error('Error POST /reportes:', err);
+    return res.status(500).json({ ok: false, error: 'Error interno' });
+  }
+});
+
+// Ruta para listar reportes (opcionalmente filtrados por destinatario)
+// GET /reportes
+// GET /reportes?destinatario=123
+app.get('/reportes', async (req, res) => {
+  try {
+    const destinatario = req.query.destinatario ? Number(req.query.destinatario) : null;
+
+    let sql = `
+      SELECT ID_Reporte, ID_Usuario, ID_Destinatario, Texto, CreatedAt
+      FROM Reporte
+    `;
+
+    const params = [];
+    if (destinatario) {
+      sql += ' WHERE ID_Destinatario = ?';
+      params.push(destinatario);
+    }
+
+    sql += ' ORDER BY CreatedAt DESC';
+
+    const [reportes] = await pool.query(sql, params);
+
+    const ids = reportes.map(r => r.ID_Reporte);
+    let imagenes = [];
+
+    if (ids.length > 0) {
+      const [rowsImgs] = await pool.query(
+        'SELECT ReporteID, Filename, Url FROM ReporteImagen WHERE ReporteID IN (?)',
+        [ids]
+      );
+      imagenes = rowsImgs;
+    }
+
+    const mapaImgs = {};
+    imagenes.forEach(img => {
+      (mapaImgs[img.ReporteID] = mapaImgs[img.ReporteID] || []).push(img);
+    });
+
+    const salida = reportes.map(r => ({
+      id: r.ID_Reporte,
+      empleadoId: r.ID_Usuario,      // ← CORRECTO
+      destinatarioId: r.ID_Destinatario,
+      texto: r.Texto,
+      createdAt: r.CreatedAt,
+      imagenes: mapaImgs[r.ID_Reporte] || []
+    }));
+
+    res.json({ ok: true, reportes: salida });
+  } catch (err) {
+    console.error('Error GET /reportes:', err);
+    return res.status(500).json({ ok: false, error: 'Error interno' });
+  }
+});
+
+
+app.get("/api/agricultores", async (req, res) => {
+  try {
+    console.log("[GET /api/agricultores] buscando usuarios con rol 'agricultor' (case-insensitive)");
+
+    const [rows] = await pool.query(
+      "SELECT ID_Usuario, Usuario_Nombre, Usuario_Apellido, Direccion, Telefono, Rol, Correo, Estado FROM Usuario WHERE LOWER(COALESCE(Rol, '')) LIKE ?",
+      ['%agricultor%']
+    );
+
+    if (!rows || rows.length === 0) {
+      // fallback: devolver todos los usuarios si no se encontraron agricultores
+      const [all] = await pool.query(
+        "SELECT ID_Usuario, Usuario_Nombre, Usuario_Apellido, Direccion, Telefono, Rol, Correo, Estado FROM Usuario"
+      );
+      return res.json({ ok: true, agricultores: all, fallback: true });
+    }
+
+    res.json({ ok: true, agricultores: rows });
+  } catch (error) {
+    console.error("[GET /api/agricultores] error:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
+
+
 
 
 app.listen(port, () => console.log(`✅ Servidor corriendo en http://localhost:${port}`));
