@@ -6,6 +6,8 @@ const closeModal = document.getElementById("closeModal");
 const modalTitle = document.getElementById("modalTitle");
 const toast = document.getElementById("toast");
 
+
+
 let farmers = [];
 let editingIndex = null;
 

@@ -261,7 +261,10 @@ button:active,
   width: 100%;
   transition: var(--transition);
   border-left: 6px solid var(--primary);
+
+  margin: 0 auto; /* ← Esto la centra horizontalmente */
 }
+
 
 /* Info (Nombre, Apellido, etc.) */
 .perfil-card p {

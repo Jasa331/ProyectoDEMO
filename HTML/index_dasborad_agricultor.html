@@ -88,8 +88,9 @@
         </section>
 
         <section id="perfil" class="seccion" style="display:none;">
-        <h1>Perfil del Usuario</h1>
-
+        <center>
+            <h1>Perfil del Usuario</h1>
+        </center>
         <div class="perfil-card">
             <p><strong>Nombre:</strong> <span id="p_nombre"></span></p>
             <p><strong>Apellido:</strong> <span id="p_apellido"></span></p>
@@ -152,20 +153,32 @@
     <script src="../js/actualizacion_clima.js" defer></script>
 
     <!-- Script para cambio de tema -->
-    <script>
-      const btnFlotante = document.getElementById("btnFlotante");
+    <!-- Botón flotante para cambiar tema -->
+<button id="btnFlotante" title="Cambiar tema">🌗</button>
 
-      // Cargar tema guardado o iniciar en claro
-      const savedTheme = localStorage.getItem("theme") || "light";
-      document.documentElement.setAttribute("data-theme", savedTheme);
+<script>
+    const btnFlotante = document.getElementById("btnFlotante");
 
-      // Cambiar al hacer clic
-      btnFlotante.addEventListener("click", () => {
+    // Leer tema guardado o iniciar en claro
+    const savedTheme = localStorage.getItem("theme") || "light";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+
+    // Cambiar al hacer clic
+    btnFlotante.addEventListener("click", () => {
         const currentTheme = document.documentElement.getAttribute("data-theme");
         const newTheme = currentTheme === "dark" ? "light" : "dark";
+
         document.documentElement.setAttribute("data-theme", newTheme);
         localStorage.setItem("theme", newTheme);
-      });
+
+        // Cambiar icono dinámico
+        btnFlotante.textContent = newTheme === "dark" ? "☀️" : "🌙";
+    });
+
+    // Ajustar icono inicial según el tema guardado
+    btnFlotante.textContent = savedTheme === "dark" ? "☀️" : "🌙";
+</script>
+
     </script>
 </body>
 </html>
