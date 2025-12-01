@@ -785,59 +785,62 @@ app.delete("/caracteristicas/:id", async (req, res) => {
   }
 });
 
-// Ruta para crear reportes (acepta token o campo ID_Empleado)
-app.post('/reportes', upload.array('fotos', 8), async (req, res) => {
+// Ruta para crear reportes (requiere token; si quieres permitir envío sin token elimina `authenticateToken`)
+app.post('/reportes', authenticateToken, upload.array('fotos', 8), async (req, res) => {
   try {
-    const { Texto, ID_Agricultor, ID_Empleado: empleadoFromBody } = req.body;
+    const { Texto, ID_Agricultor } = req.body;
 
-    // Obtener ID_Empleado desde token si existe
-    const ID_Empleado = (req.user && req.user.ID_Usuario)
-      ? req.user.ID_Usuario
-      : (empleadoFromBody ? Number(empleadoFromBody) : null);
+    // ID del empleado que envía el reporte (desde el token)
+    const ID_Usuario = req.user?.ID_Usuario ?? null;
 
-    if (!ID_Agricultor) {
+    if (!ID_Agricultor)
       return res.status(400).json({ ok: false, error: 'Falta ID_Agricultor' });
-    }
 
-    // Validar que el destinatario es agricultor
+    if (!ID_Usuario)
+      return res.status(401).json({ ok: false, error: 'Empleado no identificado (token inválido)' });
+
+    // Validar que el destinatario exista y sea agricultor
     const [rowsAg] = await pool.query(
       'SELECT ID_Usuario, Rol FROM Usuario WHERE ID_Usuario = ?',
       [ID_Agricultor]
     );
 
-    if (rowsAg.length === 0) {
+    if (!rowsAg || rowsAg.length === 0)
       return res.status(400).json({ ok: false, error: 'El agricultor no existe' });
-    }
 
-    if (String(rowsAg[0].Rol).toLowerCase() !== 'agricultor') {
-      return res.status(400).json({ ok: false, error: 'El usuario NO es agricultor' });
-    }
+    if (String(rowsAg[0].Rol).toLowerCase() !== 'agricultor')
+      return res.status(400).json({ ok: false, error: 'El usuario no es agricultor' });
 
-    // Insertar el reporte
+    // INSERT usando la columna correcta: ID_Usuario
     const [result] = await pool.query(
       `INSERT INTO Reporte (ID_Usuario, ID_Destinatario, Texto)
        VALUES (?, ?, ?)`,
-      [ID_Empleado, ID_Agricultor, Texto || null]
+      [ID_Usuario, ID_Agricultor, Texto || null]
     );
 
     const reportId = result.insertId;
 
-    // Guardar imágenes asociadas (si las hay)
+    // Guardar imágenes
     const files = req.files || [];
     for (const f of files) {
       const url = `/uploads/${f.filename}`;
       await pool.query(
-        'INSERT INTO ReporteImagen (ReporteID, Filename, Url) VALUES (?, ?, ?)',
+        `INSERT INTO ReporteImagen (ReporteID, Filename, Url)
+         VALUES (?, ?, ?)`,
         [reportId, f.filename, url]
       );
     }
 
+    console.log(`Reporte creado id=${reportId} por empleado=${ID_Usuario} -> agricultor=${ID_Agricultor}`);
+
     return res.json({ ok: true, id: reportId });
+
   } catch (err) {
     console.error('Error POST /reportes:', err);
     return res.status(500).json({ ok: false, error: 'Error interno' });
   }
 });
+
 
 // Ruta para listar reportes (opcionalmente filtrados por destinatario)
 // GET /reportes

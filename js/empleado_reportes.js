@@ -128,10 +128,9 @@
 
     try {
       const token = localStorage.getItem('token');
-      const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
       const res = await fetch(`${apiBase}/reportes`, {
         method: 'POST',
-        headers,
+        headers: token ? { 'Authorization': 'Bearer ' + token } : {},
         body: fd
       });
       const json = await res.json();
