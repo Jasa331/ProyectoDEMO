@@ -32,7 +32,7 @@
             </header>
             <br>
             <div class="action-buttons">
-                <a href="index_agregar_empleado.html" class="btn btn-primary" id="btnAgregarEmpleado">Agregar Empleado</a>
+                <a href="index_producto.html" class="btn btn-primary" id="btnAgregarEmpleado">Agregar Producto</a>
                 <a href="index_Calendario.html" class="btn btn-primary" id="btnAgregarCultivo">Agregar Cultivo</a>
                 <a href="index_alerta_stock .html" class="btn btn-primary" id="btnAgregarInsumo">Agregar Insumo</a>
                 <button type="button" class="btn btn-secondary" id="openMonitor">Abrir Monitor de Clima</button>
@@ -79,13 +79,31 @@
 
         <section id="reportes" class="seccion" style="display:none;">
             <h1>Reportes</h1>
-            <p>Sección de reportes de cada agricultor.</p>
+            <p>Sección de reportes de cada Empleado.</p>
         </section>
 
         <section id="inventario" class="seccion" style="display:none;">
             <h1>Inventario</h1>
-            <p>Sección de inventario de insumos y productos.</p>
+            <p>INSUMOS REGISTRAIDOS.</p>
+
+            <div class="card">
+                <table id="tablaInsumos">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                            <th>Unidad</th>
+                            <th>Cantidad</th>
+                            <th>Caducidad</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyInventario">
+                    </tbody>
+                </table>
+            </div>
         </section>
+
 
         <section id="perfil" class="seccion" style="display:none;">
         <center>

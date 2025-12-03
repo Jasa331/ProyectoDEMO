@@ -141,4 +141,9 @@ themeToggle.addEventListener("click", () => {
   }
 });
 
+document.getElementById("btnBack").addEventListener("click", () => {
+    window.location.href = "../HTML/index_dasborad_agricultor.html"; 
+});
+
+
 

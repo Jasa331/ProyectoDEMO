@@ -11,8 +11,7 @@ function showToast(msg) {
 // ================================
 // 🔗 CONFIGURACIÓN DE API
 // ================================
-const API_URL = "http://localhost:3000/insumo"; 
-const API_URL_GET = "http://localhost:3000/insumos";
+const API_URL = "http://localhost:3000/insumos"; 
 
 let insumos = [];
 let editingId = null;
@@ -21,6 +20,7 @@ let editingId = null;
 // 📋 FORMULARIO
 // ================================
 const form = document.getElementById("formAdd");
+const cancelBtn = document.getElementById("cancelBtn");
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -29,7 +29,6 @@ form.addEventListener("submit", async (e) => {
   const headers = { "Content-Type": "application/json" };
   if (token) headers["Authorization"] = "Bearer " + token;
 
-  // construir payload SIN ID_Usuario
   const insumo = {
     Nombre: document.getElementById("nombre").value.trim(),
     Tipo: document.getElementById("tipo").value.trim() || "General",
@@ -41,12 +40,8 @@ form.addEventListener("submit", async (e) => {
     ID_Ingreso_Insumo: null
   };
 
-  console.log("Token usado:", token);
-
-  console.log("Payload enviado al backend:", insumo);
-
   try {
-    const url = editingId ? `${API_URL}/${editingId}` : API_URL;
+    const url = editingId ? `http://localhost:3000/insumo/${editingId}` : "http://localhost:3000/insumo";
     const method = editingId ? "PUT" : "POST";
 
     const res = await fetch(url, {
@@ -64,9 +59,7 @@ form.addEventListener("submit", async (e) => {
     }
 
     showToast(editingId ? "Insumo actualizado" : "Insumo agregado");
-    form.reset();
-    editingId = null;
-    obtenerInsumos();
+    resetForm();
 
   } catch (err) {
     console.error("Fetch error:", err);
@@ -74,12 +67,31 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
+if (cancelBtn) {
+  cancelBtn.addEventListener("click", () => {
+    resetForm();
+    showToast("Edición cancelada");
+  });
+}
+
+function resetForm() {
+  form.reset();
+  editingId = null;
+  if (cancelBtn) cancelBtn.style.display = "none";
+  obtenerInsumos();
+}
+
 // ================================
-// 📦 OBTENER LISTA DE INSUMOS
+// 📦 OBTENER LISTA DE INSUMOS (CORREGIDO)
 // ================================
 async function obtenerInsumos() {
   try {
-    const res = await fetch(API_URL_GET);
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(API_URL, {
+      headers: { "Authorization": "Bearer " + token }
+    });
+
     const data = await res.json();
     insumos = data;
     render();
@@ -92,7 +104,7 @@ async function obtenerInsumos() {
 // ================================
 // ✏️ EDITAR INSUMO
 // ================================
-function editInsumo(id) {
+window.editInsumo = function(id) {
   const insumo = insumos.find((i) => i.ID_Insumo === id);
   if (!insumo) return;
 
@@ -106,17 +118,24 @@ function editInsumo(id) {
   document.getElementById("fecha_caducidad").value =
     insumo.Fecha_Caducidad || "";
 
+  if (cancelBtn) cancelBtn.style.display = "inline-block";
   showToast("✏️ Modo edición activado");
-}
+};
 
 // ================================
-// 🗑️ ELIMINAR INSUMO
+// 🗑️ ELIMINAR INSUMO (CORREGIDO)
 // ================================
-async function deleteInsumo(id) {
+window.deleteInsumo = async function(id) {
   if (!confirm("¿Eliminar este insumo?")) return;
 
   try {
-    const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(`http://localhost:3000/insumo/${id}`, {
+      method: "DELETE",
+      headers: { "Authorization": "Bearer " + token }
+    });
+
     const result = await response.json();
 
     if (result.ok) {
@@ -129,7 +148,7 @@ async function deleteInsumo(id) {
     console.error("Error al eliminar insumo:", err);
     showToast("❌ No se pudo eliminar");
   }
-}
+};
 
 // ================================
 // 🧾 RENDERIZAR TABLA
@@ -178,6 +197,7 @@ themeToggle.addEventListener("click", () => {
 // 🚀 INICIO
 // ================================
 window.addEventListener("load", () => {
+  if (cancelBtn) cancelBtn.style.display = "none";
   document.body.setAttribute("data-theme", localStorage.getItem("theme") || "light");
   obtenerInsumos();
 });

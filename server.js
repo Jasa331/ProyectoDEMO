@@ -277,51 +277,8 @@ app.get("/proveedor", async (req, res) => {
   }
 });
 
-// PUT: actualizar un insumo existente
-app.put("/insumo/:id", async (req, res) => {
-  const { id } = req.params;
-  const {
-    Nombre,
-    Tipo,
-    Descripcion,
-    Unidad_Medida,
-    Cantidad,
-    Fecha_Caducidad,
-    Fecha_Registro,
-    ID_Ingreso_Insumo,
-    ID_Usuario,
-  } = req.body;
-
-  try {
-    await pool.query(
-      `UPDATE Insumo 
-       SET Nombre = ?, Tipo = ?, Descripcion = ?, Unidad_Medida = ?, Cantidad = ?, 
-           Fecha_Caducidad = ?, Fecha_Registro = ?, ID_Ingreso_Insumo = ?, ID_Usuario = ?
-       WHERE ID_Insumo = ?`,
-      [
-        Nombre,
-        Tipo,
-        Descripcion,
-        Unidad_Medida,
-        Cantidad,
-        Fecha_Caducidad,
-        Fecha_Registro,
-        ID_Ingreso_Insumo,
-        ID_Usuario,
-        id,
-      ]
-    );
-
-    res.json({ ok: true });
-  } catch (err) {
-    console.error("Error al actualizar insumo:", err.message);
-    res.status(500).json({ ok: false, error: err.message });
-  }
-});
-
-
 // DELETE: eliminar insumo
-app.delete("/insumo/:id", async (req, res) => {
+app.delete("/insumo/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
   try {
     await pool.query("DELETE FROM Insumo WHERE ID_Insumo = ?", [id]);
@@ -371,6 +328,9 @@ app.put("/insumo/:id", authenticateToken, async (req, res) => {
     } = req.body;
 
     const ID_Usuario = req.user?.ID_Usuario;
+    if (!ID_Usuario) {
+      return res.status(401).json({ ok: false, error: "Usuario no autenticado en token." });
+    }
     await pool.query(
       `UPDATE Insumo SET Nombre=?, Tipo=?, Descripcion=?, Unidad_Medida=?, Cantidad=?,
        Fecha_Caducidad=?, Fecha_Registro=?, ID_Ingreso_Insumo=?, ID_Usuario=? WHERE ID_Insumo=?`,
@@ -389,15 +349,23 @@ app.put("/insumo/:id", authenticateToken, async (req, res) => {
 
 
 // GET: listar todos los insumos
-app.get("/insumos", async (req, res) => {
+app.get("/insumos", authenticateToken, async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT * FROM Insumo");
+    const ID_Usuario = req.user.ID_Usuario;
+
+    const [rows] = await pool.query(
+      "SELECT * FROM Insumo WHERE ID_Usuario = ?",
+      [ID_Usuario]
+    );
+
     res.json(rows);
   } catch (err) {
-    console.error("Error al obtener insumos:", err.message);
+    console.error("Error al obtener insumos:", err);
     res.status(500).json({ ok: false, error: err.message });
   }
 });
+
+
 
 // =============================
 // RUTAS DEL CALENDARIO AGRÍCOLA
