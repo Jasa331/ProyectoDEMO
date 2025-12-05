@@ -265,3 +265,72 @@ button:active,
   object-fit: cover;
   border: 2px solid #ccc;
 }
+/* 1. Estilo General */
+body {
+    background-color: #f4f7f6;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    padding: 20px;
+}
+
+/* 2. Estilo del Título */
+/* Se elimina <center> del HTML, centramos con CSS */
+h1 {
+    text-align: center;
+    color: #127509;
+    font-size: 2.2em;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+/* 3. Estilo de la Tarjeta (perfil-card) */
+.perfil-card {
+    max-width: 480px;
+    margin: 0 auto; /* Centra la tarjeta */
+    background-color: #ffffff;
+    border-radius: 12px;
+    /* Sombra profunda y suave */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); 
+    padding: 30px 35px;
+    /* Borde de acento verde esmeralda */
+    border-left: 6px solid #127509; 
+}
+
+/* 4. Estilo de los Datos (perfil-datos) */
+.perfil-datos {
+    /* Estilo interior */
+    padding: 5px 0;
+}
+
+/* 5. Estilo para cada línea de datos (<p>) */
+.perfil-datos p {
+    display: flex; /* Alineación horizontal */
+    justify-content: space-between; /* Empuja el valor a la derecha */
+    margin-bottom: 15px;
+    padding: 10px 0;
+    border-bottom: 1px dashed #e0e0e0; /* Separador de línea */
+}
+
+/* 6. Estilo de la Etiqueta (<strong>) */
+.perfil-datos strong {
+    font-weight: 600;
+    color: #020101;
+    /* Anchura fija para asegurar que todos los valores se alineen */
+    min-width: 100px; 
+    margin-right: 20px;
+}
+
+/* 7. Estilo del Valor (<span>) */
+.perfil-datos span {
+    color: #127509; /* Resalta el valor con el color principal */
+    font-weight: bold;
+    text-align: right;
+    flex-grow: 1; 
+}
+
+/* Eliminar el separador de la última línea */
+.perfil-datos p:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
