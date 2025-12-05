@@ -33,8 +33,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Exponer carpeta uploads
-app.use('/uploads', express.static(uploadsDir));
 
 // Test de conexión DB
 (async () => {

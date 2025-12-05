@@ -2,69 +2,118 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Agricord • Panel Admin</title>
-  <link rel="stylesheet" href="../css/style_admin.css"/>
+
+  <link rel="stylesheet" href="../css/style_admin.css">
+  <script defer src="../js/admin.js"></script>
 </head>
 <body>
-  
-  <!-- ==================== SIDEBAR ==================== -->
-  <aside class="sidebar">
-    <div class="brand">
-      <div class="logo">🌱</div>
-      <span>Agricord</span>
-    </div>
 
-    <nav class="menu">
-      <a class="active"><i>📊</i> Dashboard</a>
-      <a href="#">👥 Usuarios</a>
-      <a href="../HTML/index_gastos.html">💸 Gastos</a>
-      <a href="../HTML/index_proveedor_insumo.html"><i>🌾</i> Proveedores</a>
-      <a href="../HTML/index_ajustes.html" class="active">⚙️ Ajustes</a> 
-    </nav>
+<!-- =============================================================== -->
+<!-- ========================== SIDEBAR ============================= -->
+<!-- =============================================================== -->
 
-    <!-- Botones adicionales -->
-    <div class="sidebar-actions">
-      
-      <button id="btnExportar" class="btn btn-light">📄 Exportar Datos</button>
-      <button id="btnConfiguracion" class="btn btn-light">⚙️ Configuración</button>
-    </div>
+<aside class="sidebar">
+  <div class="brand">
+    <div class="logo">🌱</div>
+    <span>Agricord</span>
+  </div>
 
-    <button id="btnLogout" class="btn btn-outline">Cerrar sesión</button>
-  </aside>
+  <nav class="menu">
+    <a onclick="mostrarSeccion('dashboard')" class="active">📊 Dashboard</a>
+    <a onclick="mostrarSeccion('usuarios')">👥 Usuarios</a>
+    <a onclick="mostrarSeccion('gastos')">💸 Gastos</a>
+    <a onclick="mostrarSeccion('proveedores')">🌾 Proveedores</a>
+    <a onclick="mostrarSeccion('ajustes')">⚙️ Ajustes</a>
+  </nav>
 
-  <!-- ==================== MAIN CONTENT ==================== -->
-  <main class="main">
+  <div class="sidebar-actions">
+    <button id="btnExportar" class="btn btn-light">📄 Exportar Datos</button>
+    <button id="btnConfiguracion" class="btn btn-light" onclick="mostrarSeccion('ajustes')">⚙️ Configuración</button>
+  </div>
+
+  <button id="btnLogout" class="btn btn-outline">Cerrar sesión</button>
+</aside>
+
+
+<!-- =============================================================== -->
+<!-- ========================= CONTENIDO ============================ -->
+<!-- =============================================================== -->
+
+<main class="main">
+
+  <!-- ======================== DASHBOARD ========================== -->
+  <section id="dashboard" class="seccion visible">
+
     <header class="topbar">
-      <h1>Panel de Administración</h1>
-      <div class="top-actions">
-        <input id="inputBuscar" type="search" placeholder="Buscar por nombre, usuario o correo…">
-        <button id="btnNuevo" class="btn btn-primary">+ Nuevo usuario</button>
+      <h1>📊 Dashboard Administrativo</h1>
+    </header>
 
-        <!-- Botón de modo claro/oscuro -->
-        <button id="themeToggle" class="theme-toggle" title="Cambiar tema">🌞</button>
+    <!-- Presentación -->
+    <section class="intro card">
+      <h2>👋 Bienvenido al Panel Administrativo de Agricord</h2>
+      <p>
+        Administra usuarios, proveedores, gastos agrícolas y las configuraciones del sistema 
+        desde un único panel eficiente y centralizado.
+      </p>
+      <p>
+        Usa el menú lateral para navegar entre las secciones y mantener el control operativo 
+        de toda la plataforma Agricord.
+      </p>
+    </section>
+
+    <!-- Tarjetas de estadísticas -->
+    <section class="stats">
+
+      <article class="stat-card">
+        <span class="stat-icon">👥</span>
+        <span class="stat-label">Usuarios totales</span>
+        <span class="stat-value" id="statTotal">0</span>
+        <small class="stat-desc">Todos los usuarios registrados</small>
+      </article>
+
+      <article class="stat-card">
+        <span class="stat-icon">🛡️</span>
+        <span class="stat-label">Administradores</span>
+        <span class="stat-value" id="statAdmins">0</span>
+        <small class="stat-desc">Usuarios con acceso privilegiado</small>
+      </article>
+
+      <article class="stat-card">
+        <span class="stat-icon">👤</span>
+        <span class="stat-label">Usuarios estándar</span>
+        <span class="stat-value" id="statUsuarios">0</span>
+        <small class="stat-desc">Usuarios operativos del sistema</small>
+      </article>
+
+    </section>
+
+    <section class="card" style="margin-top: 15px;">
+      <h3>ℹ️ Información del Sistema</h3>
+      <p>
+        Agricord es una plataforma diseñada para optimizar y digitalizar procesos 
+        agrícolas, mejorando la comunicación y la gestión entre administradores, 
+        agricultores y proveedores.
+      </p>
+    </section>
+  </section>
+
+
+  <!-- ======================== USUARIOS ============================ -->
+  <section id="usuarios" class="seccion" style="display:none;">
+
+    <header class="topbar">
+      <h1>👥 Gestión de Usuarios</h1>
+
+      <div class="top-actions">
+        <input id="inputBuscar" type="search" placeholder="Buscar por nombre o correo…">
+        <button id="btnNuevo" class="btn btn-primary">+ Nuevo Usuario</button>
       </div>
     </header>
 
-    <!-- ==================== ESTADÍSTICAS ==================== -->
-    <section class="stats">
-      <article class="stat-card">
-        <span class="stat-label">Usuarios totales</span>
-        <span class="stat-value" id="statTotal">0</span>
-      </article>
-      <article class="stat-card">
-        <span class="stat-label">Administradores</span>
-        <span class="stat-value" id="statAdmins">0</span>
-      </article>
-      <article class="stat-card">
-        <span class="stat-label">Usuarios estándar</span>
-        <span class="stat-value" id="statUsuarios">0</span>
-      </article>
-    </section>
-
-    <!-- ==================== TABLA DE USUARIOS ==================== -->
     <section class="table-wrap">
-      <table class="table" aria-label="Usuarios">
+      <table class="table">
         <thead>
           <tr>
             <th>Nombre</th>
@@ -74,93 +123,279 @@
             <th style="width:160px">Acciones</th>
           </tr>
         </thead>
-        <tbody id="tbodyUsuarios">
-          <!-- filas dinámicas -->
-        </tbody>
+        <tbody id="tbodyUsuarios"></tbody>
       </table>
-      <p id="vacio" class="empty">No hay usuarios que coincidan con la búsqueda.</p>
+
+      <p id="vacio" class="empty">No hay usuarios registrados.</p>
     </section>
 
-    <!-- ==================== BOTONES INFERIORES ==================== -->
-    <div class="footer-actions">
-      <button id="btnRefrescar" class="btn btn-secondary">🔄 Refrescar Datos</button>
-      <button id="btnSoporte" class="btn btn-secondary">📞 Soporte</button>
-    </div>
-  </main>
+  </section>
 
-  <!-- ==================== MODAL CREAR / EDITAR ==================== -->
-  <div id="modal" class="modal" aria-hidden="true">
-    <div class="modal-content" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
-      <div class="modal-header">
-        <h3 id="modalTitle">Nuevo usuario</h3>
-        <button class="icon-btn" id="btnCerrarModal" aria-label="Cerrar">✖</button>
+
+  <!-- ======================== GASTOS ============================== -->
+  <!-- ================================================================ -->
+  <!-- ======================= SECCIÓN GASTOS ========================== -->
+  <!-- ================================================================ -->
+
+    <section id="gastos" class="seccion" style="display:none;">
+
+      <header class="topbar">
+        <h1>💸 Módulo de Gastos Agrícolas</h1>
+      </header>
+
+      <section class="formulario card">
+        <h2>Registrar nuevo gasto agrícola</h2>
+
+        <form id="formGasto">
+          <label>Concepto:</label>
+          <input type="text" id="concepto" placeholder="Ej. Compra de semillas" required>
+
+          <label>Monto ($):</label>
+          <input type="number" id="monto" placeholder="Ej. 50000" required>
+
+          <label>Categoría:</label>
+          <select id="categoria" required>
+            <option value="Semillas">Semillas</option>
+            <option value="Fertilizantes">Fertilizantes</option>
+            <option value="Herramientas">Herramientas</option>
+            <option value="Riego">Riego</option>
+            <option value="Mano de obra">Mano de obra</option>
+            <option value="Transporte de cultivos">Transporte de cultivos</option>
+            <option value="Mantenimiento de maquinaria">Mantenimiento de maquinaria</option>
+            <option value="Otros">Otros</option>
+          </select>
+
+          <button type="submit" class="btn btn-primary">Registrar Gasto</button>
+        </form>
+      </section>
+
+      <section class="lista card">
+        <h2>Historial de Gastos Agrícolas</h2>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Concepto</th>
+              <th>Monto</th>
+              <th>Categoría</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody id="tablaGastos">
+            <tr><td colspan="4">Aún no hay registros</td></tr>
+          </tbody>
+        </table>
+
+        <button id="btnBorrarTodo" class="btn btn-danger">🗑 Borrar todos los registros</button>
+      </section>
+
+    </section>
+
+
+
+  <!-- ======================== PROVEEDORES ========================== -->
+  <section id="proveedores" class="seccion" style="display:none;">
+
+    <header class="topbar">
+      <h1>🌾 Proveedores de Insumos</h1>
+
+      <div class="top-actions">
+        <input id="buscarProveedor" type="search" placeholder="Buscar proveedor…">
+        <button id="btnNuevoProveedor" class="btn btn-primary">+ Nuevo Proveedor</button>
+      </div>
+    </header>
+
+    <section class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Empresa</th>
+            <th>Contacto</th>
+            <th>Ciudad</th>
+            <th>Teléfono</th>
+            <th>Región</th>
+            <th>Código Postal</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyProveedores"></tbody>
+      </table>
+
+      <p id="proveedorVacio" class="empty">No hay proveedores registrados.</p>
+    </section>
+
+  </section>
+
+
+  <!-- ======================== AJUSTES ============================== -->
+  <section id="ajustes" class="seccion" style="display:none;">
+
+    <header class="topbar">
+      <h1>⚙️ Configuración del Sistema</h1>
+    </header>
+
+    <section class="configuracion">
+
+      <div class="card">
+        <h2>👤 Perfil del Administrador</h2>
+        <label>Nombre:
+          <input type="text" id="nombreAdmin">
+        </label>
+        <label>Correo:
+          <input type="email" id="correoAdmin">
+        </label>
+        <button class="btn btn-primary">Guardar Cambios</button>
       </div>
 
-      <form id="formUsuario" autocomplete="off">
-        <div class="grid">
-          <label>Nombre
-            <input type="text" name="nombre" required>
-          </label>
-          <label>Apellido
-            <input type="text" name="apellido" required>
-          </label>
-          <label>Usuario
-            <input type="text" name="usuario" required>
-          </label>
-          <label>Correo
-            <input type="email" name="correo" required>
-          </label>
-          <label>Dirección
-            <input type="text" name="direccion">
-          </label>
-          <label>Teléfono
-            <input type="tel" name="telefono">
-          </label>
-          <label>Perfil
-            <select name="perfil" required>
-              <option value="Empleado">Empleado</option>
-              <option value="Administrador">Administrador</option>
-              <option value="Agricultor">Agricultor</option>
-            </select>
-          </label>
-          <label>Contraseña
-            <input type="password" name="password" minlength="4" required>
-          </label>
-        </div>
+      <div class="card">
+        <h2>🎨 Personalización</h2>
+        <label>Tema:
+          <select id="temaColor">
+            <option value="light">Claro</option>
+            <option value="dark">Oscuro</option>
+            <option value="verde">Verde</option>
+          </select>
+        </label>
+        <label>Idioma:
+          <select id="idioma">
+            <option value="es">Español</option>
+            <option value="en">Inglés</option>
+          </select>
+        </label>
+        <button class="btn btn-primary">Guardar Preferencias</button>
+      </div>
 
-        <div class="modal-actions">
-          <button type="submit" class="btn btn-primary" id="btnGuardar">Guardar</button>
-          <button type="button" class="btn" id="btnCancelar">Cancelar</button>
-        </div>
-      </form>
+      <div class="card">
+        <h2>🧹 Mantenimiento</h2>
+        <p>Herramientas para limpiar datos obsoletos y optimizar el sistema.</p>
+        <button class="btn btn-danger">Eliminar datos antiguos</button>
+      </div>
+
+    </section>
+  </section>
+
+</main>
+
+
+<!-- =============================================================== -->
+<!-- ======================== MODAL USUARIOS ======================= -->
+<!-- =============================================================== -->
+
+<div id="modal" class="modal">
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3 id="modalTitle">Nuevo Usuario</h3>
+      <button id="btnCerrarModal" class="icon-btn">✖</button>
     </div>
+
+    <form id="formUsuario">
+
+      <div class="grid">
+
+        <label>Nombre
+          <input type="text" name="nombre" required>
+        </label>
+
+        <label>Apellido
+          <input type="text" name="apellido" required>
+        </label>
+
+        <label>Usuario
+          <input type="text" name="usuario" required>
+        </label>
+
+        <label>Correo
+          <input type="email" name="correo" required>
+        </label>
+
+        <label>Dirección
+          <input type="text" name="direccion">
+        </label>
+
+        <label>Teléfono
+          <input type="tel" name="telefono">
+        </label>
+
+        <label>Perfil
+          <select name="perfil">
+            <option value="Empleado">Empleado</option>
+            <option value="Administrador">Administrador</option>
+            <option value="Agricultor">Agricultor</option>
+          </select>
+        </label>
+
+        <label>Contraseña
+          <input type="password" name="password" required minlength="4">
+        </label>
+
+      </div>
+
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="button" class="btn" id="btnCancelar">Cancelar</button>
+      </div>
+
+    </form>
+
   </div>
+</div>
 
-  <!-- ==================== TOAST ==================== -->
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <!-- ==================== SCRIPTS ==================== -->
-  <script src="../js/admin.js"></script>
+<!-- =============================================================== -->
+<!-- ===================== MODAL PROVEEDORES ======================= -->
+<!-- =============================================================== -->
 
-  <!-- Script del modo oscuro/claro -->
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const themeToggle = document.getElementById("themeToggle");
-    const currentTheme = localStorage.getItem("theme") || "light";
+<div id="modalProveedor" class="modal">
+  <div class="modal-content">
 
-    document.documentElement.setAttribute("data-theme", currentTheme);
-    themeToggle.textContent = currentTheme === "dark" ? "🌙" : "🌞";
+    <div class="modal-header">
+      <h3>Nuevo Proveedor</h3>
+      <button id="btnCerrarModalProveedor" class="icon-btn">✖</button>
+    </div>
 
-    themeToggle.addEventListener("click", () => {
-      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-      const newTheme = isDark ? "light" : "dark";
+    <form id="formProveedor">
 
-      document.documentElement.setAttribute("data-theme", newTheme);
-      localStorage.setItem("theme", newTheme);
-      themeToggle.textContent = newTheme === "dark" ? "🌙" : "🌞";
-    });
-  });
-</script>
+      <div class="grid">
+        <label>Ciudad
+          <input type="text" name="Ciudad" required>
+        </label>
+
+        <label>Teléfono
+          <input type="text" name="Telefono" required>
+        </label>
+
+        <label>Dirección
+          <input type="text" name="Direccion" required>
+        </label>
+
+        <label>Empresa
+          <input type="text" name="Nombre_Empresa" required>
+        </label>
+
+        <label>Contacto
+          <input type="text" name="Nombre_Contacto" required>
+        </label>
+
+        <label>Región
+          <input type="text" name="Region" required>
+        </label>
+
+        <label>Código Postal
+          <input type="text" name="Cod_Postal" required>
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="button" class="btn" id="btnCancelarProveedor">Cancelar</button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
 
 </body>
 </html>
