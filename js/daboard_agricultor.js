@@ -4,10 +4,14 @@
   - control sesión y saludo
   - cargarPerfil
   - inventario filtrado por ID_Usuario
-  - modal clima
-  - tema oscuro
   - reportes
+  - mis cultivos (nuevo)
 */
+
+// ==============================
+// ⚠️ CONFIGURACIÓN GLOBAL
+// ==============================
+const API_BASE = "http://localhost:3000";
 
 // ==============================
 // OCULTAR Y MOSTRAR SECCIONES
@@ -21,10 +25,8 @@ function ocultarTodas() {
 }
 
 function mostrarSeccion(id) {
-  // cerrar sesión
   if (id === 'cerrarSesion') {
     if (!confirm("¿Estás seguro que deseas cerrar sesión?")) return;
-
     localStorage.clear();
     sessionStorage.clear();
     window.location.href = '/index_Inicio.html';
@@ -38,11 +40,10 @@ function mostrarSeccion(id) {
     target.style.display = 'block';
     setTimeout(() => target.classList.add('activa'), 10);
 
-    // ACCIONES ESPECÍFICAS AL ENTRAR
     if (id === 'perfil') cargarPerfil();
     if (id === 'reportes') renderReportes();
     if (id === 'inventario') cargarInventario();
-
+    if (id === 'cultivos') cargarMisCultivos(); // 🔥 NUEVO
   } else {
     console.warn(`La sección "${id}" no existe.`);
   }
@@ -58,31 +59,33 @@ async function cargarPerfil() {
   const data = localStorage.getItem("user") || localStorage.getItem("usuarioActivo");
   if (!data) return;
 
-  let userLocal;
+  let userLocal = null;
   try { userLocal = JSON.parse(data); } catch { return; }
 
   const id = userLocal.ID_Usuario || userLocal.id;
   if (!id) return;
 
   try {
-    const res = await fetch(`http://localhost:3000/perfil/${id}`);
+    const res = await fetch(`${API_BASE}/perfil/${id}`);
     const result = await res.json();
     const user = result.usuario || result.user;
 
-    const setText = (idEl, value) => {
-      const e = document.getElementById(idEl);
-      if (e) e.textContent = value ?? "";
+    const map = {
+      "p_nombre": user.Usuario_Nombre,
+      "p_apellido": user.Usuario_Apellido,
+      "p_correo": user.Correo,
+      "p_telefono": user.Telefono,
+      "p_direccion": user.Direccion,
+      "p_rol": user.Rol
     };
 
-    setText("p_nombre", user.Usuario_Nombre);
-    setText("p_apellido", user.Usuario_Apellido);
-    setText("p_correo", user.Correo);
-    setText("p_telefono", user.Telefono);
-    setText("p_direccion", user.Direccion);
-    setText("p_rol", user.Rol);
+    Object.entries(map).forEach(([id, value]) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value ?? "";
+    });
 
   } catch (error) {
-    console.error("Error perfil:", error);
+    console.error("Error cargando perfil:", error);
   }
 }
 
@@ -95,10 +98,8 @@ async function cargarInventario() {
   if (!token) return;
 
   try {
-    const res = await fetch("http://localhost:3000/insumos", {
-      headers: {
-        "Authorization": "Bearer " + token
-      }
+    const res = await fetch(`${API_BASE}/insumos`, {
+      headers: { "Authorization": "Bearer " + token }
     });
 
     const insumos = await res.json();
@@ -159,76 +160,130 @@ document.addEventListener("DOMContentLoaded", () => {
   const content = document.querySelector(".content");
   if (content && !content.querySelector(".saludo-panel")) content.prepend(saludo);
 
-  // Abrir dashboard al inicio
   mostrarSeccion('dashboard');
 });
 
 
 // ==============================
-// REPORTES (SIGUE IGUAL, FUNCIONAL)
+// REPORTES
 // ==============================
-// Función para obtener y renderizar reportes del agricultor logueado
 async function renderReportes() {
   const cont = document.getElementById('reportes');
   if (!cont) return;
+
   let container = cont.querySelector('.reportes-list');
   if (!container) {
     container = document.createElement('div');
     container.className = 'reportes-list';
     cont.appendChild(container);
   }
+
   container.innerHTML = '<p>Cargando reportes...</p>';
 
-  // obtener ID agricultor desde localStorage
   let idAgr = null;
   try {
     const raw = localStorage.getItem('user') || localStorage.getItem('usuarioActivo');
     const u = raw ? JSON.parse(raw) : null;
     idAgr = u?.ID_Usuario || u?.id || null;
-  } catch (e) { idAgr = null; }
+  } catch {}
 
-  const q = idAgr ? `?destinatario=${encodeURIComponent(idAgr)}` : '';
   try {
-    const res = await fetch(`http://localhost:3000/reportes${q}`);
+    const res = await fetch(`${API_BASE}/reportes?destinatario=${idAgr}`);
     const json = await res.json();
-    const arr = (json.ok && Array.isArray(json.reportes)) ? json.reportes : [];
 
-    if (!arr.length) {
+    if (!json.ok || !json.reportes.length) {
       container.innerHTML = '<p>No hay reportes recientes.</p>';
       return;
     }
 
-    // Render original con todo el estilo
-    container.innerHTML = arr.map(r => {
-      const fecha = new Date(r.createdAt).toLocaleString();
-      const imgs = (r.imagenes||[]).slice(0,3).map(i => 
-        `<img src="${i.Url || i.url}" style="max-width:120px;margin:6px;border-radius:6px;">`
-      ).join('');
+    container.innerHTML = json.reportes
+      .map(r => {
+        const fecha = new Date(r.createdAt).toLocaleString();
+        const imgs = (r.imagenes || [])
+          .slice(0, 3)
+          .map(i => `<img src="${i.Url}" style="max-width:120px;margin:6px;border-radius:6px;">`)
+          .join("");
 
-      return `
-        <article class="reporte-card card" 
-            style="margin-bottom:12px;padding:12px;border-radius:10px;background:white;box-shadow:0 2px 5px rgba(0,0,0,0.1);">
-          
-          <header style="display:flex;justify-content:space-between;align-items:center">
-            <strong style="color:#2e7d32;font-size:16px">Empleado #${r.empleadoId ?? '—'}</strong>
-            <small style="color:#777">${fecha}</small>
-          </header>
-
-          <p style="margin:10px 0;color:#444;font-size:15px;line-height:1.5;">
-            ${(r.texto || '').replaceAll('\n','<br>')}
-          </p>
-
-          <div class="reporte-thumbs" style="margin-top:8px;">
-            ${imgs}
-          </div>
-        </article>
-      `;
-    }).join('');
+        return `
+          <article class="reporte-card card" style="margin-bottom:12px;padding:12px;border-radius:10px;background:white;">
+            <header style="display:flex;justify-content:space-between;">
+              <strong style="color:#2e7d32;">Empleado #${r.empleadoId ?? '—'}</strong>
+              <small style="color:#777">${fecha}</small>
+            </header>
+            <p style="margin:10px 0;color:#444;">${(r.texto || '').replace(/\n/g, '<br>')}</p>
+            <div>${imgs}</div>
+          </article>
+        `;
+      })
+      .join('');
 
   } catch (err) {
-    console.error('Error cargando reportes:', err);
+    console.error("Error reportes:", err);
     container.innerHTML = '<p>Error al cargar reportes.</p>';
   }
+}
+
+
+// ==============================
+// MIS CULTIVOS — SOLO DEL USUARIO LOGUEADO
+// ==============================
+async function cargarMisCultivos() {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.warn("No hay token en localStorage");
+      return;
+    }
+
+    const res = await fetch(`${API_BASE}/calendario/cultivos`, {
+      headers: { "Authorization": "Bearer " + token }
+    });
+
+    const json = await res.json();
+    console.log("Respuesta mis cultivos:", json);
+
+    const tbody = document.getElementById("misCultivosBody");
+    tbody.innerHTML = "";
+
+    if (!json.ok) {
+      tbody.innerHTML = `<tr><td colspan="3">${json.message || "Error desconocido"}</td></tr>`;
+      return;
+    }
+
+    if (!json.cultivos || json.cultivos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="3">No tienes cultivos registrados.</td></tr>`;
+      return;
+    }
+
+    json.cultivos.forEach(c => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${c.Producto}</td>
+          <td>${c.Ubicacion || "—"}</td>
+          <td>${c.Estado}</td>
+        </tr>
+      `;
+    });
+
+  } catch (err) {
+    console.error("❌ Error cargando mis cultivos:", err);
+  }
+}
+
+function cerrarSesion() {
+    const confirmar = confirm("¿Estás seguro que deseas cerrar sesión?");
+
+    if (!confirmar) return;
+
+    // Elimina TODA la sesión
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("usuarioActivo");
+    sessionStorage.clear();
+
+    // Redirige al inicio de sesión
+    window.location.href = "../HTML/index_login.html";
 }
 
 

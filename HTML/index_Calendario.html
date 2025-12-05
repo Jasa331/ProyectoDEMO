@@ -16,16 +16,35 @@
 
   <p id="mensaje"></p>
 
-  <!-- FORMULARIO -->
+  <!-- FORMULARIO MEJORADO -->
   <form id="formSiembra">
+    
     <label for="cultivo">ID del Producto:</label>
     <input type="number" id="cultivo" placeholder="Ej: 1" required>
 
-    <label for="duracion">Duración (días):</label>
-    <input type="number" id="duracion" placeholder="Ej. 120">
+    <label for="cantidad">Cantidad Sembrada:</label>
+    <input type="number" id="cantidad" placeholder="Ej. 200" min="1">
+
+    <label for="duracion">Duración estimada (días):</label>
+    <input type="number" id="duracion" placeholder="Ej. 120" min="1">
 
     <label for="fechaSiembra">Fecha de siembra:</label>
     <input type="date" id="fechaSiembra" required>
+
+    <label for="ubicacion">Ubicación del cultivo:</label>
+    <input type="text" id="ubicacion" placeholder="Lote 1 - Norte">
+
+    <label for="estado">Estado del cultivo:</label>
+    <select id="estado">
+      <option value="Programado">Programado</option>
+      <option value="Sembrado">Sembrado</option>
+      <option value="En Crecimiento">En Crecimiento</option>
+      <option value="Cosechado">Cosechado</option>
+      <option value="Fallido">Fallido</option>
+    </select>
+
+    <label for="notas">Notas del cultivo:</label>
+    <textarea id="notas" placeholder="Observaciones adicionales"></textarea>
 
     <button type="submit" class="btn">Guardar</button>
   </form>
@@ -34,9 +53,10 @@
   <table id="tablaCultivos">
     <thead>
       <tr>
-        <th>Cultivo</th>
+        <th>Producto</th>
         <th>Fecha de Siembra</th>
-        <th>Fecha de Cosecha</th>
+        <th>Fecha Estimada de Cosecha</th>
+        <th>Estado</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -65,4 +85,3 @@
 
 </body>
 </html>
-

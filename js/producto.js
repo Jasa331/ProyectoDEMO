@@ -8,7 +8,7 @@ document.getElementById("formProducto").addEventListener("submit", async (e) => 
     Nombre: document.getElementById("Nombre").value.trim(),
     Stock: document.getElementById("Stock").value,
     Precio: document.getElementById("Precio").value,
-    ID_Usuario: localStorage.getItem("ID_Usuario") || 1,
+    ID_Usuario: localStorage.getItem("ID_Usuario") || value,
   };
 
   const id = document.getElementById("ID_Producto").value;
