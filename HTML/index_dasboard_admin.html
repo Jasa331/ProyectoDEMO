@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Agricord • Panel Admin</title>
 
-  <link rel="stylesheet" href="../css/style_admin.css">
+  <link rel="stylesheet" href="../css/admin.css">
   <script defer src="../js/admin.js"></script>
 </head>
 <body>
@@ -30,7 +30,6 @@
 
   <div class="sidebar-actions">
     <button id="btnExportar" class="btn btn-light">📄 Exportar Datos</button>
-    <button id="btnConfiguracion" class="btn btn-light" onclick="mostrarSeccion('ajustes')">⚙️ Configuración</button>
   </div>
 
   <button id="btnLogout" class="btn btn-outline">Cerrar sesión</button>
@@ -141,6 +140,7 @@
 
       <header class="topbar">
         <h1>💸 Módulo de Gastos Agrícolas</h1>
+        <button id="btnAbrirGasto" class="btn btn-primary">+ Nuevo Gasto</button>
       </header>
 
       <section class="formulario card">
@@ -220,6 +220,7 @@
         </thead>
         <tbody id="tbodyProveedores"></tbody>
       </table>
+      <br>
 
       <p id="proveedorVacio" class="empty">No hay proveedores registrados.</p>
     </section>
@@ -395,6 +396,45 @@
 
   </div>
 </div>
+<!-- =================== MODAL GASTOS =================== -->
+<div id="modalGasto" class="modal">
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3>Registrar Nuevo Gasto</h3>
+      <button id="btnCerrarGasto" class="icon-btn">✖</button>
+    </div>
+
+    <form id="formGastoModal">
+
+      <label>Concepto:
+        <input type="text" id="conceptoModal" required>
+      </label>
+
+      <label>Monto ($):
+        <input type="number" id="montoModal" required>
+      </label>
+
+      <label>Categoría:
+        <select id="categoriaModal" required>
+          <option>Semillas</option>
+          <option>Fertilizantes</option>
+          <option>Herramientas</option>
+          <option>Riego</option>
+          <option>Mano de obra</option>
+          <option>Otros</option>
+        </select>
+      </label>
+
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary">Registrar</button>
+        <button type="button" class="btn" id="btnCancelarGasto">Cancelar</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
 
 
 </body>

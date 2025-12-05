@@ -1,137 +1,179 @@
 :root {
-  --primary: #5AA82E;        /* Verde brillante */
-  --primary-dark: #74BE46;   /* Verde oscuro */
-  --secondary: #F0BE82;      /* Amarillo suave */
-  --background: #111827;     /* Fondo oscuro */
-  --card: #1A202C;           /* Color de la tarjeta */
-  --text-light: #E5E7EB;     /* Texto claro */
-  --text-muted: #9CA3AF;     /* Texto atenuado */
-  --radius: 12px;            /* Bordes redondeados */
-  --shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra */
-  --transition: all 0.3s ease; /* Transiciones */
-  --sidebar-width: 260px;    /* Ancho del sidebar */
-  --max-width: 480px;        /* Ancho máximo del formulario */
-  --max-content-width: 1200px; /* Ancho máximo del contenido */
+  --primary: #5AA82E;
+  --primary-dark: #4D9427;
+  --secondary: #F0BE82;
+  --background: #0F172A;
+  --card: #1E293B;
+  --text-light: #E5E7EB;
+  --text-muted: #9CA3AF;
+  --radius: 14px;
+  --shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  --transition: all 0.25s ease;
+  --sidebar-width: 260px;
 }
 
-/* ----------------------------------- RESET ----------------------------------- */
+/* ================== RESET ================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* ================== BODY ================== */
 body {
   font-family: 'Poppins', sans-serif;
-  background: var(--background);
+  background: linear-gradient(135deg, #020617, #0F172A);
   color: var(--text-light);
-  line-height: 1.6;
-  display: flex;
   min-height: 100vh;
+  display: flex;
 }
 
-h1, h2 {
-  color: var(--primary);
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 30px;
-}
-
-/* ----------------------------------- SIDEBAR ----------------------------------- */
+/* ================== SIDEBAR ================== */
 .sidebar {
   width: var(--sidebar-width);
-  background: var(--card);
-  padding: 20px;
+  background: linear-gradient(180deg, #020617, #1E293B);
+  padding: 22px;
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
+  box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  box-shadow: var(--shadow);
 }
 
-.sidebar .brand {
+.brand {
   display: flex;
   align-items: center;
   font-size: 1.5rem;
-  margin-bottom: 30px;
+  font-weight: bold;
+  margin-bottom: 35px;
+  gap: 10px;
 }
 
-.sidebar .logo {
-  font-size: 2rem;
-  margin-right: 10px;
-}
-
-.sidebar nav {
-  width: 100%;
-}
-
-.sidebar nav a {
-  width: 100%;
-  padding: 12px;
-  color: var(--text-light);
-  font-size: 1.1rem;
-  margin-bottom: 12px;
-  background: transparent;
-  border: none;
-  text-align: left;
-  border-radius: var(--radius);
+.menu a {
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: background 0.3s ease;
+  gap: 10px;
+  padding: 14px;
+  border-radius: var(--radius);
+  color: var(--text-light);
+  text-decoration: none;
+  margin-bottom: 10px;
+  background: transparent;
+  transition: var(--transition);
 }
 
-.sidebar nav a.active, .sidebar nav a:hover {
+.menu a:hover,
+.menu a.active {
   background: var(--primary);
   color: white;
 }
 
+/* ================== SIDEBAR BOTONES ================== */
 .sidebar-actions {
   margin-top: auto;
-  width: 100%;
 }
 
-.sidebar-actions button {
+.sidebar-actions button,
+#btnLogout {
   width: 100%;
+  margin-top: 10px;
   padding: 12px;
-  margin: 8px 0;
+  border-radius: var(--radius);
+  border: none;
   background: var(--primary);
   color: white;
-  border: none;
-  font-weight: 600;
-  font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: var(--transition);
 }
 
-.sidebar-actions button:hover {
+.sidebar-actions button:hover,
+#btnLogout:hover {
   background: var(--primary-dark);
 }
 
-/* ----------------------------------- MAIN CONTENT ----------------------------------- */
+/* ================== MAIN ================== */
 .main {
   margin-left: var(--sidebar-width);
-  padding: 30px;
-  flex-grow: 1;
-  background: var(--background);
-  max-width: var(--max-content-width);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  padding: 35px;
+  width: 100%;
 }
 
-/* ----------------------------------- TABLE ----------------------------------- */
+.seccion {
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* ================== TITULOS ================== */
+h1 {
+  color: var(--primary);
+  margin-bottom: 20px;
+}
+
+h2 {
+  margin-bottom: 15px;
+}
+
+/* ================== TARJETAS ================== */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 25px;
+  box-shadow: var(--shadow);
+  margin-bottom: 25px;
+}
+
+/* ================== DASHBOARD STATS ================== */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  background: linear-gradient(145deg, #1E293B, #0F172A);
+  padding: 25px;
+  border-radius: var(--radius);
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.stat-value {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: var(--primary);
+}
+
+/* ================== TOPBAR ================== */
+.topbar {
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.top-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.top-actions input {
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  border: 1px solid #334155;
+  background: #020617;
+  color: var(--text-light);
+}
+
+/* ================== TABLAS ================== */
 .table-wrap {
   background: var(--card);
   border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow);
   padding: 20px;
-  width: 100%;
-  margin-bottom: 30px;
+  box-shadow: var(--shadow);
 }
 
 .table {
@@ -139,211 +181,307 @@ h1, h2 {
   border-collapse: collapse;
 }
 
-.table th, .table td {
-  padding: 14px;
-  text-align: left;
-  border-bottom: 1px solid #2D3748;
-}
-
 .table th {
   background: var(--primary);
   color: white;
-  font-size: 1.2rem;
-}
-
-.table tbody tr:nth-child(even) {
-  background: #2D3748;
-}
-
-.table tbody tr:hover {
-  background: #3D4852;
-  cursor: pointer;
+  padding: 14px;
 }
 
 .table td {
-  color: var(--text-muted);
+  padding: 12px;
+  border-bottom: 1px solid #334155;
 }
 
-.table td a {
-  color: var(--primary);
-  text-decoration: none;
-  font-weight: bold;
-  margin-right: 10px;
+.table tr:nth-child(even) {
+  background: #020617;
 }
 
-.table td a:hover {
-  text-decoration: underline;
+/* ================== FORMULARIOS ================== */
+.formulario {
+  max-width: 500px;
+  margin: auto;
 }
 
-/* ----------------------------------- STATS ----------------------------------- */
-.stats {
+.formulario form {
   display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.stat-card {
-  background: var(--card);
-  padding: 20px;
+input,
+select {
+  padding: 10px;
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  width: 100%;
-  text-align: center;
-  flex-grow: 1;
+  border: 1px solid #334155;
+  background: #020617;
+  color: var(--text-light);
 }
 
-.stat-label {
-  font-size: 1rem;
+input::placeholder {
   color: var(--text-muted);
 }
 
-.stat-value {
-  font-size: 2rem;
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* ================== BOTONES ================== */
+.btn {
+  padding: 11px 18px;
+  border-radius: var(--radius);
+  border: none;
   font-weight: bold;
-  color: var(--primary);
+  cursor: pointer;
+  transition: var(--transition);
 }
 
-/* ----------------------------------- FOOTER ACTIONS ----------------------------------- */
-.footer-actions {
-  display: flex;
-  gap: 20px;
-  justify-content: flex-end;
-  margin-top: 30px;
-}
-
-.footer-actions button {
-  padding: 10px 20px;
+.btn-primary {
   background: var(--primary);
   color: white;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s ease;
 }
 
-.footer-actions button:hover {
+.btn-primary:hover {
   background: var(--primary-dark);
 }
 
-/* ----------------------------------- MODAL + FORMULARIO ----------------------------------- */
+.btn-danger {
+  background: #DC2626;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #B91C1C;
+}
+
+/* ================== CONFIGURACIÓN ================== */
+.configuracion {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* ================== INFO AGRICULTOR ================== */
+.info-agricultor {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+.info-agricultor div {
+  background: #020617;
+  padding: 12px;
+  border-radius: var(--radius);
+  border: 1px solid #334155;
+}
+
+/* ================== MODALES ================== */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal.show {
+  display: flex;
+}
+
 .modal-content {
   background: var(--card);
   padding: 30px;
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  animation: fadeIn 0.3s ease-in-out;
-  max-width: 800px;
   width: 100%;
+  max-width: 750px;
+  box-shadow: var(--shadow);
+  animation: fadeIn 0.3s ease;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   margin-bottom: 20px;
 }
 
-.modal-header h3 {
-  color: var(--text-light);
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
-.icon-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-light);
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.icon-btn:hover {
-  color: var(--primary);
-}
-
-/* --- Grid del formulario --- */
-#formUsuario .grid {
+.grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-#formUsuario label {
-  display: flex;
-  flex-direction: column;
-  font-weight: 500;
-  color: var(--text-light);
-  font-size: 0.95rem;
-}
-
-#formUsuario input,
-#formUsuario select {
-  margin-top: 6px;
-  padding: 10px;
-  border-radius: var(--radius);
-  border: 1px solid #2D3748;
-  background: #1C1F2A;
-  color: var(--text-light);
-  font-size: 1rem;
-  transition: border 0.3s ease;
-}
-
-#formUsuario input:focus,
-#formUsuario select:focus {
-  outline: none;
-  border-color: var(--primary);
-}
-
-/* --- Botones del modal --- */
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 15px;
 }
 
-.modal-actions .btn {
-  padding: 12px 20px;
-  border-radius: var(--radius);
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s ease;
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
 }
 
-.modal-actions .btn-primary {
-  background: var(--primary);
-  color: white;
-}
-
-.modal-actions .btn-primary:hover {
-  background: var(--primary-dark);
-}
-
-.modal-actions .btn {
-  background: #374151;
-  color: var(--text-light);
-}
-
-.modal-actions .btn:hover {
-  background: #4B5563;
-}
-
-/* ----------------------------------- ANIMACIONES ----------------------------------- */
+/* ================== ANIMACIÓN ================== */
 @keyframes fadeIn {
-  0% {
+  from {
     opacity: 0;
     transform: translateY(20px);
   }
-  100% {
+  to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-/* ----------------------------------- RESPONSIVO ----------------------------------- */
+/* ================== RESPONSIVE ================== */
 @media (max-width: 768px) {
-  #formUsuario .grid {
-    grid-template-columns: 1fr;
+  .main {
+    padding: 20px;
+  }
+
+  .sidebar {
+    width: 220px;
+  }
+}
+/* ===================== MEJORAR ESPACIADO EN GASTOS ===================== */
+
+#gastos .formulario form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px; /* 👉 separa los campos entre sí */
+}
+
+#gastos .formulario label {
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+#gastos .formulario input,
+#gastos .formulario select {
+  padding: 12px;
+  margin-top: 6px; /* 👉 separa el label del input */
+}
+
+#gastos .formulario button {
+  margin-top: 10px; /* 👉 separa el botón del último campo */
+}
+
+/* Separación entre formulario y tabla */
+#gastos .formulario {
+  margin-bottom: 35px;
+}
+
+/* Oculta el formulario original de gastos */
+#gastos .formulario {
+  display: none;
+}
+
+/* =================== MODAL GASTOS =================== */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal.activo {
+  display: flex;
+}
+
+#formGastoModal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ===================== FORMULARIO MODAL NUEVO GASTO ===================== */
+
+#modalGasto .modal-content {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 30px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6);
+  animation: zoomIn 0.25s ease;
+}
+
+/* Título */
+#modalGasto h3 {
+  text-align: center;
+  color: var(--primary);
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+}
+
+/* Formulario en columnas ordenadas */
+#formGastoModal {
+  display: flex;
+  flex-direction: column;
+  gap: 18px; /* separación entre campos */
+}
+
+/* Labels */
+#formGastoModal label {
+  font-weight: 500;
+  color: var(--text-light);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Inputs y select */
+#formGastoModal input,
+#formGastoModal select {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #2f3545;
+  background: #1f2635;
+  color: var(--text-light);
+  font-size: 0.95rem;
+  transition: all 0.25s ease;
+}
+
+/* Efecto focus */
+#formGastoModal input:focus,
+#formGastoModal select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(90, 168, 46, 0.3);
+}
+
+/* Botones */
+#formGastoModal .modal-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+#formGastoModal .btn {
+  flex: 1;
+  padding: 12px;
+  font-size: 0.95rem;
+  border-radius: 10px;
+}
+
+/* Animación suavecita */
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }

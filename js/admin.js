@@ -393,3 +393,20 @@ document.addEventListener("DOMContentLoaded", () => {
   cargarProveedores();
   mostrarSeccion("dashboard");
 });
+
+const btnAbrirGasto = document.getElementById("btnAbrirGasto");
+const modalGasto = document.getElementById("modalGasto");
+const btnCerrarGasto = document.getElementById("btnCerrarGasto");
+const btnCancelarGasto = document.getElementById("btnCancelarGasto");
+
+btnAbrirGasto.addEventListener("click", () => {
+  modalGasto.classList.add("activo");
+});
+
+btnCerrarGasto.addEventListener("click", () => {
+  modalGasto.classList.remove("activo");
+});
+
+btnCancelarGasto.addEventListener("click", () => {
+  modalGasto.classList.remove("activo");
+});
