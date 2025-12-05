@@ -485,3 +485,7 @@ select:focus {
     transform: scale(1);
   }
 }
+
+#modalExportar.show {
+  display: flex;
+}

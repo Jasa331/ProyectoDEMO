@@ -434,6 +434,37 @@
     </form>
   </div>
 </div>
+<!-- =============================================================== -->
+<!-- ==================== MODAL EXPORTAR DATOS ===================== -->
+<!-- =============================================================== -->
+
+<div id="modalExportar" class="modal">
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3>Exportar Datos</h3>
+      <button id="btnCerrarExportar" class="icon-btn">✖</button>
+    </div>
+
+    <div class="modal-body">
+      <p>Seleccione qué desea incluir en el reporte:</p>
+
+      <label><input type="checkbox" id="expUsuarios"> Usuarios</label><br>
+      <label><input type="checkbox" id="expGastos"> Gastos</label><br>
+      <label><input type="checkbox" id="expProveedores"> Proveedores</label><br>
+      <label><input type="checkbox" id="expProductos"> Productos</label><br>
+      <label><input type="checkbox" id="expCultivos"> Cultivos</label><br>
+      <label><input type="checkbox" id="expTodo"> Seleccionar Todo</label><br>
+    </div>
+
+    <div class="modal-actions">
+      <button id="btnExportPDF" class="btn btn-primary">Exportar PDF</button>
+      <button id="btnExportExcel" class="btn btn-primary">Exportar Excel</button>
+      <button id="btnCancelarExportar" class="btn">Cancelar</button>
+    </div>
+
+  </div>
+</div>
 
 
 

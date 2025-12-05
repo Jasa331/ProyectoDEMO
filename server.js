@@ -8,6 +8,9 @@ const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_change_me';
 const multer = require('multer');
+const PDFDocument = require("pdfkit");
+const ExcelJS = require("exceljs");
+
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -1071,8 +1074,246 @@ app.get("/api/agricultores", async (req, res) => {
   }
 });
 
+// RUTAS DE GASTOS
+app.post("/gastos", async (req, res) => {
+  try {
+    const { concepto, monto, categoria, fecha, ID_Usuario } = req.body;
+
+    if (!concepto || !monto || !fecha || !ID_Usuario) {
+      return res.status(400).json({ ok: false, error: "Faltan datos obligatorios" });
+    }
+
+    await pool.query(
+      `INSERT INTO gastos (concepto, monto, categoria, fecha, ID_Usuario)
+       VALUES (?, ?, ?, ?, ?)`,
+      [concepto, monto, categoria, fecha, ID_Usuario]
+    );
+
+    res.json({ ok: true, msg: "Gasto registrado correctamente" });
+
+  } catch (err) {
+    res.status(500).json({ ok: false, error: "Error en el servidor", detalle: err });
+  }
+});
+
+app.get("/gastos/usuario/:id", async (req, res) => {
+  try {
+    const ID_Usuario = req.params.id;
+
+    const [rows] = await pool.query(
+      "SELECT * FROM gastos WHERE ID_Usuario = ? ORDER BY fecha DESC",
+      [ID_Usuario]
+    );
+
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: "Error al obtener los gastos" });
+  }
+});
+
+app.delete("/gastos/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    await pool.query("DELETE FROM gastos WHERE id = ?", [id]);
+
+    res.json({ ok: true, msg: "Gasto eliminado" });
+
+  } catch (err) {
+    res.status(500).json({ ok: false, error: "Error al eliminar el gasto" });
+  }
+});
+
+app.put("/gastos/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { concepto, monto, categoria, fecha } = req.body;
+
+    await pool.query(
+      `UPDATE gastos SET concepto = ?, monto = ?, categoria = ?, fecha = ?
+       WHERE id = ?`,
+      [concepto, monto, categoria, fecha, id]
+    );
+
+    res.json({ ok: true, msg: "Gasto actualizado" });
+
+  } catch (err) {
+    res.status(500).json({ ok: false, error: "Error al actualizar gasto" });
+  }
+});
 
 
+// Ruta para exportar datos a PDF
+app.get("/export/pdf", async (req, res) => {
+  try {
+    const { usuarios, gastos, proveedores } = req.query;
+
+    const doc = new PDFDocument({ margin: 30, size: "A4" });
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      'attachment; filename="reporte_agricord.pdf"'
+    );
+
+    doc.pipe(res);
+
+    // Título
+    doc.fontSize(18).text("Reporte Agricord", { align: "center" });
+    doc.moveDown();
+
+    // ================== USUARIOS ==================
+    if (usuarios === "1") {
+      const [rowsUsuarios] = await pool.query(
+        "SELECT Usuario_Nombre, Usuario_Apellido, Correo, Rol FROM Usuario"
+      );
+
+      doc.fontSize(14).text("Usuarios", { underline: true });
+      doc.moveDown(0.5);
+
+      rowsUsuarios.forEach(u => {
+        doc.fontSize(10).text(
+          `- ${u.Usuario_Nombre} ${u.Usuario_Apellido} | ${u.Correo} | ${u.Rol}`
+        );
+      });
+
+      doc.moveDown();
+    }
+
+    // ================== GASTOS ==================
+    if (gastos === "1") {
+      const [rowsGastos] = await pool.query(
+        `SELECT g.concepto, g.monto, g.categoria, g.fecha, u.Usuario_Nombre
+         FROM gastos g
+         LEFT JOIN Usuario u ON g.ID_Usuario = u.ID_Usuario
+         ORDER BY g.fecha DESC`
+      );
+
+      doc.addPage();
+      doc.fontSize(14).text("Gastos", { underline: true });
+      doc.moveDown(0.5);
+
+      rowsGastos.forEach(g => {
+        doc.fontSize(10).text(
+          `- ${g.fecha} | ${g.concepto} | $${g.monto} | ${g.categoria} | ${g.Usuario_Nombre || "Sin usuario"}`
+        );
+      });
+
+      doc.moveDown();
+    }
+
+    // ================== PROVEEDORES ==================
+    if (proveedores === "1") {
+      const [rowsProv] = await pool.query(
+        "SELECT Nombre_Empresa, Nombre_Contacto, Ciudad, Telefono FROM proveedor"
+      );
+
+      doc.addPage();
+      doc.fontSize(14).text("Proveedores", { underline: true });
+      doc.moveDown(0.5);
+
+      rowsProv.forEach(p => {
+        doc.fontSize(10).text(
+          `- ${p.Nombre_Empresa} | ${p.Nombre_Contacto} | ${p.Ciudad} | ${p.Telefono}`
+        );
+      });
+
+      doc.moveDown();
+    }
+
+    doc.end();
+  } catch (err) {
+    console.error("Error generando PDF:", err);
+    res.status(500).send("Error al generar PDF");
+  }
+});
+
+// Ruta para exportar datos a Excel
+app.get("/export/excel", async (req, res) => {
+  try {
+    const { usuarios, gastos, proveedores } = req.query;
+
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = "Agricord";
+    workbook.created = new Date();
+
+    // ================== HOJA USUARIOS ==================
+    if (usuarios === "1") {
+      const [rowsUsuarios] = await pool.query(
+        "SELECT Usuario_Nombre, Usuario_Apellido, Correo, Rol FROM Usuario"
+      );
+
+      const wsU = workbook.addWorksheet("Usuarios");
+      wsU.addRow(["Nombre", "Apellido", "Correo", "Rol"]);
+
+      rowsUsuarios.forEach(u => {
+        wsU.addRow([
+          u.Usuario_Nombre,
+          u.Usuario_Apellido,
+          u.Correo,
+          u.Rol
+        ]);
+      });
+    }
+
+    // ================== HOJA GASTOS ==================
+    if (gastos === "1") {
+      const [rowsGastos] = await pool.query(
+        `SELECT g.concepto, g.monto, g.categoria, g.fecha, u.Usuario_Nombre
+         FROM gastos g
+         LEFT JOIN Usuario u ON g.ID_Usuario = u.ID_Usuario
+         ORDER BY g.fecha DESC`
+      );
+
+      const wsG = workbook.addWorksheet("Gastos");
+      wsG.addRow(["Fecha", "Concepto", "Monto", "Categoría", "Usuario"]);
+
+      rowsGastos.forEach(g => {
+        wsG.addRow([
+          g.fecha,
+          g.concepto,
+          g.monto,
+          g.categoria,
+          g.Usuario_Nombre || "Sin usuario"
+        ]);
+      });
+    }
+
+    // ================== HOJA PROVEEDORES ==================
+    if (proveedores === "1") {
+      const [rowsProv] = await pool.query(
+        "SELECT Nombre_Empresa, Nombre_Contacto, Ciudad, Telefono FROM proveedor"
+      );
+
+      const wsP = workbook.addWorksheet("Proveedores");
+      wsP.addRow(["Empresa", "Contacto", "Ciudad", "Teléfono"]);
+
+      rowsProv.forEach(p => {
+        wsP.addRow([
+          p.Nombre_Empresa,
+          p.Nombre_Contacto,
+          p.Ciudad,
+          p.Telefono
+        ]);
+      });
+    }
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      'attachment; filename="reporte_agricord.xlsx"'
+    );
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.error("Error generando Excel:", err);
+    res.status(500).send("Error al generar Excel");
+  }
+});
 
 
 app.listen(port, () => console.log(`✅ Servidor corriendo en http://localhost:${port}`));
