@@ -1,90 +1,223 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agricord - Sistema de Registro de Producción de Cultivos</title>
-  <link rel="stylesheet" href="../css/style_presentacion.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agricord | Sistema de Registro Agrícola</title>
+
+  <!-- Vinculo CSS -->
+  <link rel="stylesheet" href="../css/style_presentacion.css">
 </head>
+
 <body>
+
+  <!-- ==================== HEADER ==================== -->
   <header class="header">
     <div class="container nav">
-      <h1 class="logo">Agricord</h1>
-      <nav>
+
+      <h1 class="logo">🌱 Agricord</h1>
+
+      <nav class="menu-nav">
         <ul class="menu">
           <li><a href="#inicio">Inicio</a></li>
           <li><a href="#acerca">Acerca</a></li>
+          <li><a href="#vision">Visión & Misión</a></li>
           <li><a href="#modulos">Módulos</a></li>
           <li><a href="#beneficios">Beneficios</a></li>
-          <li><a href="#equipo">Equipo</a></li>
+          <li><a href="#estadisticas">Estadísticas</a></li>
+          <li><a href="#faq">FAQ</a></li>
           <li><a href="#contacto">Contacto</a></li>
         </ul>
       </nav>
+
       <div class="auth-buttons">
         <a href="../HTML/index_login.html" class="btn-login">Iniciar sesión</a>
         <a href="../HTML/index_registro.html" class="btn-register">Registrarse</a>
       </div>
+
     </div>
   </header>
-  <main>
-    <section id="inicio" class="hero">
-      <div class="hero-content">
-        <h2>Sistema de Registro de Producción de Cultivos</h2>
-        <p>
-          Agricord es una plataforma diseñada para optimizar la gestión agrícola,
-          permitiendo registrar, controlar y visualizar información de cultivos, cuadrillas y materiales.
-        </p>
-        <a href="#acerca" class="btn-primario">Conocer más</a>
-      </div>
-    </section>
 
-    <section id="acerca" class="seccion">
-      <h2>Acerca de Agricord</h2>
+
+  <!-- ==================== HERO ==================== -->
+  <section id="inicio" class="hero">
+    <div class="hero-content">
+      <h2>Gestión Inteligente de tu Producción Agrícola</h2>
       <p>
-        Agricord busca mejorar la organización del sector agrícola mediante un sistema centralizado,
-        ágil y accesible. Su objetivo principal es facilitar el seguimiento de cada obra y cultivo
-        para garantizar productividad, transparencia y trazabilidad.
+        Agricord es un sistema moderno diseñado para digitalizar tus procesos agrícolas,
+        permitiendo administrar cultivos, mano de obra, materiales y reportes de forma práctica,
+        rápida y eficiente.
       </p>
-    </section>
+      <a href="#acerca" class="btn-primario">Conocer más</a>
+    </div>
+  </section>
 
-    <section id="modulos" class="seccion">
-      <h2>Módulos del Sistema</h2>
+
+  <!-- ==================== ACERCA ==================== -->
+  <section id="acerca" class="seccion">
+    <div class="container">
+      <h2>¿Qué es Agricord?</h2>
+      <p>
+        Agricord es una plataforma digital que centraliza toda la información de producción agrícola,
+        permitiendo a agricultores y supervisores tener control total sobre las operaciones del campo.
+      </p>
+      <p>
+        Su diseño se enfoca en la simplicidad, usabilidad y eficiencia para apoyar la toma
+        de decisiones basada en datos reales.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ==================== VISIÓN Y MISIÓN ==================== -->
+  <section id="vision" class="seccion">
+    <div class="container">
+      <h2>Visión & Misión</h2>
+
       <div class="cards">
-        <div class="card">Registro de Cultivos</div>
-        <div class="card">Gestión de Cuadrillas</div>
-        <div class="card">Materiales y Servicios</div>
-        <div class="card">Evidencias Fotográficas</div>
-        <div class="card">Reportes y Estadísticas</div>
+        <div class="card">
+          <h3>🌎 Visión</h3>
+          <p>
+            Ser una herramienta líder en la digitalización del sector agrícola colombiano,
+            promoviendo la productividad, transparencia y sostenibilidad.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>🎯 Misión</h3>
+          <p>
+            Facilitar la gestión agrícola mediante soluciones tecnológicas accesibles,
+            mejorando la trazabilidad y organización de las actividades del campo.
+          </p>
+        </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="beneficios" class="seccion">
-      <h2>Beneficios Principales</h2>
-      <ul>
-        <li>Centraliza los datos de producción agrícola.</li>
-        <li>Agiliza la toma de decisiones.</li>
-        <li>Facilita el control de obras en campo.</li>
-        <li>Promueve una gestión más transparente.</li>
+
+  <!-- ==================== MÓDULOS ==================== -->
+  <section id="modulos" class="seccion">
+    <div class="container">
+      <h2>Módulos del Sistema</h2>
+
+      <div class="cards">
+        <div class="card"><span>📒</span> Registro de Cultivos</div>
+        <div class="card"><span>👷</span> Gestión de Cuadrillas</div>
+        <div class="card"><span>🧺</span> Materiales & Servicios</div>
+        <div class="card"><span>📷</span> Evidencias Fotográficas</div>
+        <div class="card"><span>📦</span> Inventarios de Insumos</div>
+        <div class="card"><span>📊</span> Reportes y Estadísticas</div>
+        <div class="card"><span>⚠️</span> Alertas y Control de Actividades</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== BENEFICIOS ==================== -->
+  <section id="beneficios" class="seccion">
+    <div class="container">
+      <h2>Beneficios del Sistema</h2>
+
+      <ul class="lista-beneficios">
+        <li>📌 Registro centralizado de información agrícola.</li>
+        <li>⚡ Reducción del tiempo en procesos manuales.</li>
+        <li>📱 Acceso desde cualquier dispositivo.</li>
+        <li>🔍 Mayor control y trazabilidad de actividades.</li>
+        <li>📈 Reportes claros para toma de decisiones.</li>
+        <li>🛠 Optimización de recursos y mano de obra.</li>
+        <li>☁️ Almacenamiento seguro de datos.</li>
       </ul>
-    </section>
+    </div>
+  </section>
 
-    <section id="equipo" class="seccion equipo">
+
+  <!-- ==================== ESTADÍSTICAS ==================== -->
+  <section id="estadisticas" class="seccion">
+    <div class="container">
+      <h2>Impacto del Sistema</h2>
+
+      <div class="cards estadisticas">
+        <div class="card"><h3>0</h3><p>Registros de cultivos</p></div>
+        <div class="card"><h3>0</h3><p>Usuarios activos</p></div>
+        <div class="card"><h3>98%</h3><p>Mejora en organización</p></div>
+        <div class="card"><h3>0</h3><p>Horas de trabajo registradas</p></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== TESTIMONIOS ==================== -->
+  <section id="testimonios" class="seccion">
+    <div class="container">
+      <h2>Testimonios</h2>
+
+      <div class="cards">
+        <div class="card">
+          <p>“Agricord nos ayudó a organizar la finca como nunca antes. Los reportes son muy útiles.”</p>
+          <strong>- Finca Los Pinos</strong>
+        </div>
+
+        <div class="card">
+          <p>“La gestión de cuadrillas ahora es más clara y rápida. Excelente herramienta.”</p>
+          <strong>- Cooperativa AgroCampo</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== PREGUNTAS FRECUENTES ==================== -->
+  <section id="faq" class="seccion">
+    <div class="container">
+      <h2>Preguntas Frecuentes</h2>
+
+      <div class="faq-item">
+        <h4>¿Agricord es gratuito?</h4>
+        <p>Sí, la plataforma está disponible como proyecto académico para uso general.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>¿Puedo registrar varias fincas?</h4>
+        <p>Sí, el sistema permite administrar múltiples unidades productivas.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>¿Es necesario estar conectado a internet?</h4>
+        <p>Sí, actualmente la plataforma funciona en línea.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== CONTACTO ==================== -->
+  <section id="contacto" class="seccion contacto">
+    <div class="container">
+      <h2>Contáctanos</h2>
+      <p>Para información adicional sobre el sistema o soporte técnico:</p>
+      <p><strong>Email:</strong> agricord.soporte@gmail.com</p>
+      <p><strong>Teléfono:</strong> +57 310 000 0000</p>
+    </div>
+  </section>
+
+
+  <!-- ==================== EQUIPO ==================== -->
+  <section id="equipo" class="seccion equipo">
+    <div class="container">
       <h2>Equipo de Desarrollo</h2>
       <p>
-        El proyecto Agricord fue desarrollado por <strong>Jose Miguel, Danna Martin, Kimberly Arango</strong>,
-        aprendizez del programa Análisis y Desarrollo de Software (SENA).
+        Proyecto creado por <strong>Jose Miguel</strong>, <strong>Danna Martin</strong> y
+        <strong>Kimberly Arango</strong>,
+        aprendices del programa <strong>ADSO - SENA</strong>.
       </p>
-    </section>
+      <p>Comprometidos con transformar la agricultura a través de la tecnología.</p>
+    </div>
+  </section>
 
-    <section id="contacto" class="seccion contacto">
-      <h2>Contacto</h2>
-      <p>Para más información o demostraciones del sistema:</p>
-      <p><strong>Email:</strong> agricord.soporte@gmail.com</p>
-    </section>
-  </main>
 
-  <footer>
-    <p>© 2025 Agricord. Proyecto académico desarrollado en el SENA.</p>
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    <p>© 2025 Agricord | Proyecto académico desarrollado en el SENA.</p>
   </footer>
+
 </body>
 </html>

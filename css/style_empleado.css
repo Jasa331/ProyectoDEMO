@@ -1,218 +1,220 @@
-/* Estilo general */
+/* ==========================
+   CENTRADO GENERAL
+========================== */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  background: #f5f8f4;
-  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Encabezado */
-header {
-  background: linear-gradient(90deg, #2e7d32, #66bb6a);
-  color: white;
-  padding: 1rem;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
-
-/* Secciones */
+/* ==========================
+   CONTENEDOR PRINCIPAL
+========================== */
 main {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 1rem;
-}
-
-h2 {
-  margin-bottom: 0.5rem;
-  color: #2e7d32;
-}
-
-/* Formulario */
-.form-section {
-  background: white;
-  padding: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  margin-bottom: 2rem;
-}
-
-textarea {
   width: 100%;
-  min-height: 100px;
-  padding: 10px;
-  margin-bottom: 1rem;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+/* ==========================
+   TARJETAS GENERALES
+========================== */
+.form-section,
+.list-section,
+.login-section form,
+.agricultor-info {
+  background: white;
+  padding: 28px;
+  border-radius: 18px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.15);
+  margin-bottom: 30px;
+}
+
+/* ==========================
+   TÍTULOS CENTRADOS
+========================== */
+h2, h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* ==========================
+   CAMPOS DE FORMULARIO
+========================== */
+input, textarea, select {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 16px;
+  border-radius: 12px;
   border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 14px;
+  font-size: 15px;
+  background: #f9f9f9;
+  transition: 0.3s ease;
 }
 
-input[type="file"] {
-  display: block;
-  margin-bottom: 1rem;
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #5AA82E;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(90,168,46,0.2);
 }
 
+/* ==========================
+   FORMULARIOS ORDENADOS
+========================== */
+form {
+  display: grid;
+  gap: 14px;
+}
+
+/* ==========================
+   BOTONES CENTRADOS Y BONITOS
+========================== */
 button {
-  background: #43a047;
+  align-self: center;
+  margin-top: 10px;
+  background: linear-gradient(135deg, #5AA82E, #2e7d32);
   color: white;
   border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
+  padding: 14px 34px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 15px;
-  transition: 0.3s;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  transition: 0.25s ease;
 }
 
 button:hover {
-  background: #2e7d32;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 26px rgba(0,0,0,0.32);
 }
 
-/* Reportes */
-.list-section {
-  background: white;
-  padding: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+button:active {
+  transform: scale(0.96);
 }
 
+/* Botón peligro */
+.btn-cerrar {
+  background: linear-gradient(135deg, #e53935, #b71c1c);
+}
+
+/* ==========================
+   BOTÓN REGRESAR FIJO
+========================== */
+.btn-regresar {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  background: linear-gradient(135deg, #5AA82E, #2e7d32);
+  color: white;
+  padding: 12px 26px;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.3);
+  transition: 0.25s ease;
+  z-index: 1000;
+}
+
+.btn-regresar:hover {
+  transform: scale(1.05);
+}
+
+/* ==========================
+   TARJETAS DE REPORTES
+========================== */
 .reporte-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
 }
 
 .reporte-card {
   background: #f9fdf8;
-  border: 1px solid #dce9d6;
-  padding: 1rem;
-  border-radius: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+  transition: 0.25s;
 }
 
-.reporte-card img {
-  max-width: 200px;
-  margin-top: 0.5rem;
-  border-radius: 6px;
+.reporte-card:hover {
+  transform: translateY(-4px);
 }
 
-.reporte-card small {
-  color: #666;
-  display: block;
-  margin-top: 0.5rem;
-}
-
-/* Footer */
-footer {
-  margin-top: 2rem;
-  padding: 1rem;
-  text-align: center;
-  background: #e8f5e9;
-  color: #2e7d32;
-  border-top: 1px solid #c8e6c9;
-}
-
-    /* Botón regresar en esquina superior derecha */
-    .btn-regresar {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      background: var(--verde1, #5AA82E);
-      color: white;
-      padding: 10px 18px;
-      border-radius: 8px;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      transition: background 0.3s ease, transform 0.2s ease;
-      text-decoration: none;
-      z-index: 1000;
-    }
-
-    .btn-regresar:hover {
-      background: var(--verde2, #74BE46);
-      transform: scale(1.05);
-    }
-
+/* ==========================
+   PREVIEW DE IMÁGENES
+========================== */
 .preview {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 14px;
 }
+
 .preview img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 10px;
-  position: relative;
-}
-
-.hidden {
-  display: none;
-}
-
-.login-section {
-  text-align: center;
-  padding: 50px;
-}
-
-.login-section form {
-  display: inline-block;
-  text-align: left;
-  background: #f4f4f4;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.login-section input {
-  display: block;
   width: 100%;
-  margin-bottom: 10px;
-  padding: 8px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 2px solid #c8e6c9;
 }
 
-.btn-cerrar {
-  margin-top: 10px;
-  background: #c0392b;
-  color: #fff;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  border-radius: 5px;
+/* ==========================
+   LOGIN PROFESIONAL
+========================== */
+.login-section {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-    :root {
-      --primary: #5AA82E;
-      --primary-dark: #4D9227;
-      --background: #f4f4f4;
-      --card: #ffffff;
-      --text-light: #222;
-      --radius: 12px;
-      --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
 
-    /* Tarjeta profesional del agricultor */
+/* ==========================
+   TARJETA DEL AGRICULTOR (RECUADRO VISIBLE)
+========================== */
 .agricultor-info {
-  background: var(--card);
-  padding: 20px;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  border-left: 6px solid var(--primary);
-  margin-top: 15px;
   display: none;
-  animation: fadeIn 0.3s ease;
+  background: linear-gradient(135deg, #ffffff, #f3fdf1);
+  padding: 30px;
+  border-radius: 20px;
+  border: 2px solid #5AA82E;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+  margin-top: 25px;
+  animation: aparecer 0.4s ease forwards;
 }
 
+/* Cuando se muestre */
+.agricultor-info.mostrar {
+  display: block;
+}
+
+/* Título dentro del recuadro */
 .agricultor-info h3 {
-  margin-bottom: 12px;
-  color: var(--primary-dark);
+  text-align: center;
+  color: #2e7d32;
+  margin-bottom: 18px;
+  font-size: 20px;
 }
 
+/* Texto dentro del recuadro */
 .agricultor-info p {
-  margin: 6px 0;
-  color: var(--text-light);
+  font-size: 15px;
+  margin: 8px 0;
+  color: #333;
+  background: #e8f5e9;
+  padding: 8px 12px;
+  border-radius: 8px;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Animación suave */
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
