@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Empleado</title>
   <link rel="stylesheet" href="../css/style_dasboard_empleado.css">
-  <script  src="../js/empleado_dasboard.js"defer></script>
+  <script src="../js/empleado_dasboard.js" defer></script>
 </head>
 <body>
 
@@ -13,73 +13,61 @@
   <div class="sidebar">
     <h2>Panel Empleado</h2>
     <a onclick="mostrarSeccion('dashboard')">Dashboard</a>
-    <a onclick="mostrarSeccion('tareas')">Mis Tareas</a>
     <a onclick="mostrarSeccion('reportes')">Reportes</a>
-    <a onclick="mostrarSeccion('inventario')">Inventario</a>
-    <hr style="border: 1px solid var(--verde3); margin: 20px 0;">
+    <hr class="separator">
     <a onclick="mostrarSeccion('perfil')">Perfil</a>
     <a onclick="mostrarSeccion('cerrarSesion')">Cerrar Sesión</a>
   </div>
 
-  <!-- Contenedor principal -->
+  <!-- Contenido principal -->
   <div class="content" id="contenidoPrincipal">
 
     <!-- Dashboard -->
-    <div id="dashboard" class="seccion">
+    <div id="dashboard" class="seccion activa">
       <h1>Dashboard</h1>
       <p>Bienvenido al panel principal del empleado.</p>
-      
 
-      <!-- Botón destacado en el inicio -->
-      <div style="margin-bottom:15px;">
+      <div class="botones-container">
         <a href="#" class="btn-inicio" id="btniniciarjornada">Iniciar Jornada</a>
         <a href="index_reportes_empleado.html" class="btn-inicio">Enviar Reporte</a>
       </div>
-
-      <!-- Ejemplo tabla -->
-      <table id="tabla">
-        <tr>
-          <th>Nombre</th>
-          <th>Tarea</th>
-          <th>Estado</th>
-        </tr>
-      </table>
-    </div>
-
-    <!-- Mis Tareas -->
-    <div id="tareas" class="seccion" style="display:none;">
-      <h1>Mis Tareas</h1>
-      <p>Aquí se listan todas las tareas asignadas al empleado.</p>
     </div>
 
     <!-- Reportes -->
-    <div id="reportes" class="seccion" style="display:none;">
+    <div id="reportes" class="seccion">
       <h1>Reportes</h1>
       <div id="detalleReportes"></div>
     </div>
 
-    <!-- Inventario -->
-    <div id="inventario" class="seccion" style="display:none;">
-      <h1>Inventario</h1>
-      <div id="detalleInventario"></div>
-    </div>
-
     <!-- Perfil -->
-    <div id="perfil" class="seccion" style="display:none;">
-      <h1>Perfil</h1>
-      <p>Sección de perfil del empleado.</p>
-    </div>
+    <section id="perfil" class="seccion">
+      <center><h1>Perfil del Usuario</h1></center>
+
+      <div class="perfil-card">
+        <div class="perfil-datos">
+          <p><strong>Nombre:</strong> <span id="p_nombre"></span></p>
+          <p><strong>Apellido:</strong> <span id="p_apellido"></span></p>
+          <p><strong>Correo:</strong> <span id="p_correo"></span></p>
+          <p><strong>Teléfono:</strong> <span id="p_telefono"></span></p>
+          <p><strong>Dirección:</strong> <span id="p_direccion"></span></p>
+          <p><strong>Rol:</strong> <span id="p_rol"></span></p>
+        </div>
+      </div>
+    </section>
 
     <!-- Cerrar sesión -->
-    <div id="cerrarSesion" class="seccion" style="display:none;">
+    <div id="cerrarSesion" class="seccion">
       <h1>Cerrar Sesión</h1>
       <p>Redirigiendo a la página de login...</p>
     </div>
-  </div>
-  
-  <!-- Botón Flotante -->
+
+  </div> <!-- FIN content -->
+
+
+  <!-- Botones flotantes -->
   <button id="btnFlotante1" title="Ir a Soporte">❓</button>
   <button id="btnFlotante2" title="Cambiar tema">🌗</button>
 
 </body>
 </html>
+
