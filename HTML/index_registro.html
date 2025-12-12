@@ -26,13 +26,10 @@
       <input type="password" id="contraseña" placeholder="Contraseña" required />
 
       <!-- Selección de perfil con values correctos -->
-      <label for="perfil">Selecciona un perfil:</label>
-      <select id="perfil" required>
-        <option value="">-- Selecciona --</option>
-        <option value="Administrador">Administrador</option>
-        <option value="Agricultor">Agricultor</option>
-        <option value="Empleado">Empleado</option>
-      </select>
+
+      <label for="perfil">Perfil:</label>
+      <input type="text" id="perfil" value="Administrador" readonly style="background:#000000;" />
+      <p class="info-admin">* Todos los registros serán administradores del sistema.</p>
 
       <button type="submit">Registrar</button>
     </form>

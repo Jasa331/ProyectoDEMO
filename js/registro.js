@@ -20,9 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
             Usuario_Apellido: document.getElementById("apellido").value.trim(),
             Direccion: document.getElementById("direccion").value.trim(),
             Telefono: document.getElementById("telefono").value.trim(),
-            Rol: document.getElementById("perfil").value, // Asumo que "perfil" es el ID del select para el Rol
+            Rol: "Administrador", // Forzar siempre administrador
             Correo: document.getElementById("correo").value.trim(),
-            Contrasena: document.getElementById("contraseña").value.trim() // Se envía en texto plano para que el servidor la hashee
+            Contrasena: document.getElementById("contraseña").value.trim()
         };
 
         try {
