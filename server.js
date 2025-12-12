@@ -1045,7 +1045,26 @@ app.post('/reportes', authenticateToken, upload.array('fotos', 8), async (req, r
 
 // Ruta para listar reportes (opcionalmente filtrados por destinatario)
 // GET /reportes
-// GET /reportes?destinatario=123
+
+app.get('/reportes/mis-reportes', authenticateToken, async (req, res) => {
+  try {
+    const ID_Usuario = req.user?.ID_Usuario;
+    if (!ID_Usuario) {
+      return res.status(401).json({ ok: false, error: 'No autorizado (ID_Usuario no encontrado en token)' });
+    }
+    // Traer los reportes y el nombre del agricultor destinatario
+    const [rows] = await pool.query(`
+      SELECT r.*, COALESCE(u.Usuario_Nombre, '') AS Usuario_Nombre, COALESCE(u.Usuario_Apellido, '') AS Usuario_Apellido
+      FROM Reporte r
+      LEFT JOIN Usuario u ON r.ID_Destinatario = u.ID_Usuario
+      WHERE r.ID_Usuario = ?
+    `, [ID_Usuario]);
+    res.json({ ok: true, reportes: rows });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 app.get('/reportes', async (req, res) => {
   try {
     const destinatario = req.query.destinatario ? Number(req.query.destinatario) : null;

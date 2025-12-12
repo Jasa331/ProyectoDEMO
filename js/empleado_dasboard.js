@@ -1,4 +1,59 @@
 // ==============================
+// CARGAR REPORTES DEL EMPLEADO
+// ==============================
+async function cargarMisReportes() {
+  const detalle = document.getElementById("detalleReportes");
+  if (!detalle) return;
+
+  detalle.innerHTML = "<p>Cargando reportes...</p>";
+
+  const token = localStorage.getItem("token");
+  if (!token) {
+    detalle.innerHTML = "<p>No hay sesión activa.</p>";
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:3000/reportes/mis-reportes", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (!data.ok || !Array.isArray(data.reportes)) {
+      detalle.innerHTML = `<p>No se pudieron cargar los reportes.</p>`;
+      return;
+    }
+    if (data.reportes.length === 0) {
+      detalle.innerHTML = `<p>No has enviado reportes aún.</p>`;
+      return;
+    }
+    // Renderizar tabla de reportes con ID destinatario y nombre agricultor (si existe)
+    let html = `<table class="table"><thead><tr><th>ID</th><th>Fecha</th><th>ID Destinatario</th><th>Agricultor</th><th>Descripción</th></tr></thead><tbody>`;
+    for (const r of data.reportes) {
+      // Nombre completo agricultor
+      let agricultor = '';
+      if (r.Nombre_Agricultor || r.Apellido_Agricultor) {
+        agricultor = `${r.Nombre_Agricultor || ''} ${r.Apellido_Agricultor || ''}`.trim();
+      } else if (r.Usuario_Nombre || r.Usuario_Apellido) {
+        agricultor = `${r.Usuario_Nombre || ''} ${r.Usuario_Apellido || ''}`.trim();
+      } else if (r.Nombre || r.Apellido) {
+        agricultor = `${r.Nombre || ''} ${r.Apellido || ''}`.trim();
+      }
+      html += `<tr>
+        <td>${r.ID_Reporte || r.id || ''}</td>
+        <td>${r.Fecha || r.CreatedAt || ''}</td>
+        <td>${r.ID_Destinatario || r.destinatarioId || ''}</td>
+        <td>${agricultor}</td>
+        <td>${r.Texto || r.Descripcion || r.texto || ''}</td>
+      </tr>`;
+    }
+    html += `</tbody></table>`;
+    detalle.innerHTML = html;
+  } catch (err) {
+    detalle.innerHTML = `<p>Error al cargar reportes.</p>`;
+    console.error("Error al cargar reportes:", err);
+  }
+}
+// ==============================
 // FUNCIONES PRINCIPALES
 // ==============================
 
@@ -31,6 +86,10 @@ function mostrarSeccion(id) {
     // ============ CARGAR PERFIL AL MOSTRAR PERFIL ============
     if (id === "perfil") {
       cargarPerfil();
+    }
+    // ============ CARGAR REPORTES AL MOSTRAR REPORTE ============
+    if (id === "reportes") {
+      cargarMisReportes();
     }
   }
 }
