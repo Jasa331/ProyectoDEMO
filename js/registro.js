@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             // 4. Enviar los datos al endpoint de registro en el servidor
-            const res = await fetch("http://localhost:3000/usuarios", {
+            const res = await fetch("http://localhost:3000/registro", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)

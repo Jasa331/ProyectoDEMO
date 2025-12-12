@@ -51,8 +51,10 @@ btnCancelarProveedor?.addEventListener("click", cerrarModalProveedor);
 // =============================
 const btnLogout = qs("#btnLogout");
 btnLogout?.addEventListener("click", () => {
-  localStorage.clear();
-  window.location.href = "../HTML/index_login.html";
+  if (confirm("¿Seguro que deseas cerrar sesión?")) {
+    localStorage.clear();
+    window.location.href = "../HTML/index_login.html";
+  }
 });
 
 /* ===========================================================
