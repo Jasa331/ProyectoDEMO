@@ -1,11 +1,23 @@
 /* ===========================================================
-   SELECTORES / UTILIDAD
+   UTILIDADES
 =========================================================== */
 const qs = sel => document.querySelector(sel);
 const qsa = sel => document.querySelectorAll(sel);
 
 /* ===========================================================
-   VARIABLES GLOBALES NECESARIAS
+   SESIÓN / TOKEN
+=========================================================== */
+const token = localStorage.getItem("token");
+const usuarioActual = JSON.parse(localStorage.getItem("user"));
+const ID_Usuario = usuarioActual?.ID_Usuario;
+
+if (!token || !usuarioActual) {
+  alert("Sesión expirada. Inicia sesión nuevamente.");
+  window.location.href = "../HTML/index_login.html";
+}
+
+/* ===========================================================
+   VARIABLES
 =========================================================== */
 const modal = qs("#modal");
 const modalTitle = qs("#modalTitle");
@@ -14,19 +26,51 @@ const tbody = qs("#tbodyUsuarios");
 const vacio = qs("#vacio");
 let editId = null;
 
-const themeToggle = qs("#themeToggle");
-
 const modalGasto = qs("#modalGasto");
 const btnAbrirGasto = qs("#btnAbrirGasto");
 const btnCerrarGasto = qs("#btnCerrarGasto");
 const btnCancelarGasto = qs("#btnCancelarGasto");
 const formGastoModal = qs("#formGastoModal");
 
-const usuarioActual = JSON.parse(localStorage.getItem("user"));
-const ID_Usuario = usuarioActual?.ID_Usuario;
+// Proveedores modal
+const modalProveedor = qs("#modalProveedor");
+const btnAbrirProveedor = qs("#btnNuevoProveedor");
+const btnCerrarModalProveedor = qs("#btnCerrarModalProveedor");
+const btnCancelarProveedor = qs("#btnCancelarProveedor");
+// =============================
+// MODAL PROVEEDOR
+// =============================
+function abrirModalProveedor() { modalProveedor?.classList.add("show"); }
+function cerrarModalProveedor() { modalProveedor?.classList.remove("show"); }
+
+btnAbrirProveedor?.addEventListener("click", abrirModalProveedor);
+btnCerrarModalProveedor?.addEventListener("click", cerrarModalProveedor);
+btnCancelarProveedor?.addEventListener("click", cerrarModalProveedor);
+// =============================
+// CERRAR SESIÓN
+// =============================
+const btnLogout = qs("#btnLogout");
+btnLogout?.addEventListener("click", () => {
+  localStorage.clear();
+  window.location.href = "../HTML/index_login.html";
+});
 
 /* ===========================================================
-   SISTEMA DE SECCIONES
+   TOAST
+=========================================================== */
+const toastBox = qs("#toast");
+let toastTimer = null;
+
+function toast(msg, type = "info") {
+  if (!toastBox) return;
+  toastBox.textContent = msg;
+  toastBox.className = `toast show ${type}`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastBox.classList.remove("show"), 2500);
+}
+
+/* ===========================================================
+   SECCIONES
 =========================================================== */
 function ocultarTodas() {
   qsa(".seccion").forEach(sec => {
@@ -52,35 +96,22 @@ function mostrarSeccion(id) {
     }
   });
 
-  if (id === "usuarios") renderTable();
-  if (id === "proveedores") cargarProveedores();
+  if (id === "usuarios") renderUsuarios();
   if (id === "gastos") cargarGastos();
-  if (id === "dashboard") renderTable();
+  if (id === "proveedores") cargarProveedores();
+  if (id === "dashboard") renderUsuarios();
 }
 
 window.mostrarSeccion = mostrarSeccion;
 
 /* ===========================================================
-   TOAST
-=========================================================== */
-const toastBox = qs("#toast");
-let toastTimer = null;
-
-function toast(msg, type = "info") {
-  if (!toastBox) return;
-  toastBox.textContent = msg;
-  toastBox.className = `toast show ${type}`;
-
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toastBox.classList.remove("show"), 2500);
-}
-
-/* ===========================================================
-   CRUD USUARIOS
+   USUARIOS
 =========================================================== */
 async function fetchUsuarios() {
   try {
-    const res = await fetch("http://localhost:3000/usuarios");
+    const res = await fetch("http://localhost:3000/usuarios/mis-creados", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
     if (!res.ok) return [];
     return await res.json();
   } catch {
@@ -89,13 +120,12 @@ async function fetchUsuarios() {
   }
 }
 
-async function renderTable() {
+async function renderUsuarios() {
   const usuarios = await fetchUsuarios();
 
   tbody.innerHTML = usuarios.map(u => `
     <tr>
       <td>${u.Usuario_Nombre} ${u.Usuario_Apellido}</td>
-      <td>${u.Usuario_Usuario || "—"}</td>
       <td>${u.Correo}</td>
       <td>${u.Rol}</td>
       <td>
@@ -105,15 +135,7 @@ async function renderTable() {
     </tr>
   `).join("");
 
-  vacio.style.display = usuarios.length ? "none" : "block";
-
-  renderStats(usuarios);
-}
-
-function renderStats(usuarios) {
-  qs("#statTotal").textContent = usuarios.length;
-  qs("#statAdmins").textContent = usuarios.filter(u => u.Rol === "Administrador").length;
-  qs("#statUsuarios").textContent = usuarios.filter(u => u.Rol !== "Administrador").length;
+  if (vacio) vacio.style.display = usuarios.length ? "none" : "block";
 }
 
 /* ===========================================================
@@ -122,12 +144,13 @@ function renderStats(usuarios) {
 function openModal(edit = false, usuario = {}) {
   editId = edit ? usuario.ID_Usuario : null;
 
-  modal.classList.add("show");
-  modalTitle.textContent = edit ? "Editar usuario" : "Nuevo usuario";
+  modal?.classList.add("show");
+  if (modalTitle) modalTitle.textContent = edit ? "Editar usuario" : "Nuevo usuario";
+
+  if (!form) return;
 
   form.nombre.value = usuario.Usuario_Nombre || "";
   form.apellido.value = usuario.Usuario_Apellido || "";
-  form.usuario.value = usuario.Usuario_Usuario || "";
   form.correo.value = usuario.Correo || "";
   form.direccion.value = usuario.Direccion || "";
   form.telefono.value = usuario.Telefono || "";
@@ -136,7 +159,7 @@ function openModal(edit = false, usuario = {}) {
 }
 
 function closeModal() {
-  modal.classList.remove("show");
+  modal?.classList.remove("show");
 }
 
 qs("#btnNuevo")?.addEventListener("click", () => openModal());
@@ -144,18 +167,17 @@ qs("#btnCancelar")?.addEventListener("click", closeModal);
 qs("#btnCerrarModal")?.addEventListener("click", closeModal);
 
 /* ===========================================================
-   GUARDAR USUARIO
+   GUARDAR USUARIO (POST / PUT)
 =========================================================== */
 form?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const data = {
-    Usuario_Nombre: form.nombre.value,
-    Usuario_Apellido: form.apellido.value,
-    Usuario_Usuario: form.usuario.value,
-    Correo: form.correo.value,
-    Direccion: form.direccion.value,
-    Telefono: form.telefono.value,
+    Usuario_Nombre: form.nombre.value.trim(),
+    Usuario_Apellido: form.apellido.value.trim(),
+    Correo: form.correo.value.trim(),
+    Direccion: form.direccion.value.trim(),
+    Telefono: form.telefono.value.trim(),
     Rol: form.perfil.value,
     Contrasena: form.password.value
   };
@@ -168,23 +190,29 @@ form?.addEventListener("submit", async (e) => {
 
   const res = await fetch(url, {
     method,
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
     body: JSON.stringify(data)
   });
 
-  const json = await res.json();
+  const json = await res.json().catch(() => ({}));
 
-  if (json.ok) toast("Usuario guardado", "success");
-  else toast("Error al guardar usuario", "error");
+  if (!res.ok || !json.ok) {
+    toast(json.error || "Error al guardar usuario", "error");
+    return;
+  }
 
+  toast("Usuario guardado", "success");
   closeModal();
-  renderTable();
+  renderUsuarios();
 });
 
 /* ===========================================================
-   TABLA EVENTOS (EDITAR/ELIMINAR)
+   EDITAR / ELIMINAR USUARIO
 =========================================================== */
-tbody?.addEventListener("click", async e => {
+tbody?.addEventListener("click", async (e) => {
   const btn = e.target.closest("button");
   if (!btn) return;
 
@@ -192,16 +220,20 @@ tbody?.addEventListener("click", async e => {
 
   if (btn.classList.contains("edit")) {
     const usuarios = await fetchUsuarios();
-    const usuario = usuarios.find(u => u.ID_Usuario == id);
-    return openModal(true, usuario);
+    const usuario = usuarios.find(u => String(u.ID_Usuario) === String(id));
+    return openModal(true, usuario || {});
   }
 
   if (btn.classList.contains("del")) {
     if (!confirm("¿Eliminar usuario?")) return;
 
-    await fetch(`http://localhost:3000/usuarios/${id}`, { method: "DELETE" });
+    await fetch(`http://localhost:3000/usuarios/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
     toast("Usuario eliminado", "success");
-    renderTable();
+    renderUsuarios();
   }
 });
 
@@ -209,13 +241,17 @@ tbody?.addEventListener("click", async e => {
    PROVEEDORES
 =========================================================== */
 async function cargarProveedores() {
-  const res = await fetch("http://localhost:3000/proveedor");
+  const res = await fetch("http://localhost:3000/proveedor", {
+    headers: { Authorization: `Bearer ${token}` }
+  });
   if (!res.ok) return;
 
   const data = await res.json();
-  const tbody = qs("#tbodyProveedores");
+  const tb = qs("#tbodyProveedores");
 
-  tbody.innerHTML = data.map(p => `
+  if (!tb) return;
+
+  tb.innerHTML = data.map(p => `
     <tr>
       <td>${p.ID_Proveedor}</td>
       <td>${p.Nombre_Empresa}</td>
@@ -226,54 +262,53 @@ async function cargarProveedores() {
       <td>${p.Cod_Postal}</td>
     </tr>
   `).join("");
-
-  qs("#proveedorVacio").style.display = data.length ? "none" : "block";
 }
 
 /* ===========================================================
-   GASTOS — CARGAR LISTA
+   GASTOS — LISTAR
 =========================================================== */
 async function cargarGastos() {
-  const tbody = qs("#tablaGastos");
-  tbody.innerHTML = "<tr><td colspan='4'>Cargando...</td></tr>";
+  const tb = qs("#tablaGastos");
+  if (!tb) return;
+
+  tb.innerHTML = "<tr><td colspan='4'>Cargando...</td></tr>";
 
   if (!ID_Usuario) {
-    tbody.innerHTML = "<tr><td colspan='4'>No hay usuario logueado</td></tr>";
+    tb.innerHTML = "<tr><td colspan='4'>No hay usuario logueado</td></tr>";
     return;
   }
 
-  const res = await fetch(`http://localhost:3000/gastos/usuario/${ID_Usuario}`);
+  const res = await fetch(`http://localhost:3000/gastos/usuario/${ID_Usuario}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
   if (!res.ok) {
-    tbody.innerHTML = "<tr><td colspan='4'>Error al cargar gastos</td></tr>";
+    tb.innerHTML = "<tr><td colspan='4'>Error al cargar gastos</td></tr>";
     return;
   }
 
   const data = await res.json();
 
   if (!data.length) {
-    tbody.innerHTML = "<tr><td colspan='4'>Sin registros</td></tr>";
+    tb.innerHTML = "<tr><td colspan='4'>Sin registros</td></tr>";
     return;
   }
 
-  tbody.innerHTML = data.map(g => `
+  tb.innerHTML = data.map(g => `
     <tr>
       <td>${g.concepto}</td>
       <td>$${g.monto}</td>
-      <td>${g.categoria}</td>
+      <td>${g.categoria ?? ""}</td>
       <td>${g.fecha}</td>
     </tr>
   `).join("");
 }
 
 /* ===========================================================
-   MODAL GASTOS (ABRIR/CERRAR)
+   MODAL GASTOS
 =========================================================== */
-function abrirModalGasto() {
-  modalGasto.classList.add("show");
-}
-function cerrarModalGasto() {
-  modalGasto.classList.remove("show");
-}
+function abrirModalGasto() { modalGasto?.classList.add("show"); }
+function cerrarModalGasto() { modalGasto?.classList.remove("show"); }
 
 btnAbrirGasto?.addEventListener("click", abrirModalGasto);
 btnCerrarGasto?.addEventListener("click", cerrarModalGasto);
@@ -282,30 +317,27 @@ btnCancelarGasto?.addEventListener("click", cerrarModalGasto);
 /* ===========================================================
    REGISTRAR GASTO
 =========================================================== */
-formGastoModal?.addEventListener("submit", async e => {
+formGastoModal?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const concepto = qs("#conceptoModal").value;
-  const monto = qs("#montoModal").value;
-  const categoria = qs("#categoriaModal").value;
+  const concepto = qs("#conceptoModal")?.value?.trim();
+  const monto = qs("#montoModal")?.value;
+  const categoria = qs("#categoriaModal")?.value?.trim() || null;
   const fecha = new Date().toISOString().split("T")[0];
 
   const res = await fetch("http://localhost:3000/gastos", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      concepto,
-      monto,
-      categoria,
-      fecha,
-      ID_Usuario
-    })
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ concepto, monto, categoria, fecha, ID_Usuario })
   });
 
-  const json = await res.json();
+  const json = await res.json().catch(() => ({}));
 
-  if (!json.ok) {
-    toast("Error: " + json.error, "error");
+  if (!res.ok || !json.ok) {
+    toast("Error: " + (json.error || "No se pudo registrar"), "error");
     return;
   }
 
@@ -315,136 +347,10 @@ formGastoModal?.addEventListener("submit", async e => {
 });
 
 /* ===========================================================
-   TEMA OSCURO
-=========================================================== */
-function initTheme() {
-  const saved = localStorage.getItem("theme") || "light";
-  document.documentElement.setAttribute("data-theme", saved);
-
-  if (themeToggle) {
-    themeToggle.textContent = saved === "dark" ? "🌙" : "🌞";
-  }
-}
-
-themeToggle?.addEventListener("click", () => {
-  const now = document.documentElement.getAttribute("data-theme");
-  const next = now === "dark" ? "light" : "dark";
-
-  document.documentElement.setAttribute("data-theme", next);
-  localStorage.setItem("theme", next);
-});
-
-/* ===========================================================
    INICIO
 =========================================================== */
 document.addEventListener("DOMContentLoaded", () => {
-  initTheme();
-  renderTable();
+  renderUsuarios();
   cargarProveedores();
   mostrarSeccion("dashboard");
-});
-
-/* ===========================================================
-   MODAL EXPORTAR
-=========================================================== */
-
-const modalExportar = qs("#modalExportar");
-const btnExportar = qs("#btnExportar");
-const btnCerrarExportar = qs("#btnCerrarExportar");
-const btnCancelarExportar = qs("#btnCancelarExportar");
-
-const expUsuarios = qs("#expUsuarios");
-const expGastos = qs("#expGastos");
-const expProveedores = qs("#expProveedores");
-const expProductos = qs("#expProductos");
-const expCultivos = qs("#expCultivos");
-const expTodo = qs("#expTodo");
-
-function abrirModalExportar() {
-  modalExportar.classList.add("show");
-}
-
-function cerrarModalExportar() {
-  modalExportar.classList.remove("show");
-}
-
-btnExportar?.addEventListener("click", abrirModalExportar);
-btnCancelarExportar?.addEventListener("click", cerrarModalExportar);
-btnCerrarExportar?.addEventListener("click", cerrarModalExportar);
-
-/* ===========================================================
-   SELECCIONAR TODO
-=========================================================== */
-expTodo?.addEventListener("change", () => {
-  const state = expTodo.checked;
-  expUsuarios.checked = state;
-  expGastos.checked = state;
-  expProveedores.checked = state;
-  expProductos.checked = state;
-  expCultivos.checked = state;
-});
-
-/* ===========================================================
-   OBTENER SELECCIÓN DEL USER
-=========================================================== */
-function obtenerSeleccionExportacion() {
-  return {
-    usuarios: expUsuarios.checked,
-    gastos: expGastos.checked,
-    proveedores: expProveedores.checked,
-    productos: expProductos.checked,
-    cultivos: expCultivos.checked
-  };
-}
-
-/* ===========================================================
-   CONSTRUIR URL PARA EL BACKEND
-=========================================================== */
-function construirUrlExport(tipo) {
-  const seleccion = obtenerSeleccionExportacion();
-  const params = new URLSearchParams();
-
-  if (seleccion.usuarios) params.append("usuarios", "1");
-  if (seleccion.gastos) params.append("gastos", "1");
-  if (seleccion.proveedores) params.append("proveedores", "1");
-  if (seleccion.productos) params.append("productos", "1");
-  if (seleccion.cultivos) params.append("cultivos", "1");
-
-  const base =
-    tipo === "pdf"
-      ? "http://localhost:3000/export/pdf"
-      : "http://localhost:3000/export/excel";
-
-  return `${base}?${params.toString()}`;
-}
-
-/* ===========================================================
-   BOTONES EXPORTAR PDF / EXCEL
-=========================================================== */
-
-const btnExportPDF = qs("#btnExportPDF");
-const btnExportExcel = qs("#btnExportExcel");
-
-btnExportPDF?.addEventListener("click", () => {
-  const url = construirUrlExport("pdf");
-
-  if (!url.includes("?")) {
-    toast("Selecciona al menos una opción para exportar", "error");
-    return;
-  }
-
-  window.open(url, "_blank"); // descarga el PDF del backend
-  cerrarModalExportar();
-});
-
-btnExportExcel?.addEventListener("click", () => {
-  const url = construirUrlExport("excel");
-
-  if (!url.includes("?")) {
-    toast("Selecciona al menos una opción para exportar", "error");
-    return;
-  }
-
-  window.open(url, "_blank"); // descarga el Excel del backend
-  cerrarModalExportar();
 });

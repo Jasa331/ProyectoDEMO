@@ -47,6 +47,19 @@ const upload = multer({ storage });
   }
 })();
 
+app.get('/usuarios/mis-creados', authenticateToken, async (req, res) => {
+  try {
+    const ID_Creador = req.user?.ID_Usuario;
+    if (!ID_Creador) {
+      return res.status(401).json({ ok: false, error: "No autorizado (ID_Creador no encontrado)" });
+    }
+    const [rows] = await pool.query('SELECT ID_Usuario, Usuario_Nombre, Usuario_Apellido, Direccion, Telefono, Rol, Correo, Estado FROM Usuario WHERE ID_Creador = ?', [ID_Creador]);
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 // GET usuarios
 app.get('/usuarios', async (req, res) => {
   try {
@@ -57,22 +70,57 @@ app.get('/usuarios', async (req, res) => {
   }
 });
 
-// POST usuario
-app.post('/usuarios', async (req, res) => {
+// POST usuario (requiere token para capturar ID_Creador)
+app.post('/usuarios', authenticateToken, async (req, res) => {
   try {
     const { Usuario_Nombre, Usuario_Apellido, Direccion, Telefono, Rol, Correo, Contrasena } = req.body;
+
+    // ID del usuario que crea (ADMIN)
+    const ID_Creador = req.user?.ID_Usuario;
+
+    if (!ID_Creador) {
+      return res.status(401).json({ ok: false, error: "No autorizado (ID_Creador no encontrado)" });
+    }
+
     if (!Usuario_Nombre || !Usuario_Apellido || !Direccion || !Telefono || !Rol || !Correo || !Contrasena) {
       return res.status(400).json({ ok: false, error: "Faltan campos" });
     }
 
-    const [exist] = await pool.query("SELECT ID_Usuario FROM Usuario WHERE Correo = ?", [Correo]);
-    if (exist.length > 0) return res.status(400).json({ ok: false, error: "Correo ya registrado" });
+    const [exist] = await pool.query(
+      "SELECT ID_Usuario FROM Usuario WHERE Correo = ?",
+      [Correo]
+    );
+
+    if (exist.length > 0) {
+      return res.status(400).json({ ok: false, error: "Correo ya registrado" });
+    }
 
     const hashedPassword = await bcrypt.hash(Contrasena, saltRounds);
-    const sql = `INSERT INTO Usuario (Usuario_Nombre, Usuario_Apellido, Direccion, Telefono, Rol, Correo, Contrasena, Estado)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, 1)`;
-    const [result] = await pool.query(sql, [Usuario_Nombre, Usuario_Apellido, Direccion, Telefono, Rol, Correo, hashedPassword]);
-    res.json({ ok: true, message: "Usuario creado", id: result.insertId });
+
+    const sql = `
+      INSERT INTO Usuario 
+      (ID_Creador, Usuario_Nombre, Usuario_Apellido, Direccion, Telefono, Rol, Correo, Contrasena, Estado)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)
+    `;
+
+    const [result] = await pool.query(sql, [
+      ID_Creador,
+      Usuario_Nombre,
+      Usuario_Apellido,
+      Direccion,
+      Telefono,
+      Rol,
+      Correo,
+      hashedPassword
+    ]);
+
+    res.json({
+      ok: true,
+      message: "Usuario creado",
+      ID_Usuario: result.insertId,
+      ID_Creador
+    });
+
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
   }
